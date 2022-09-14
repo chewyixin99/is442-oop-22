@@ -4,10 +4,12 @@ Download the [Chrome Extension for Live Reload](https://chrome.google.com/websto
 ## run command
 - Backend (Springboot) 
 
-   Make sure Maven is installed first before running the following command
+    Navigate to the backend directory e.g., `cd backend/oop`
+    Make sure Maven is installed first before running the following command
     > mvn spring-boot:run
 
 - Frontend (Vue)
     
+    Navigate to the backend directory e.g., `cd frontend`
     run `npm i` if it's the first time running then
     > npm run serve
