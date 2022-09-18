@@ -29,6 +29,23 @@
         ------------------------------------
         <p>1. View current and pass staff booking - booking log</p>
         <p>2. Edit physical pass status: Issued/Available/Unavailable</p>    
-        
+        <div class="w-100 d-flex justify-content-center">
+            <BookingCalendar/>
+        </div>
         </div>
 </template>
+<script>
+import BookingCalendar from '../components/BookingCalendar.vue'
+
+export default {
+  name: 'Booking',
+  components: {
+    BookingCalendar
+  }
+}
+
+</script>
+
+<style>
+
+</style>
