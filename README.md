@@ -4,14 +4,23 @@ Download the [Chrome Extension for Live Reload](https://chrome.google.com/websto
 ## run command
 - Backend (Springboot) 
 
-    Navigate to the backend directory e.g., `cd backend/oop`
+    Download Apache Maven(https://maven.apache.org/download.cgi), unzip the folder to a meaningful directory then open 'Environment Variables' in Windows.
+    -Inside 'User Variables' tab, select 'New', browse and select the unzipped Apache Maven bin folder, add the 'Variable name' as MAVEN_HOME.
+    -Inside 'User Variables' tab, select 'New', browse and select the folder where you installed 'jdk-17.x.x.x', add the 'Variable name' as JAVA_HOME.
+    -Restart your PC.
+
+    Navigate to the backend directory e.g., `cd backend/oop` where the 'mvnw' file is located.
 
     Make sure Maven is installed first before running the following command
     > mvn spring-boot:run
 
 - Frontend (Vue)
     
-    Navigate to the backend directory e.g., `cd frontend`
+    Install NodeJS(https://nodejs.org/en/)
+
+    Open Command Prompt in Windows and type `npm install -g @vue/cli`
+
+    Navigate to the 'frontend' directory e.g., `cd frontend`
     
     run `npm i` if it's the first time running then
     > npm run serve
