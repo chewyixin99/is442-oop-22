@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div id="dashboard">
         <h1>Dashboard</h1>
         ------------------------------------
         <p>Admin functionalities:</p>
