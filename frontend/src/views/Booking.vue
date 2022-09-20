@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div class="test">
         <div class="w-100 flex-column justify-content-center">
           <h1 class="pt-4">Loan</h1>
           <h3>You have 2 loans left this month</h3>
@@ -35,6 +35,7 @@
 
 
           <button type="submit" @click="forceRerender()">Submit</button>
+
             
         </div>
         <!-- <h1>Booking</h1>
@@ -72,7 +73,18 @@
         <p>3. conflicted dates</p>
         <p>4. pass status for current booking</p> -->
 
-
+          <div id="toast" class="toast fade position-fixed bottom-0 right-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
+    
+        <strong class="me-auto">Loan Success!</strong>
+        <small>Just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        This is supposed to be on the right
+      </div>
+    </div>
 
         </div>
 </template>
@@ -92,6 +104,7 @@ export default {
       pass: "",
       numPass: 2,
       componentKey: 0,
+      successFlag: false
       
     }
   },
@@ -149,6 +162,8 @@ export default {
     forceRerender() {
       this.pass = ""
       this.componentKey += 1;
+      this.successFlag = true;
+      document.getElementById("toast").classList.add("show")
     }
 
   },
