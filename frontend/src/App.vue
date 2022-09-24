@@ -1,10 +1,5 @@
 <template>
-  <div>
     <Sidebar/>
-    <div class="router-outlet">
-      <router-view/>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -28,9 +23,5 @@ export default {
   color: #2c3e50;
 }
 
-.router-outlet {
-  background-color: aliceblue;
-  min-height: 100vh;
-}
 
 </style>

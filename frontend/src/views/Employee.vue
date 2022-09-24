@@ -20,13 +20,17 @@
       data() {
         return {
             grid: new Grid({
-                columns: ['Name', 'Email', 'Phone Number'],
+                columns: ['Name', 'Email', 'Phone Number', 'Address', 'Department', 'Role', 'ID'],
                 search: true,
+                sort: true,
+                pagination: {
+                    limit: 10
+                },
                 data: [
-                    ['John', 'john@example.com', '(353) 01 222 3333'],
-                    ['Mark', 'mark@gmail.com',   '(01) 22 888 4444'],
-                    ['Eoin', 'eo3n@yahoo.com',   '(05) 10 878 5554'],
-                    ['Nisen', 'nis900@gmail.com',   '313 333 1923']
+                    ['John', 'john@example.com', '(353) 01 222 3333', 'a', 'b', 'c', 'd'],
+                    ['Mark', 'mark@gmail.com',   '(01) 22 888 4444' , 'a', 'b', 'c', 'd'],
+                    ['Eoin', 'eo3n@yahoo.com',   '(05) 10 878 5554', 'a', 'b', 'c', 'd'],
+                    ['Nisen', 'nis900@gmail.com',   '313 333 1923', 'a', 'b', 'c', 'd']
                 ],
                 style: {
                     table: {

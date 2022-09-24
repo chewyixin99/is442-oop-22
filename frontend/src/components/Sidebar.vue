@@ -1,83 +1,95 @@
 <template>
-    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar col-2" style="">
-    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-      <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-      <span class="fs-4">Sidebar</span>
-    </a>
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
-      <!-- <li class="nav-item">
-        <a href="#" class="nav-link link-dark" aria-current="page">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
-          <router-link to="/">Home</router-link>
-        </a>
-    
-      </li> -->
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-          <router-link to="/dashboard">Dashboard</router-link>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-          <router-link to="/booking">Booking</router-link>
-        </a>
-      </li>
-      <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-          <router-link to="/employee">Employee</router-link>
-        </a>
-      </li>
-        <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-          <router-link to="/pass">Pass</router-link>
-        </a>
-      </li>
-        <li>
-        <a href="#" class="nav-link link-dark">
-          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-          <router-link to="/email">Email</router-link>
-        </a>
-      </li>
-    </ul>
-    <hr>
-    <div class="dropdown">
-      <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-        <strong>mdo</strong>
-      </a>
-      <ul class="dropdown-menu text-small shadow">
-        <li><a class="dropdown-item" href="#">New project...</a></li>
-        <li><a class="dropdown-item" href="#">Settings</a></li>
-        <li><a class="dropdown-item" href="#">Profile</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#">Sign out</a></li>
-      </ul>
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div class="col-auto col-md-3 col-xl-2 px-sm-4 px-0 bg-dark">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100 sticky-top">
+                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none ">
+                    <span class="fs-5 d-none d-sm-inline">Pass Booking System</span>
+                </a>
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start  sidebar" id="menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link link-dark px-0 align-middle ">
+                          <router-link to="/" class="text-decoration-none">
+                            <i class="fs-4 bi bi-house"></i> 
+                            <span class="ms-1 d-none d-sm-inline ms-3">Home</span>
+                          </router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link link-dark px-0 align-middle ">
+                          <router-link to="/dashboard" class="text-decoration-none">
+                            <i class="fs-4 bi bi-graph-up"></i> 
+                            <span class="ms-1 d-none d-sm-inline ms-3">Dashboard</span>
+                          </router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link link-dark px-0 align-middle ">
+                          <router-link to="/booking" class="text-decoration-none">
+                            <i class="fs-4 bi bi-calendar-plus"></i> 
+                            <span class="ms-1 d-none d-sm-inline ms-3">Booking</span>
+                          </router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link link-dark px-0 align-middle ">
+                          <router-link to="/pass" class="text-decoration-none">
+                            <i class="fs-4 bi bi-pass"></i> 
+                            <span class="ms-1 d-none d-sm-inline ms-3">Pass</span>
+                          </router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link link-dark px-0 align-middle ">
+                          <router-link to="/email" class="text-decoration-none">
+                            <i class="fs-4 bi bi-envelope"></i> 
+                            <span class="ms-1 d-none d-sm-inline ms-3">Email</span>
+                          </router-link>
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <div class="dropdown pb-4">
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
+                        <span class="d-none d-sm-inline mx-1">Aloysius</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                        <li><a class="dropdown-item" href="#">New project...</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col">
+          <div class="router-outlet">
+            <router-view/>
+          </div>
+        </div>
     </div>
+</div>
+<!-- https://dev.to/codeply/bootstrap-5-sidebar-examples-38pb -->
 
-  </div>
 </template>
 
 <style scoped>
 
-.sidebar {
-    background-color: pink;
-    height: 100vh;
-    position: fixed;
-}
 
-body {
+/* body, html {
   min-height: 100vh;
   min-height: -webkit-fill-available;
-}
+  padding: 0;
+  margin: 0;
+} 
 
-html {
-  height: -webkit-fill-available;
-}
+
+
 
 main {
   height: 100vh;
@@ -128,6 +140,14 @@ main {
 
 .scrollarea {
   overflow-y: auto;
-}
+} */
 
+
+.col {
+  padding: 0 !important;
+}
+.router-outlet {
+  background-color: aliceblue;
+  min-height: 100vh;
+}
 </style>
