@@ -9,13 +9,13 @@
         <div class="row">
           <div class="col">
             <label id="date">Start Date</label>
-            <input type="date" disabled :value="selectedStart">
+            <input type="date" disabled :value="selectedDates.start">
           </div>
         </div>
         <div class="row mt-4">
           <div class="col">
             <label id="date">End Date</label>
-            <input type="date" disabled :value="selectedEnd">
+            <input type="date" disabled :value="selectedDates.end">
           </div>
         </div>
         
@@ -106,8 +106,15 @@ export default {
         droppable: true,
         eventDrop: this.handleDropChange
       },
-      selectedStart: new Date().toISOString().replace(/T.*$/, ''),
-      selectedEnd: new Date().toISOString().replace(/T.*$/, ''),
+      selectedDates: {
+        start: new Date().toISOString().replace(/T.*$/, ''),
+        end: new Date().toISOString().replace(/T.*$/, ''),
+        passData: {
+          passId : this.passId.id,
+          passTitle: this.passId.title
+        }
+      }
+     
 
     }
   },
@@ -118,19 +125,16 @@ export default {
     },
     handleDropChange(info){
       console.log(info.event.startStr);
-      this.selectedStart = info.event.startStr
-      this.selectedEnd = this.fullDayConversion(info.event.end)
+      this.selectedDates.start = info.event.startStr
+      this.selectedDates.end = this.fullDayConversion(info.event.end)
     },
     handleDateSelect(selectInfo) {
       console.log(selectInfo);
-      this.selectedStart = selectInfo.startStr
-      this.selectedEnd = this.fullDayConversion(selectInfo.end)
+      this.selectedDates.start = selectInfo.startStr
+      this.selectedDates.end = this.fullDayConversion(selectInfo.end)
+      this.$emit('updateDates',  this.selectedDates)
+      let calendarApi = selectInfo.view.calendar
 
-        let calendarApi = selectInfo.view.calendar
-
-        // calendarApi.unselect() // clear date selection
-        // let title = prompt('Please enter a new title for your event')
-        // alert(selectInfo.endStr)
 
         calendarApi.addEvent({
           id: 1,
@@ -141,23 +145,6 @@ export default {
       })
       
 
-      
-      // let title = prompt('Please enter a new title for your event')
-      // let calendarApi = selectInfo.view.calendar
-
-      
-      
-      
-
-      // if (title) {
-      //   calendarApi.addEvent({
-      //     id: 1,
-      //     title,
-      //     start: selectInfo.startStr,
-      //     end: selectInfo.endStr,
-      //     allDay: selectInfo.allDay
-      //   })
-      // }
     },
     handleEventClick(clickInfo) {
       if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
@@ -172,8 +159,8 @@ export default {
     return endDate.toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
   },
     
-  }
-  
+  },
+
 }
 </script>
 

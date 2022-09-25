@@ -1,18 +1,70 @@
 <template>
-    <div class="test">
-        <div class="w-100 flex-column justify-content-center">
-          <h1 class="pt-4">Loan</h1>
-          <h3>You have 2 loans left this month</h3>
-          <label >Number of Pass</label>
+    <div class="container-fluid">
+        <div class="w-60 flex-column justify-content-center">
+          <h1 class="pt-4 mb-4">Booking</h1>
+          <h4 class="pt-4">Current Bookings</h4>
+          <table class="table border">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Pass Title</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Previous Booker</th>
+                <th scope="col">Following Booker</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Zoo 1</td>
+                <td>25/10/2022</td>
+                <td>26/10/2022</td>
+                <td>Bob, 81723432</td>
+                <td>-</td>
+                <td>
+                  <button class="btn btn-danger">Cancel</button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Safari 1</td>
+                <td>30/10/2022</td>
+                <td>31/10/2022</td>
+                <td>-</td>
+                <td>Ted, 93748657</td>
+                <td>
+                  <button class="btn btn-danger">Cancel</button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Zoo 2</td>
+                <td>25/11/2022</td>
+                <td>27/11/2022</td>
+                <td>May, 83768532</td>
+                <td>Mark, 93748231</td>
+                <td>
+                  <button class="btn btn-danger">Cancel</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h4 class="pt-4">Make New Booking</h4>
+          <p class="text-muted fs-7">You have 2 loans left this month</p>
+          <form>
+          <label>Number of pass(es): </label>
           <select v-model.number="numPass">
-                <option value="1">1</option>
-                <option value="2">2</option>
-              </select>
+              <option value="1">1</option>
+              <option value="2">2</option>
+          </select>
+          </form>
           <div class="" v-for="index in numPass" :key="index">
             <div class="formBox pt-4">
               <form class="pt-4">
-                <label>Select Pass</label>
-                <select v-model="pass">
+                <label>Select Pass: </label>
+                <select v-model="pass[index]">
                   <option value="1">Zoo 1</option>
                   <option value="2">Zoo 2</option>
                   <option value="3" disabled>Zoo 3</option>
@@ -24,9 +76,9 @@
             </div>
             <div class="d-flex justify-content-center gap-5">
             
-            <BookingCalendar :key="componentKey" :passId="passFn('1')" class="mt-4" v-if="pass == '1'"/>
-            <BookingCalendar :key="componentKey" :passId="passFn('2')" class="mt-4" v-if="pass == '2'"/>
-            <BookingCalendar :key="componentKey" :passId="passFn('5')" class="mt-4" v-if="pass == '5'"/>
+            <BookingCalendar :key="componentKey" :passId="passFn('1')" @updateDates="selectedDates" class="mt-4" v-if="pass[index] == '1'"/>
+            <BookingCalendar :key="componentKey" :passId="passFn('2')" @updateDates="selectedDates" class="mt-4" v-if="pass[index] == '2'"/>
+            <BookingCalendar :key="componentKey" :passId="passFn('5')" @updateDates="selectedDates" class="mt-4" v-if="pass[index] == '5'"/>
             <!-- <BookingCalendar :passId="passFn('6')" class="mt-4" v-if="pass == '6'"/> -->
             <h1 v-if="pass == '6'">Temporarily Unavailable</h1>
             <!-- <BookingForm :calendarInput="calendarInput" @formOutput="callbackForm($event)"/> -->
@@ -38,7 +90,8 @@
 
             
         </div>
-        <!-- <h1>Booking</h1>
+
+        <h1 style="margin-top: 100vh">Booking</h1>
         ------------------------------------
         <p>Staff functionalities:</p>
         ------------------------------------
@@ -71,7 +124,8 @@
         <p>1. booking form</p>
         <p>2. coloured booked dates</p>
         <p>3. conflicted dates</p>
-        <p>4. pass status for current booking</p> -->
+        <p>4. pass status for current booking</p>
+
 
         <div id="toast" class="toast fade position-fixed bottom-0 right-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
@@ -101,11 +155,11 @@ export default {
         startStr: "null",
         endStr: "null"
         },
-      pass: "",
+      pass: ["",""],
       numPass: 2,
       componentKey: 0,
-      successFlag: false
-      
+      successFlag: false,
+      retrievedData: []
     }
   },
   components: {
@@ -113,6 +167,16 @@ export default {
     // BookingForm
   },
   methods: {
+    selectedDates($event){
+      console.log($event);
+      this.retrievedData.push({
+        passId: $event.passData.passId,
+        passTitle: $event.passData.passTitle,
+        start: $event.start,
+        end: $event.end
+      })
+
+    },
     passFn(id){
       if (id == '1'){
         return {
@@ -163,6 +227,7 @@ export default {
       this.pass = ""
       this.componentKey += 1;
       this.successFlag = true;
+      alert(JSON.stringify(this.retrievedData))
       document.getElementById("toast").classList.add("show")
     }
 
