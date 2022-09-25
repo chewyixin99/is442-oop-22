@@ -33,6 +33,14 @@
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link link-dark px-0 align-middle ">
+                          <router-link to="/employee" class="text-decoration-none">
+                            <i class="fs-4 bi bi-book"></i>
+                            <span class="ms-1 d-none d-sm-inline ms-3">Employee</span>
+                          </router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link link-dark px-0 align-middle ">
                           <router-link to="/pass" class="text-decoration-none">
                             <i class="fs-4 bi bi-pass"></i> 
                             <span class="ms-1 d-none d-sm-inline ms-3">Pass</span>
