@@ -22,7 +22,41 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<!-- set runtime so we don't package this in the jar -->
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Spring Data JPA - Persist data in SQL -->
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+		<!-- Spring Web - Build API endpoints with Spring MVC -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- MySQL JDBC and R2DBC driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+		<!-- Javax validation - validate fields of object before persist to db -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+
+		<!-- Io springfox - SwaggerUI documentation -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.6.4</version>
 		</dependency>
 
 		<dependency>
@@ -31,12 +65,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		 <dependency>
-		 	<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<!-- set runtime so we don't package this in the jar -->
-			<scope>runtime</scope>
-		 </dependency>
 
 	</dependencies>
 
@@ -50,3 +78,5 @@
 	</build>
 
 </project>
+
+<!-- Run mvn instaill to update dependencies -->
