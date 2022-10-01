@@ -76,7 +76,7 @@
         },
         data(){
             return{
-
+                recordsToDelete: [],
             };
         }, 
         methods: {
@@ -84,21 +84,16 @@
                 // const employee = await EmployeeService.createEmployee();
                 // console.log(employee);
                 var bsAlert = new bootstrap.Toast(document.getElementById('theToastr'));//inizialize it
-                this.$emit("toastrMsg", "New employee has been created!");
+                this.$emit("toastrMsg", {status: "Success", msg: "New employee has been created!"});
+                // this.$emit("toastrMsg", {status: "Error", msg: "Opps, something went wrong!"});
                 bsAlert.show();
-            },
-            async deleteRecords(){
-                this.recordsToDelete.forEach((value, index) => {
-                    console.log("Index to delete:", index, "Id value:", value);
-                })
-                // const employees = await EmployeeService.removeEmployees();
-                // console.log(employees);
             },
             async editEmployeeDetails(){
                 // const employees = await EmployeeService.editEmployeeDetails("1");
                 // console.log(employees);
                 var bsAlert = new bootstrap.Toast(document.getElementById('theToastr'));//inizialize it
-                this.$emit("toastrMsg", "Your changes have been saved!");
+                // this.$emit("toastrMsg", {status: "Success", msg: "Your changes have been saved!"});
+                this.$emit("toastrMsg", {status: "Error", msg: "Opps, something went wrong!"});
                 bsAlert.show();
             }
         }

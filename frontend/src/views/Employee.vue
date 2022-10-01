@@ -1,6 +1,5 @@
 <template>
     <div id="employee" class="px-3">
-        <TheToastr :msg="toastrMsg"/>
         <h1>Employee</h1>
         ------------------------------------
         <p>Admin functionalities:</p>
@@ -8,17 +7,23 @@
         <p>1. Table that displays all employee details with edit/delete functionalities</p>
         <p>2. Search function tied to the table</p>
         <p>3. Upload of CSV file</p>
-        <div class="tableBox position-relative">
-            <button type="button" class="newButton btn btn-info" data-bs-toggle="modal" data-bs-target="#createModal">New</button>
-            <button type="button" class="delButton btn btn-danger" @click="deleteRecords()">Delete</button>
+        <div id="tableBox">
+            <div class="position-relative">
+                <input id='fileid' type='file' hidden/>
+                <input id='buttonid' type='button' class="importButton btn btn-info" value='Import' @click="openDialog"/>
+                <button type="button" class="newButton btn btn-warning" data-bs-toggle="modal" data-bs-target="#createModal">New</button>
+                <button type="button" class="delButton btn btn-danger" @click="deleteRecords()">Delete</button>
+            </div>
             <div id="wrapper">
             </div>
         </div>
         <EmployeeModal @toastrMsg="updateToastrMsg" id="createModal" modalType="create"></EmployeeModal>
         <EmployeeModal @toastrMsg="updateToastrMsg" id="editModal" modalType="edit"></EmployeeModal>
+        <TheToastr :toastrResponse="toastrResponse"></TheToastr>
     </div>
 </template>
 <script>
+    // import EmployeeService from "@/api/services/EmployeeService";   
     import { Grid, html } from "gridjs";
     import { RowSelection } from "gridjs/plugins/selection";
     import TheToastr from "@/components/TheToastr.vue";
@@ -29,12 +34,12 @@
         name: "GridComponent",
         components: {
             TheToastr,
-            EmployeeModal
+            EmployeeModal,
         },
         data() {
             return {
-                toastrMsg: "",
-                recordsToDelete: [],
+                form: { file: null },
+                toastrResponse: "",
                 grid: new Grid({
                     columns: [
                         {
@@ -50,15 +55,15 @@
                         },
                         {
                             name: 'ID',
-                            width: '6%'
+                            width: '7%'
                         },
                         {
                             name: 'Name', 
-                            width: '20%'
+                            width: '15%'
                         },
                         {
                             name: 'Email', 
-                            width: '25%'
+                            width: '20%'
                         },
                         {
                             name: 'Phone Number', 
@@ -75,7 +80,7 @@
                             //     }, 'Edit');
                             // }
                             formatter: () => html(`<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>`),
-                            width: '9%'
+                            width: '10%'
                         },
                     ],
                     data: [
@@ -132,18 +137,37 @@
             })
         },
         methods: {
-            updateToastrMsg(msg){
-                this.toastrMsg = msg;
+            updateToastrMsg(res){
+                this.toastrResponse = res;
+            },
+            async deleteRecords(){
+                this.recordsToDelete.forEach((value, index) => {
+                    console.log("Index to delete:", index, "Id value:", value);
+                })
+                // const employees = await EmployeeService.removeEmployees();
+                // console.log(employees);
+            },
+            openDialog() {
+                document.getElementById('fileid').click();
             }
         }
         
     }
 </script>
 <style>
+    #tableBox{
+        padding: 0 10%;
+    }
+
     .gridjs-table{
         width: 100%;
     }
-
+    .importButton{
+        position: absolute;
+        top: 10px;
+        right: 160px;
+        z-index: 999;
+    }
     .newButton{
         position: absolute;
         top: 10px;

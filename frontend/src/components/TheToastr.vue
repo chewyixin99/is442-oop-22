@@ -1,20 +1,23 @@
 <template>
-    <div id="theToastr" class="toast mt-2" role="alert" aria-live="assertive" aria-atomic="true">
-        <!-- <div class="toast-header">
-            <img src="..." class="rounded me-2" alt="...">
-            <strong class="me-auto">Bootstrap</strong>
-            <small>11 mins ago</small>
-        </div> -->
-        <div class="toast-body bg-success text-white">
-            <span>{{msg}}</span>
-            <button type="button" class="btn-close float-end btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+<div id="aria" aria-live="polite" aria-atomic="true" class="d-flex position-absolute">
+    <div id="theToastr" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <div v-if="toastrResponse.status == 'Success'" class="rounded me-2 bg-success p-2"></div>
+            <div v-else class="rounded me-2 bg-danger p-2"></div>
+            <strong class="me-auto">{{toastrResponse.status}}!</strong>
+            <small>2 seconds ago</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            {{toastrResponse.msg}}
         </div>
     </div>
+</div>
 </template>
 <script>
 export default {
     props: [
-        "msg"
+        "toastrResponse"
     ],
     data(){
         return{
@@ -24,8 +27,8 @@ export default {
 }
 </script>
 <style scoped>
-    #theToastr{
-        width: 100%;
-        font-size: 20px;
+    #aria{
+        bottom: 5%;
+        right: 5%;
     }
 </style>

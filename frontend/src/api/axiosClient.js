@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const fallbackURL = "http://localhost:5000"
+const fallbackURL = "http://localhost:8080"
 
 
 const axiosClient = axios.create({
