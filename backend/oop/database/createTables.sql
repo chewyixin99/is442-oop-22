@@ -17,6 +17,7 @@ create table if not exists `oop`.`User` (
     `password` varchar(50) not null, 
     `email` varchar(50) not null, 
     `contactNumber` varchar(50) not null,
+    `status` varchar(50) not null,
     primary key (`uid`)
 ) engine = InnoDB default charset = utf8;
 
