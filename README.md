@@ -14,6 +14,8 @@ Download the [Chrome Extension for Live Reload](https://chrome.google.com/websto
     Make sure Maven is installed first before running the following command
     > mvn spring-boot:run
 
+    (DATABASE) Make sure to run `createTables.sql` in `backend/oop/database` before testing 
+
 - Frontend (Vue)
     
     Install NodeJS(https://nodejs.org/en/)
