@@ -57,6 +57,7 @@ export default {
         this.PassesCategory = [
             {
                 "cid": "1",
+                "modal": "modal1",
                 "name": "Mandai Wildlife Reserve",
                 "description": "Desc1",
                 "places": ["Singapore Zoo", "River Wonders"],
@@ -64,6 +65,7 @@ export default {
             },
             {
                 "cid": "2",
+                "modal": "modal2",
                 "name": "Pass 2",
                 "description": "Desc2",
                 "places": ["Place 2.1"],
@@ -72,6 +74,7 @@ export default {
             },
             {
                 "cid": "3",
+                "modal": "modal3",
                 "name": "Pass 3",
                 "description": "Desc3",
                 "places": ["Place 3.1", "Place 3.2"],
@@ -80,6 +83,7 @@ export default {
             },
                         {
                 "cid": "4",
+                "modal": "modal4",
                 "name": "Pass 4",
                 "description": "Desc4",
                 "places": ["Place 4.1", "Place 4.2"],
