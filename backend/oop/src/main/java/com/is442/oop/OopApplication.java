@@ -10,5 +10,6 @@ public class OopApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(OopApplication.class, args);
+		System.out.println("The application is running");
 	}
 }
