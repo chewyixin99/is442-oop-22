@@ -40,7 +40,7 @@ create table if not exists `oop`.`Loans` (
     `isCompleted` bit not null, 
     `dateStart` varchar(50),
     `dateEnd` varchar(50),
-    primary key (`lid`),
+    primary key (`lid`,`uid`,`pid`),
     foreign key (`uid`) references `oop`.`User` (`uid`),
     foreign key (`gid`) references `oop`.`User` (`uid`),
     foreign key (`pid`) references `oop`.`Passes` (`pid`)
