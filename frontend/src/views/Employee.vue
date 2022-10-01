@@ -1,5 +1,6 @@
 <template>
     <div id="employee" class="px-3">
+        <TheToastr :msg="toastrMsg"/>
         <h1>Employee</h1>
         ------------------------------------
         <p>Admin functionalities:</p>
@@ -8,23 +9,31 @@
         <p>2. Search function tied to the table</p>
         <p>3. Upload of CSV file</p>
         <div class="tableBox position-relative">
-            <button type="button" class="newButton btn btn-info">New</button>
+            <button type="button" class="newButton btn btn-info" data-bs-toggle="modal" data-bs-target="#createModal">New</button>
             <button type="button" class="delButton btn btn-danger" @click="deleteRecords()">Delete</button>
             <div id="wrapper">
             </div>
         </div>
+        <EmployeeModal @toastrMsg="updateToastrMsg" id="createModal" modalType="create"></EmployeeModal>
+        <EmployeeModal @toastrMsg="updateToastrMsg" id="editModal" modalType="edit"></EmployeeModal>
     </div>
 </template>
 <script>
-    import { Grid, h } from "gridjs";
+    import { Grid, html } from "gridjs";
     import { RowSelection } from "gridjs/plugins/selection";
+    import TheToastr from "@/components/TheToastr.vue";
+
+    import EmployeeModal from "../components/EmployeeModal.vue"
 
     export default {
-        name: 'GridComponent',
+        name: "GridComponent",
         components: {
+            TheToastr,
+            EmployeeModal
         },
         data() {
             return {
+                toastrMsg: "",
                 recordsToDelete: [],
                 grid: new Grid({
                     columns: [
@@ -43,25 +52,36 @@
                             name: 'ID',
                             width: '6%'
                         },
-                        'Name', 
-                        'Email', 
-                        'Phone Number', 
+                        {
+                            name: 'Name', 
+                            width: '20%'
+                        },
+                        {
+                            name: 'Email', 
+                            width: '25%'
+                        },
+                        {
+                            name: 'Phone Number', 
+                            width: '15%'
+                        },
                         'Department', 
                         'Role', 
                         { 
-                            name: 'Actions',
-                            formatter: (cell, row) => {
-                                return h('button', {
-                                    className: 'py-2 px-3 border rounded text-white bg-primary',
-                                    onClick: () => alert(`Editing "${row.cells[0].data}" "${row.cells[1].data}"`)
-                                }, 'Edit');
-                            }
+                            name: 'Action   ',
+                            // formatter: (cell, row) => {
+                            //     return h('button', {
+                            //         className: 'py-2 px-3 border rounded text-white bg-primary',
+                            //         onClick: () => alert(`Editing "${row.cells[0].data}" "${row.cells[1].data}"`)
+                            //     }, 'Edit');
+                            // }
+                            formatter: () => html(`<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>`),
+                            width: '9%'
                         },
                     ],
                     data: [
-                        [1, 'John', 'john@example.com', '(353) 01 222 3333', 'c', 'd'],
-                        [2, 'Mark', 'mark@gmail.com',   '(01) 22 888 4444' , 'c', 'd'],
-                        [3, 'Eoin', 'eo3n@yahoo.com',   '(05) 10 878 5554', 'c', 'd'],
+                        [1, 'John Cena', 'john@example.com', '(353) 01 222 3333', 'c', 'd'],
+                        [2, 'Joe Mama', 'mark@gmail.com',   '(01) 22 888 4444' , 'c', 'd'],
+                        [3, 'Imagine Dragon Deez Nuts', 'eo3n@yahoo.com',   '(05) 10 878 5554', 'c', 'd'],
                         [4, 'Nisen', 'nis900@gmail.com',   '313 333 1923', 'c', 'd']
                     ],
                     search: true,
@@ -110,13 +130,10 @@
                     this.recordsToDelete = state["rowIds"];
                 });
             })
-
         },
         methods: {
-            deleteRecords(){
-                this.recordsToDelete.forEach((value, index) => {
-                    console.log("Index to delete:", index, "Id value:", value);
-                })
+            updateToastrMsg(msg){
+                this.toastrMsg = msg;
             }
         }
         
