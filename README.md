@@ -5,16 +5,16 @@ Download the [Chrome Extension for Live Reload](https://chrome.google.com/websto
 - Backend (Springboot) 
 
     Download Apache Maven(https://maven.apache.org/download.cgi), unzip the folder to a meaningful directory then open 'Environment Variables' in Windows.
-    -Inside 'User Variables' tab, select 'New', browse and select the unzipped Apache Maven bin folder, add the 'Variable name' as MAVEN_HOME.
-    -Inside 'User Variables' tab, select 'New', browse and select the folder where you installed 'jdk-17.x.x.x', add the 'Variable name' as JAVA_HOME.
-    -Restart your PC.
+    - Inside 'User Variables' tab, select 'New', browse and select the unzipped Apache Maven bin folder, add the 'Variable name' as MAVEN_HOME.
+    - Inside 'User Variables' tab, select 'New', browse and select the folder where you installed 'jdk-17.x.x.x', add the 'Variable name' as JAVA_HOME.
+    - Restart your PC.
 
     Navigate to the backend directory e.g., `cd backend/oop` where the 'mvnw' file is located.
 
     Make sure Maven is installed first before running the following command
     > mvn spring-boot:run
 
-    (DATABASE) Make sure to run `createTables.sql` in `backend/oop/database` before testing 
+    (DATABASE) Make sure to run `createTables.sql` located in `backend/oop/database` before testing 
 
 - Frontend (Vue)
     
