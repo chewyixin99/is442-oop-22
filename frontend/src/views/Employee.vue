@@ -8,11 +8,14 @@
         <p>2. Search function tied to the table</p>
         <p>3. Upload of CSV file</p>
         <div id="tableBox">
-            <div class="position-relative">
-                <input id="fileid" type="file" hidden/>
-                <input id="buttonid" type="button" class="importButton btn btn-info" value='Import' @click="openDialog"/>
-                <button type="button" class="newButton btn btn-warning" data-bs-toggle="modal" data-bs-target="#createModal">New</button>
-                <button type="button" class="delButton btn btn-danger" @click="deleteRecords()">Delete</button>
+            <div id="buttonsHolder" class="d-flex">
+
+                <div>
+                    <input id="fileid" type="file" hidden/>
+                    <input id="buttonid" type="button" class="importBtn funcBtn btn btn-info" value='Import' @click="openDialog"/>
+                </div>
+                <div class="px-3"><button type="button" class="newBtn funcBtn btn btn-warning" data-bs-toggle="modal" data-bs-target="#createModal">New</button></div>
+                <div><button type="button" class="delBtn funcBtn btn btn-danger" @click="deleteRecords()">Delete</button></div>
             </div>
             <div id="wrapper">
             </div>
@@ -63,13 +66,13 @@
                             },
                             width: '5%',
                         },
-                        { name: 'ID', width: '7%' },
+                        { name: 'ID', width: '10%' },
                         { name: 'Name', width: '20%' },
                         { name: 'Email',  width: '25%' },
                         { name: 'Phone Number',  width: '20%' },
                         'Role', 
                         { 
-                            name: '',
+                            name: '#',
                             // formatter: (cell, row) => {
                             //     return h('button', {
                             //         className: 'py-2 px-3 border rounded text-white bg-primary',
@@ -134,16 +137,20 @@
                 this.toastrResponse = res;
             },
             async deleteRecords(){
-                this.recordsToDelete.forEach((value, index) => {
-                    console.log("Index to delete:", index, "Id value:", value);
-                    this.gridJsTableData.splice(value, 1);
-                })
-                this.updateGridJsTable();
-                // const employees = await EmployeeService.removeEmployees();
-                // console.log(employees);
-
                 var bsAlert = new bootstrap.Toast(document.getElementById("theToastr"));//inizialize it
-                this.toastrResponse = {status: "Success", msg: "Records have been successfully deleted!"};
+                if (this.recordsToDelete.length > 0){
+                    this.recordsToDelete.forEach((value, index) => {
+                        console.log("Index to delete:", index, "Id value:", value);
+                        this.gridJsTableData.splice(value, 1);
+                    })
+                    this.updateGridJsTable();
+                    // const employees = await EmployeeService.removeEmployees();
+                    // console.log(employees);
+                    this.toastrResponse = {status: "Success", msg: "Records have been successfully deleted!"};
+
+                } else {
+                    this.toastrResponse = {status: "Error", msg: "Please select at least 1 record to delete!"};           
+                }
                 bsAlert.show();
             },
             openDialog() {
@@ -159,36 +166,55 @@
         
     }
 </script>
-<style>
+<style lang="scss">
+@import "~bootstrap/scss/bootstrap";
     #tableBox{
         padding: 0 7.5%;
     }
+
+    #buttonsHolder{
+        position: relative;
+        @include media-breakpoint-up(lg){
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+
+    .funcBtn{
+        position: relative;
+        @include media-breakpoint-up(lg){
+            position: absolute;
+            top: 10px;
+            z-index: 999;
+        }
+    }
+
+    .importBtn{
+        @include media-breakpoint-up(lg){
+            right: 160px;
+        }
+    }
     
+    .newBtn{
+        @include media-breakpoint-up(lg){
+            right: 90px;
+        }
+    }
+
+    .delBtn{
+        @include media-breakpoint-up(lg){
+            right: 5px;
+            }
+    }
+
     .gridjs-tr td:last-child{
         padding: 0;
     }
 
-    .importButton{
-        position: absolute;
-        top: 10px;
-        right: 160px;
-        z-index: 999;
-    }
-    .newButton{
-        position: absolute;
-        top: 10px;
-        right: 90px;
-        z-index: 999;
-    }
-    .delButton{
-        position: absolute;
-        top: 10px;
-        right: 5px;
-        z-index: 999;
-    }
     .bi-pen{
         cursor: pointer;
     }
+
     .bi-pen:hover{
         transition: all 300ms ease;
         -o-transition: all 300ms ease;

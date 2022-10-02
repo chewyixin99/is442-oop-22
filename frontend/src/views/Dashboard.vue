@@ -9,11 +9,11 @@
         <p>3. Search function to show a specific employee's loan history - monthly, 6monthly, anually</p>
         <p>4. Chart to show  number of loans per pass per month - optional</p>
         <div class="row">
-          <div class="col-6">
-          <canvas id="barChart"></canvas>
-          <canvas id="donutChart"></canvas>
+          <div class="col-lg-6">
+            <div class="mb-5"><canvas id="barChart"></canvas></div>
+            <div class="my-5"><canvas id="donutChart"></canvas></div>
           </div>
-          <div class="col-6">
+          <div class="col-lg-6">
             <canvas id="lineChart"></canvas>
           </div>
         </div>
@@ -29,6 +29,7 @@ export default {
     },
     data(){
         return {
+          ratio: 1.75,
           bar: {
             type: 'bar',
             data: {
@@ -105,9 +106,39 @@ export default {
         }
     },
     mounted(){
-        new Chart(document.getElementById('barChart'), this.bar);
-        new Chart(document.getElementById('donutChart'), this.donut);
-        new Chart(document.getElementById('lineChart'), this.line);
+      var that = this;
+
+      this.donut.plugins = [{
+        beforeDraw: function(chart) {
+          var width = chart.chart.width,
+              height = chart.chart.height,
+              ctx = chart.chart.ctx;
+
+          ctx.restore();
+          var fontSize = (height / 114).toFixed(2);
+          ctx.font = fontSize + "em sans-serif";
+          ctx.textBaseline = "middle";
+
+          // var text = (that.complete / that.total * 100).toFixed(0);
+          // text = that.total == 0 ? 0 + '%': text + '%';
+          var text = "0%";
+          var textX = Math.round((width - ctx.measureText(text).width) / 2);
+          var textY = height / that.ratio;
+
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        }
+      }];
+
+        new Chart(document.getElementById("barChart"), this.bar);
+        new Chart(document.getElementById("donutChart"), this.donut);
+        new Chart(document.getElementById("lineChart"), this.line);
     }
 }
 </script>
+<style lang="scss">
+  @import "~bootstrap/scss/bootstrap";
+    #dashboard{
+        padding: 0 5%;
+    }
+</style>
