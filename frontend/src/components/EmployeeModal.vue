@@ -66,7 +66,7 @@
 </template>
 <script>
     // import EmployeeService from "@/api/services/EmployeeService";   
-   import * as bootstrap from 'bootstrap';
+   import * as bootstrap from "bootstrap";
 
     export default {
         name: "EmployeeModal",
@@ -76,7 +76,7 @@
         },
         data(){
             return{
-                recordsToDelete: [],
+
             };
         }, 
         methods: {

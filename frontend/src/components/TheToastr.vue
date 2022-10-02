@@ -5,7 +5,7 @@
             <div v-if="toastrResponse.status == 'Success'" class="rounded me-2 bg-success p-2"></div>
             <div v-else class="rounded me-2 bg-danger p-2"></div>
             <strong class="me-auto">{{toastrResponse.status}}!</strong>
-            <small>2 seconds ago</small>
+            <small>1 second ago</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
         <div class="toast-body">
