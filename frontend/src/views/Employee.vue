@@ -79,7 +79,7 @@
                             //         onClick: () => alert(`Editing "${row.cells[0].data}" "${row.cells[1].data}"`)
                             //     }, 'Edit');
                             // }
-                            formatter: () => html(`<i class="fa-lg button bi bi-pen text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
+                            formatter: () => html(`<i class="fa-lg button bi bi-pencil text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
                             width: '1%'
                         },
                     ],
@@ -166,61 +166,59 @@
         
     }
 </script>
-<style lang="scss">
-@import "~bootstrap/scss/bootstrap";
+<style>
     #tableBox{
         padding: 0 7.5%;
     }
 
     #buttonsHolder{
         position: relative;
-        @include media-breakpoint-up(lg){
-            display: flex;
-            justify-content: flex-end;
-        }
     }
 
     .funcBtn{
         position: relative;
-        @include media-breakpoint-up(lg){
-            position: absolute;
-            top: 10px;
-            z-index: 999;
-        }
     }
 
-    .importBtn{
-        @include media-breakpoint-up(lg){
-            right: 160px;
-        }
-    }
-    
-    .newBtn{
-        @include media-breakpoint-up(lg){
-            right: 90px;
-        }
-    }
-
-    .delBtn{
-        @include media-breakpoint-up(lg){
-            right: 5px;
-            }
-    }
 
     .gridjs-tr td:last-child{
         padding: 0;
     }
 
-    .bi-pen{
+    .bi-pencil{
         cursor: pointer;
     }
 
-    .bi-pen:hover{
+    .bi-pencil:hover{
         transition: all 300ms ease;
         -o-transition: all 300ms ease;
         -ms-transition: all 300ms ease;
         -moz-transition: all 300ms ease;
         -webkit-transition: all 300ms ease;
-        font-size:30px;
+        font-size:22px;
+    }
+
+    @media only screen and (min-width: 992px){
+        #buttonsHolder{
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .funcBtn{
+            position: absolute;
+            top: 10px;
+            z-index: 999;
+        }
+        
+        .importBtn{
+                right: 160px;
+        }
+        
+        .newBtn{
+                right: 90px;
+        }
+
+        .delBtn{
+                right: 5px;
+        }
     }
 </style>

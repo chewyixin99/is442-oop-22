@@ -129,16 +129,20 @@ export default {
           ctx.save();
         }
       }];
-
-        new Chart(document.getElementById("barChart"), this.bar);
-        new Chart(document.getElementById("donutChart"), this.donut);
-        new Chart(document.getElementById("lineChart"), this.line);
+      this.myEventHandler();
+      new Chart(document.getElementById("barChart"), this.bar);
+      new Chart(document.getElementById("donutChart"), this.donut);
+      new Chart(document.getElementById("lineChart"), this.line);
+    },
+    methods: {
+      myEventHandler() {
+        window.innerWidth - 7 > 390 ? this.ratio = 1.75 : this.ratio = 1.5;
+      },
     }
 }
 </script>
-<style lang="scss">
-  @import "~bootstrap/scss/bootstrap";
-    #dashboard{
-        padding: 0 5%;
-    }
+<style>
+  #dashboard{
+      padding: 0 5%;
+  }
 </style>
