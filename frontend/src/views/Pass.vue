@@ -13,7 +13,7 @@
         <p>3. Edit/delete passes</p>
     </div> -->
     <div class="container">
-
+<!-- 
         <div class="row">
             <h1>Passes(staff view)</h1>
         </div>
@@ -23,7 +23,7 @@
 
         <br>
         <hr>
-        <br>
+        <br> -->
 
         <div class="row">
             <h1>Passes(Admin view)</h1>
@@ -37,15 +37,15 @@
 </template>
 
 <script>
-import PassStaff from '../components/PassStaff.vue'
+// import PassStaff from '../components/PassStaff.vue'
 import PassAdmin from '../components/PassAdmin.vue'
 
 
 export default {
     name: 'Pass',
     components: {
-        PassStaff,
-        PassAdmin
+        // PassStaff,
+        PassAdmin,
     },
     data() {
         return {
