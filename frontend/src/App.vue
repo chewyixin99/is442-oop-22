@@ -23,12 +23,4 @@ export default {
   color: #2c3e50;
 }
 
-html,body {
-    width: 100%;
-    height: 100%;
-    margin: 0px;
-    padding: 0px;
-    overflow-y: hidden;
-}
-
 </style>
