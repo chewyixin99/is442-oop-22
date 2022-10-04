@@ -6,24 +6,24 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-    private String userName;
+    private Integer uid;
+    private String username;
     private String password;
     private String email;
     private Integer contactNumber;
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    private UserType userType; // admin; borrower; gop
     private boolean defunct; // Soft deletion of users
     
     public Integer getId() {
-        return id;
+        return uid;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -63,7 +63,7 @@ public class User {
     
     @Override
     public String toString() {
-        return "User [id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", contactNumber=" + contactNumber
+        return "User [id=" + uid + ", username=" + username + ", password=" + password + ", email=" + email + ", contactNumber=" + contactNumber
                 + ", userType=" + userType + ", defunct=" + defunct + "]";
     }
     
@@ -78,6 +78,6 @@ public class User {
         }
 
         User user = (User) obj;
-        return user.getId() == id;
+        return user.getId() == uid;
     }
 }

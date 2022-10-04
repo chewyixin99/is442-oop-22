@@ -34,11 +34,11 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") Integer id) {
+    @GetMapping("/{uid}")
+    public ResponseEntity<User> getUser(@PathVariable("uid") Integer uid) {
         User user = null;
         try {
-            user = UserDAOInt.getUser(id);
+            user = UserDAOInt.getUser(uid);
         } catch (Exception e) {
             return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
         }
@@ -51,21 +51,21 @@ public class UserController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Integer id, @RequestBody UpdateUserRequest updateUserRequest) {
+    @PutMapping("/{uid}")
+    public ResponseEntity<User> updateUser(@PathVariable("uid") Integer uid, @RequestBody UpdateUserRequest updateUserRequest) {
         User updateUser =null;
         try {
-            updateUser = UserDAOInt.updateUser(id, updateUserRequest);
+            updateUser = UserDAOInt.updateUser(uid, updateUserRequest);
         } catch (Exception e) {
             return new ResponseEntity<>(updateUser, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
+    @DeleteMapping("/{uid}")
+    public ResponseEntity<?> deleteUser(@PathVariable("uid") Integer uid) {
         try {
-            UserDAOInt.deleteUser(id);
+            UserDAOInt.deleteUser(uid);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
