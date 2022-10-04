@@ -17,7 +17,7 @@ public class UpdateUserRequest {
     private String email;
     @NotBlank
     @NotNull
-    private int contactNumber;
+    private String contactNumber;
     @NotBlank
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -30,10 +30,10 @@ public class UpdateUserRequest {
         this.username = username;
     }
 
-    public int getContactNumber() {
+    public String getContactNumber() {
         return contactNumber;
     }
-    public void setContactNumber(int contactNumber) {
+    public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
     }
 

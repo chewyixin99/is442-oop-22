@@ -4,14 +4,14 @@ use `oop`;
 
 -- This is done, and follows the ER diagram in the Google Drive
 -- Link here: https://app.diagrams.net/#G1TDR1A4IQ3V2OcwaAHy8hvXOS3MokRVjd
-create table if not exists `oop`.`emailTemplate` (
-    `templateID` int auto_increment not null,
+create table if not exists `oop`.`email_template` (
+    `tid` int auto_increment not null,
     `template` varchar(1000) not null,
     `defunct` bit not null, -- 1 for True and 0 for False
-    primary key (`templateID`)
+    primary key (`tid`)
 ) engine = InnoDB default charset = utf8;
 
-INSERT INTO `emailTemplate` (`templateId`, `template`, `defunct`) VALUES
+INSERT INTO `email_template` (`tid`, `template`, `defunct`) VALUES
 (1, 'template1', 0),
 (2, 'template2', 0),
 (3, 'template3', 1),
@@ -23,32 +23,32 @@ create table if not exists `oop`.`user` (
     `username` varchar(50) not null,
     `password` varchar(50) not null, 
     `email` varchar(50) not null, 
-    `contactNumber` varchar(50) not null,
-    `status` varchar(50) not null,
+    `contact_number` varchar(50) not null,
+    `user_type` varchar(50) not null,
     `defunct` bit not null, -- 1 for True and 0 for False
     primary key (`uid`)
 ) engine = InnoDB default charset = utf8;
 
-INSERT INTO `user` (`uid`, `username`, `password`, `email`, `contactNumber`, `status`, `defunct`) VALUES
-(1, 'yixin', 'yixinpw', 'yixin@mail.com', '91234567', 'admin', 0),
-(2, 'kokwee', 'kokweepw', 'kokwee@mail.com', '91234567', 'borrower', 0),
-(3, 'shaan', 'shaanpw', 'shaan@mail.com', '91234567', 'borrower', 1),
-(4, 'jianlin', 'jianlinpw', 'jianlin@mail.com', '91234567', 'gop', 0);
+INSERT INTO `user` (`uid`, `username`, `password`, `email`, `contact_number`, `user_type`, `defunct`) VALUES
+(1, 'yixin', 'yixinpw', 'yixin@mail.com', '91234567', 'ADMIN', 0),
+(2, 'kokwee', 'kokweepw', 'kokwee@mail.com', '91234567', 'BORROWER', 0),
+(3, 'shaan', 'shaanpw', 'shaan@mail.com', '91234567', 'BORROWER', 1),
+(4, 'jianlin', 'jianlinpw', 'jianlin@mail.com', '91234567', 'GOP', 0);
 COMMIT;
 
 create table if not exists `oop`.`passes` (
   `pid` int auto_increment not null,
-  `templateID` int,
-  `numGuests` int not null,
-  `replacementFee` int not null,
+  `tid` int,
+  `num_guests` int not null,
+  `replacement_fee` int not null,
   `poi` varchar(50),
-  `isPhysical` bit not null,
+  `is_physical` bit not null,
   `defunct` bit not null, -- 1 for True and 0 for False
   primary key (`pid`),
-  foreign key (`templateID`) references `oop`.`emailTemplate` (`templateID`)
+  foreign key (`tid`) references `oop`.`email_template` (`tid`)
 ) engine=InnoDB default charset=utf8;
 
-INSERT INTO `passes` (`pid`, `templateID`, `numGuests`, `replacementFee`, `poi`, `isPhysical`, `defunct`) VALUES
+INSERT INTO `passes` (`pid`, `tid`, `num_guests`, `replacement_fee`, `poi`, `is_physical`, `defunct`) VALUES
 (1, 1, 2, 20.00, 'Gardens By The Bay', 1, 0),
 (2, 2, 2, 20.00, 'Singapore Zoo', 1, 1),
 (3, 3, 2, 20.00, 'Sea Aquarium', 0, 0),
@@ -60,16 +60,16 @@ create table if not exists `oop`.`loans` (
     `uid` int not null,
     `gid` int, 
     `pid` int not null,
-    `isCompleted` bit not null, 
-    `dateStart` varchar(50),
-    `dateEnd` varchar(50),
+    `is_completed` bit not null, 
+    `date_start` varchar(50),
+    `date_end` varchar(50),
     primary key (`lid`,`uid`,`pid`),
     foreign key (`uid`) references `oop`.`User` (`uid`),
     foreign key (`gid`) references `oop`.`User` (`uid`),
     foreign key (`pid`) references `oop`.`Passes` (`pid`)
 ) engine = InnoDB default charset = utf8;
 
-INSERT INTO `loans` (`lid`, `uid`, `gid`, `pid`, `isCompleted`, `dateStart`, `dateEnd`) VALUES
+INSERT INTO `loans` (`lid`, `uid`, `gid`, `pid`, `is_completed`, `date_start`, `date_end`) VALUES
 (1, 1, 4, 1, 1, '1/10/2022', '2/10/2022'),
 (2, 2, 4, 2, 1, '3/10/2022', '4/10/2022'),
 (3, 3, 4, 3, 0, '5/10/2022', '6/10/2022'),

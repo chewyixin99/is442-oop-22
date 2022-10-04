@@ -10,7 +10,7 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private Integer contactNumber;
+    private String contactNumber;
     @Enumerated(EnumType.STRING)
     private UserType userType; // admin; borrower; gop
     private boolean defunct; // Soft deletion of users
@@ -33,10 +33,10 @@ public class User {
         this.password = password;
     }
 
-    public Integer getContactNumber() {
+    public String getContactNumber() {
         return contactNumber;
     }
-    public void setContactNumber(Integer contactNumber) {
+    public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
     }
 
