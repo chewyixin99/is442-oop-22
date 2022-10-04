@@ -24,7 +24,7 @@ public class Template {
         this.templateData = templateData;
     }
     
-    public boolean isDefunct() {
+    public boolean getDefunct() {
         return defunct;
     }
     public void setDefunct(boolean defunct) {
