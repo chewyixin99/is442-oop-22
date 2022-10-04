@@ -22,6 +22,9 @@ public class UpdateUserRequest {
     @NotNull
     @Enumerated(EnumType.STRING)
     private UserType userType;
+    @NotBlank
+    @NotNull
+    private boolean defunct;
     
     public String getUsername() {
         return username;
@@ -49,5 +52,11 @@ public class UpdateUserRequest {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+    public boolean getDefunct() {
+        return defunct;
+    }
+    public void setDefunct(boolean defunct) {
+        this.defunct = defunct;
     }
 }

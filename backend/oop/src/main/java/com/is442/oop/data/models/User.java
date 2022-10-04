@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer uid;
     private String username;
     private String password;
@@ -54,7 +54,7 @@ public class User {
         this.email = email;
     }
     
-    public boolean isDefunct() {
+    public boolean getDefunct() {
         return defunct;
     }
     public void setDefunct(boolean defunct) {
