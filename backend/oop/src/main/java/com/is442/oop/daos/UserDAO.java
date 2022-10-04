@@ -18,8 +18,8 @@ public class UserDAO implements UserDAOInt {
     UserRepository userRepository;
 
     @Override
-    public User getUser(Integer uid) throws ResourceNotFoundException {
-        return userRepository.findById(uid).orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
+    public User getUser(Integer userId) throws ResourceNotFoundException {
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
     };
 
     @Override
@@ -41,9 +41,9 @@ public class UserDAO implements UserDAOInt {
     };
 
     @Override
-    public User updateUser(Integer uid, UpdateUserRequest updateUserRequest) throws ResourceNotFoundException {
+    public User updateUser(Integer userId, UpdateUserRequest updateUserRequest) throws ResourceNotFoundException {
         User user = null;
-        Optional<User> queryUser = userRepository.findById(uid);
+        Optional<User> queryUser = userRepository.findById(userId);
         if (queryUser.isEmpty()) {
             throw new ResourceNotFoundException("Resource not found.");
         }
@@ -58,9 +58,9 @@ public class UserDAO implements UserDAOInt {
     };
 
     @Override
-    public void deleteUser(Integer uid) throws ResourceNotFoundException {
-        User user = userRepository.findById(uid).get();
-        if (user.getId().equals(uid)) {
+    public void deleteUser(Integer userId) throws ResourceNotFoundException {
+        User user = userRepository.findById(userId).get();
+        if (user.getId().equals(userId)) {
             System.out.println(user);
             user.setDefunct(true);
             userRepository.save(user);

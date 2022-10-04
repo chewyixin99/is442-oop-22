@@ -12,9 +12,9 @@ import com.is442.oop.exceptions.ResourceNotFoundException;
 
 @Component
 public interface UserDAOInt {
-    User getUser(Integer uid) throws ResourceNotFoundException;
+    User getUser(Integer userId) throws ResourceNotFoundException;
     List<User> getAllUsers();
     MessageResponse createUser(CreateUserRequest createUserRequest);
-    User updateUser(Integer uid, UpdateUserRequest updateUserRequest) throws ResourceNotFoundException;
-    void deleteUser(Integer uid) throws ResourceNotFoundException;
+    User updateUser(Integer userId, UpdateUserRequest updateUserRequest) throws ResourceNotFoundException;
+    void deleteUser(Integer userId) throws ResourceNotFoundException;
 }

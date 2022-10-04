@@ -6,7 +6,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer uid;
+    private Integer userId;
     private String username;
     private String password;
     private String email;
@@ -16,7 +16,7 @@ public class User {
     private boolean defunct; // Soft deletion of users
     
     public Integer getId() {
-        return uid;
+        return userId;
     }
 
     public String getUsername() {
@@ -63,7 +63,7 @@ public class User {
     
     @Override
     public String toString() {
-        return "User [id=" + uid + ", username=" + username + ", password=" + password + ", email=" + email + ", contactNumber=" + contactNumber
+        return "User [id=" + userId + ", username=" + username + ", password=" + password + ", email=" + email + ", contactNumber=" + contactNumber
                 + ", userType=" + userType + ", defunct=" + defunct + "]";
     }
     
@@ -78,6 +78,6 @@ public class User {
         }
 
         User user = (User) obj;
-        return user.getId() == uid;
+        return user.getId() == userId;
     }
 }
