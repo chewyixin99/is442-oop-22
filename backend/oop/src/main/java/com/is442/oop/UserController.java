@@ -28,7 +28,7 @@ public class UserController {
     @Autowired
     UserDAOInt UserDAOInt;
     
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = UserDAOInt.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -45,7 +45,7 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<MessageResponse> createUser(@RequestBody CreateUserRequest createUserRequest) {
         MessageResponse newUser = UserDAOInt.createUser(createUserRequest);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);

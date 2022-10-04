@@ -35,6 +35,7 @@ public class UserDAO implements UserDAOInt {
         user.setEmail(createUserRequest.getEmail());
         user.setContactNumber(createUserRequest.getContactNumber());
         user.setUserType(createUserRequest.getUserType());
+        user.setDefunct(createUserRequest.getDefunct());
         userRepository.save(user);
         return new MessageResponse(String.format("User created, ID: %d.", user.getId()));
     };
