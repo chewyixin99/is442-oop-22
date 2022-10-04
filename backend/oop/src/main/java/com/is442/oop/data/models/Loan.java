@@ -7,44 +7,46 @@ import javax.persistence.*;
 public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-    @ManyToOne
-    private User user;
-    @ManyToOne
-    private User generalOfficePersonnel;
-    @ManyToOne
-    private Pass pass;
+    private int loanId;
+    // @ManyToOne
+    // private User user;
+    private int userId;
+    // @ManyToOne
+    // private User gop;
+    private int gopId;
+    // @ManyToOne
+    // private Pass pass;
+    private int passId;
     private Date startDate;
     private Date endDate;
-    private String place;
     private boolean isCompleted;
     
     public int getId() {
-        return id;
+        return loanId;
     }
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int loanId) {
+        this.loanId = loanId;
     }
     
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public User getGeneralOfficePersonnel() {
-        return generalOfficePersonnel;
-    }
-    public void setGeneralOfficePersonnel(User generalOfficePersonnel) {
-        this.generalOfficePersonnel = generalOfficePersonnel;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public Pass getPass() {
-        return pass;
+    public int getGopId() {
+        return gopId;
     }
-    public void setPass(Pass pass) {
-        this.pass = pass;
+    public void setGopId(int gopId) {
+        this.gopId = gopId;
+    }
+
+    public int getPassId() {
+        return passId;
+    }
+    public void setPassId(int passId) {
+        this.passId = passId;
     }
     
     public Date getStartDate() {
@@ -61,13 +63,6 @@ public class Loan {
         this.endDate = endDate;
     }
 
-    public String getPlace() {
-        return place;
-    }
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
     public boolean isCompleted() {
         return isCompleted;
     }
@@ -77,8 +72,8 @@ public class Loan {
     
     @Override
     public String toString() {
-        return "Loan [id=" + id + ", =user" + user + ", generalOfficePersonnel=" + generalOfficePersonnel + ", pass=" + pass + ", startDate=" + startDate
-                + ", endDate=" + endDate + ", place=" + place + ", isCompleted=" + isCompleted + "]";
+        return "Loan [loanId=" + loanId + ", userId" + userId + ", gopId=" + gopId + ", passId=" + passId + ", startDate=" + startDate
+                + ", endDate=" + endDate + ", isCompleted=" + isCompleted + "]";
     }
 
     @Override
@@ -92,7 +87,7 @@ public class Loan {
         };
 
         Loan loan = (Loan) obj;
-        return loan.getId() == id;
+        return loan.getId() == loanId;
     }
 }
 

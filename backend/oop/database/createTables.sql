@@ -6,12 +6,12 @@ use `oop`;
 -- Link here: https://app.diagrams.net/#G1TDR1A4IQ3V2OcwaAHy8hvXOS3MokRVjd
 create table if not exists `email_template` (
     `template_id` int auto_increment not null,
-    `template` varchar(1000) not null,
+    `template_data` varchar(1000) not null,
     `defunct` bit not null, -- 1 for True and 0 for False
     primary key (`template_id`)
 ) engine = InnoDB default charset = utf8;
 
-INSERT INTO `email_template` (`template_id`, `template`, `defunct`) VALUES
+INSERT INTO `email_template` (`template_id`, `template_data`, `defunct`) VALUES
 (1, 'template1', 0),
 (2, 'template2', 0),
 (3, 'template3', 1),
@@ -30,29 +30,29 @@ create table if not exists `user` (
 ) engine = InnoDB default charset = utf8;
 
 INSERT INTO `user` (`user_id`, `username`, `password`, `email`, `contact_number`, `user_type`, `defunct`) VALUES
-(1, 'yixin', 'yixinpw', 'yixin@mail.com', '91234567', 'ADMIN', 0),
-(2, 'kokwee', 'kokweepw', 'kokwee@mail.com', '91234567', 'BORROWER', 0),
+(1, 'yixin', 'yixinpw', 'yixin@mail.com', '91234567', 'BORROWER', 0),
+(2, 'kokwee', 'kokweepw', 'kokwee@mail.com', '91234567', 'ADMIN', 0),
 (3, 'shaan', 'shaanpw', 'shaan@mail.com', '91234567', 'BORROWER', 1),
 (4, 'jianlin', 'jianlinpw', 'jianlin@mail.com', '91234567', 'GOP', 0);
 COMMIT;
 
 create table if not exists `pass` (
   `pass_id` int auto_increment not null,
-  `template_id` int,
   `num_guests` int not null,
-  `replacement_fee` int not null,
+  `replacement_fee` double(10,2) not null,
   `poi` varchar(50),
   `is_physical` bit not null,
   `defunct` bit not null, -- 1 for True and 0 for False
-  primary key (`pass_id`),
-  foreign key (`template_id`) references `email_template` (`template_id`)
+  `pass_status` varchar(50) not null,
+  `pass_desc` varchar(255) not null,
+  primary key (`pass_id`)
 ) engine=InnoDB default charset=utf8;
 
-INSERT INTO `pass` (`pass_id`, `template_id`, `num_guests`, `replacement_fee`, `poi`, `is_physical`, `defunct`) VALUES
-(1, 1, 2, 20.00, 'Gardens By The Bay', 1, 0),
-(2, 2, 2, 20.00, 'Singapore Zoo', 1, 1),
-(3, 3, 2, 20.00, 'Sea Aquarium', 0, 0),
-(4, 4, 2, 20.00, 'Sea Aquarium', 0, 0);
+INSERT INTO `pass` (`pass_id`, `num_guests`, `replacement_fee`, `poi`, `is_physical`, `defunct`, `pass_status`, `pass_desc`) VALUES
+(1, 2, 20.00, 'Gardens By The Bay', 1, 0, 'ONLOAN', 'Pass 1 description'),
+(2, 2, 20.00, 'Singapore Zoo', 1, 1, 'AVAILABLE', 'Pass 2 description'),
+(3, 2, 20.00, 'Sea Aquarium', 0, 0, 'AVAILABLE', 'Pass 3 description'),
+(4, 2, 20.00, 'Sea Aquarium', 0, 0, 'ONLOAN', 'Pass 4 description');
 COMMIT;
 
 create table if not exists `loan` (

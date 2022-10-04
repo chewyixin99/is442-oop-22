@@ -3,18 +3,18 @@ package com.is442.oop.data.models;
 import javax.persistence.*;
 
 @Entity
-public class Template {
+public class EmailTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private int templateId;
     private String templateData;
     private boolean defunct;
     
     public int getId() {
-        return id;
+        return templateId;
     }
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int templateId) {
+        this.templateId = templateId;
     }
 
     public String getTemplateData() {
@@ -33,7 +33,7 @@ public class Template {
 
     @Override
     public String toString() {
-        return "Template [id=" + id + ", templateData=" + templateData + ", defunct=" + defunct + "]";
+        return "Template [templateId=" + templateId + ", templateData=" + templateData + ", defunct=" + defunct + "]";
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Template {
             return false;
         };
 
-        Template template = (Template) obj;
-        return template.getId() == id;
+        EmailTemplate template = (EmailTemplate) obj;
+        return template.getId() == templateId;
     } 
 }
