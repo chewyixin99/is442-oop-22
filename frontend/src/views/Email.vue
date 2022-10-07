@@ -16,11 +16,11 @@
                     <h5 class="card-title">{{template.templateName}}</h5>
                     <p class="card-text break-text">{{template.templateDraft}}</p>
                     <!-- Update button -->
-                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#emailModal" @click="backupContent(template.templateDraft)">
-                      Update {{}}
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="`#emailModal`+template.templateName" @click="backupContent(template.templateDraft)">
+                      Update {{index}}
                     </button> 
                     <!-- Update modal -->
-                    <div class="modal fade" id="emailModal" tabindex="-1"  aria-hidden="true">
+                    <div class="modal fade" :id="`emailModal`+template.templateName" tabindex="-1"  aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">

@@ -20,11 +20,11 @@
                             </ul>
                             <div class="card-footer btn-group-vertical">
                                 <!-- Update button prompt Pass modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#AdminView`+PassAdmin.modal">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#AdminView`+PassAdmin.cid">
                                     View
                                 </button>     
                                 <!-- Update button prompt Passes update modal -->
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="`#AdminUpdate`+PassAdmin.modal">
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="`#AdminUpdate`+PassAdmin.cid">
                                     Update
                                 </button> 
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal">
@@ -34,7 +34,7 @@
                     </div>
 
                     <!-- View Passes Modal  -->
-                    <div class="modal fade" :id="`AdminView`+PassAdmin.modal" tabindex="-1" aria-hidden="true">
+                    <div class="modal fade" :id="`AdminView`+PassAdmin.cid" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable">
                             
                             <div class="modal-content">
@@ -59,7 +59,7 @@
                     </div>
                     
                     <!-- Pass update modal -->
-                    <div class="modal fade" :id="`AdminUpdate`+PassAdmin.modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" :id="`AdminUpdate`+PassAdmin.cid" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
