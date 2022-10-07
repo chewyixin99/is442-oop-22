@@ -17,7 +17,7 @@
                     <p class="card-text break-text">{{template.templateDraft}}</p>
                     <!-- Update button -->
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="`#emailModal`+template.templateName" @click="backupContent(template.templateDraft)">
-                      Update {{index}}
+                      Update
                     </button> 
                     <!-- Update modal -->
                     <div class="modal fade" :id="`emailModal`+template.templateName" tabindex="-1"  aria-hidden="true">
@@ -46,8 +46,8 @@
           </div>
         </div>
 
-        <hr>
-        <hr>
+        <!-- <hr>
+        <hr> -->
 
         <!-- <h2>Emails Editor</h2> -->
         <!-- <div class="container" id="vueQuillEditor_1">
@@ -98,11 +98,11 @@
           </QuillEditor>
           <button type="button" class="btn btn-warning" @click="saveContent('ePass')">Save</button>
         </div> -->
-          <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[0]['templateDraft']" contentType="text">
+          <!-- <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[0]['templateDraft']" contentType="text">
           </QuillEditor>
 
           <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[1]['templateDraft']" contentType="text">
-          </QuillEditor>
+          </QuillEditor> -->
         
           
 

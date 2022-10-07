@@ -55,14 +55,6 @@
                           </router-link>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link link-dark px-0 align-middle ">
-                          <router-link to="/email_tinymce" class="text-decoration-none">
-                            <i class="fs-4 bi bi-envelope"></i> 
-                            <span class="ms-1 d-none d-sm-inline ms-3">Email Tinymce</span>
-                          </router-link>
-                        </a>
-                    </li>
                 </ul>
                 <hr>
                 <div class="dropdown pb-4">
