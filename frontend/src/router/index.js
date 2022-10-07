@@ -6,6 +6,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Employee from '../views/Employee.vue'
 import Pass from '../views/Pass.vue'
 import Email from '../views/Email.vue'
+import Email_tinymce from '../views/Email_tinymce.vue'
 
 const routes = [
     {
@@ -42,6 +43,12 @@ const routes = [
       path: '/email',
       name: 'Email',
       component: Email,
+    //   meta: { requiresAuth: true }
+    },
+    {
+      path: '/email_tinymce',
+      name: 'Email_tinymce',
+      component: Email_tinymce,
     //   meta: { requiresAuth: true }
     },
   
