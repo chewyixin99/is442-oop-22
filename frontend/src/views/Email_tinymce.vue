@@ -46,7 +46,11 @@
 
         <hr>
         <hr>
-
+        <editor
+          :init="{
+            plugins: 'lists link image table code help wordcount'
+          }"
+        />
 
         
           
@@ -61,10 +65,12 @@
 </template>
 
 <script>
+import Editor from '@tinymce/tinymce-vue'
 
 export default {
   name: 'Email_tinymce',
   components: {
+    'editor': Editor,
     
   },
   data(){
@@ -140,5 +146,6 @@ export default {
 
 </script>
 
-<style scoped>
+<style>
+    .mce-notification {display: none !important;}
 </style>
