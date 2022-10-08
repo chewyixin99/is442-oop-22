@@ -3,7 +3,7 @@
     <div class="flex-column d-flex align-items-center justify-content-center">
       <h1 class="pt-4 mb-4">Booking</h1>
       <div class="tableBox position-relative">
-                <hr>
+        <hr />
         <div class="container">
           <div class="row">
             <div class="col-10 text-start">
@@ -21,16 +21,16 @@
         </div>
 
         <div id="table1"></div>
-                <hr>
+        <hr />
         <div class="text-start">
-        <h4 class="pt-4 ps-4">Past Bookings</h4>
+          <h4 class="pt-4 ps-4">Past Bookings</h4>
         </div>
 
         <div id="table2"></div>
       </div>
     </div>
 
-    <div
+    <!-- <div
       id="toast"
       class="toast fade position-fixed bottom-0 right-0"
       role="alert"
@@ -60,11 +60,16 @@
         ></button>
       </div>
       <div class="toast-body">This is supposed to be on the right</div>
-    </div>
-      <EmployeeBookingModal
+    </div> -->
+    <!--       @toastrMsg="updateToastrMsg" -->
+    <TheToastr :toastrResponse="toastrResponse"></TheToastr>
+
+    <EmployeeBookingModal
       @toastrMsg="updateToastrMsg"
+      :key="componentKey"
       id="employeeModal"
       modalType="create"
+      @bookingSubmitted="bookingSubmitted"
     ></EmployeeBookingModal>
   </div>
 </template>
@@ -72,14 +77,18 @@
 import { Grid } from "gridjs";
 
 import EmployeeBookingModal from "@/components/EmployeeBookingModal.vue";
+import * as bootstrap from "bootstrap";
+import TheToastr from "@/components/TheToastr.vue";
 
 export default {
   name: "ViewBooking",
   components: {
     EmployeeBookingModal,
+    TheToastr
   },
   data() {
     return {
+      toastrResponse: "",
       formInput: { startStr: "null" },
       type: "employee",
       calendarInput: {
@@ -253,6 +262,10 @@ export default {
     selectedPass(event) {
       console.log(event.target.value);
     },
+    updateToastrMsg(res) {
+      this.toastrResponse = res;
+      console.log('dkjf');
+    },
     // fixed events
     passFn(id) {
       if (id == "1") {
@@ -301,12 +314,17 @@ export default {
         };
       }
     },
+    bookingSubmitted() {
+      this.forceRerender();
+      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
+      this.$emit("toastrMsg", {
+        status: "Success",
+        msg: "New employee has been created!",
+      });
+      bsAlert.show();
+    },
     forceRerender() {
-      this.pass = "";
       this.componentKey += 1;
-      this.successFlag = true;
-      alert(JSON.stringify(this.retrievedData));
-      document.getElementById("toast").classList.add("show");
     },
   },
 };

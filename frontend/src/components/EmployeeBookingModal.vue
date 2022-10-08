@@ -4,6 +4,7 @@
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
+    id="myModal"
   >
     <div class="modal-dialog">
       <div class="modal-content">
@@ -11,9 +12,9 @@
           <h5 class="modal-title" id="exampleModalLabel">Create Booking</h5>
           <button
             type="button"
-            class="btn-close"
             data-bs-dismiss="modal"
             aria-label="Close"
+            id="close-btn"
           ></button>
         </div>
         <div class="modal-body text-start" style="padding: 30px">
@@ -172,37 +173,38 @@
                 ></textarea>
               </div>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer" v-if="selectedPass">
-          <div class="my-2 form-check">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              id="exampleCheck1"
-              v-model="isChecked"
-            />
-            <span>I accept the <a href="#">terms and conditions</a> </span>
-          </div>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Close
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            @click="submitBooking()"
-            :disabled="!isChecked"
-            style="min-width: 100px;"
-          >
-            <div class="" v-if="!isLoading">Submit</div>
-            <div class="spinner-border spinner-border-sm text-light" role="status" v-else>
-              <span class="visually-hidden">Loading...</span>
+            <div class="modal-footer" v-if="selectedPass">
+              <div class="my-2 form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="exampleCheck1"
+                  v-model="isChecked"
+                />
+                <span>I accept the <a href="#">terms and conditions</a> </span>
+              </div>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                :disabled="!isChecked"
+                @click.prevent="submitBooking"
+                style="min-width: 100px"
+              >
+                <div class="" v-show="!isLoading">Submit</div>
+                <div
+                  class="spinner-border spinner-border-sm text-light"
+                  v-show="isLoading"
+                ></div>
+              </button>
             </div>
-          </button>
+          </form>
         </div>
       </div>
     </div>
@@ -210,7 +212,6 @@
 </template>
 
 <script>
-import * as bootstrap from "bootstrap";
 import BookingCalendar from "@/components/BookingCalendar.vue";
 export default {
   name: "EmployeeBookingModal",
@@ -288,6 +289,9 @@ export default {
 
       console.log(this.selectedPass);
     },
+    forceRerender() {
+      this.componentKey += 1;
+    },
 
     // fixed events
     passFn(id) {
@@ -340,11 +344,14 @@ export default {
     async submitBooking() {
       this.isLoading = true;
       setTimeout(() => {
-        this.isLoading = false;
-      }, 2000);
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
-      this.$emit("toastrMsg", "New employee has been created!");
-      bsAlert.show();
+        document.getElementById("close-btn").click();
+        this.$emit("bookingSubmitted", true);
+        this.$emit("toastrMsg", {status: "Success", msg: "Bookng is successful!"});
+
+      }, 1000);
+      // var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
+      // this.$emit("toastrMsg", "New employee has been created!");
+      // bsAlert.show();
     },
   },
 };
