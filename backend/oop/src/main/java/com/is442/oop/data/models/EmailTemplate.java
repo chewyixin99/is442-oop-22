@@ -5,18 +5,23 @@ import javax.persistence.*;
 @Entity
 public class EmailTemplate {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int templateId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer templateId;
+    private String templateName;
     private String templateData;
     private boolean defunct;
     
-    public int getId() {
+    public Integer getId() {
         return templateId;
     }
-    public void setId(int templateId) {
-        this.templateId = templateId;
-    }
 
+    public String getTemplateName() {
+        return templateName;
+    }
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+    
     public String getTemplateData() {
         return templateData;
     }

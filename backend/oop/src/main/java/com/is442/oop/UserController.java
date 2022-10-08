@@ -26,11 +26,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    UserDAOInt UserDAOInt;
+    UserDAOInt userDAOInt;
     
     @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = UserDAOInt.getAllUsers();
+        List<User> users = userDAOInt.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -38,7 +38,7 @@ public class UserController {
     public ResponseEntity<User> getUser(@PathVariable("userId") Integer userId) {
         User user = null;
         try {
-            user = UserDAOInt.getUser(userId);
+            user = userDAOInt.getUser(userId);
         } catch (Exception e) {
             return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
         }
@@ -47,15 +47,15 @@ public class UserController {
 
     @PostMapping("")
     public ResponseEntity<MessageResponse> createUser(@RequestBody CreateUserRequest createUserRequest) {
-        MessageResponse newUser = UserDAOInt.createUser(createUserRequest);
+        MessageResponse newUser = userDAOInt.createUser(createUserRequest);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable("userId") Integer userId, @RequestBody UpdateUserRequest updateUserRequest) {
-        User updateUser =null;
+        User updateUser = null;
         try {
-            updateUser = UserDAOInt.updateUser(userId, updateUserRequest);
+            updateUser = userDAOInt.updateUser(userId, updateUserRequest);
         } catch (Exception e) {
             return new ResponseEntity<>(updateUser, HttpStatus.NOT_FOUND);
         }
@@ -63,9 +63,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable("userId") Integer userId) {
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("userId") Integer userId) {
         try {
-            UserDAOInt.deleteUser(userId);
+            userDAOInt.deleteUser(userId);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

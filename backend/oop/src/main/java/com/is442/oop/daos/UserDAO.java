@@ -61,7 +61,6 @@ public class UserDAO implements UserDAOInt {
     public void deleteUser(Integer userId) throws ResourceNotFoundException {
         User user = userRepository.findById(userId).get();
         if (user.getId().equals(userId)) {
-            System.out.println(user);
             user.setDefunct(true);
             userRepository.save(user);
         } else {
