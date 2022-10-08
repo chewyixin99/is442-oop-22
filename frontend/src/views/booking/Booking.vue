@@ -143,7 +143,7 @@
         </div>
 </template>
 <script>
-import BookingCalendar from '../components/BookingCalendar.vue'
+import BookingCalendar from '../../components/BookingCalendar.vue'
 // import BookingForm from '../components/BookingForm.vue'
 
 export default {
