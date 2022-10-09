@@ -1,8 +1,7 @@
 package com.is442.oop.data.payloads.request;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 import com.is442.oop.data.models.*;
 
