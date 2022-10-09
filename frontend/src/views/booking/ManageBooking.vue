@@ -2,44 +2,60 @@
   <div class="container-fluid">
     <div class="flex-column d-flex align-items-center justify-content-center">
       <h1 class="pt-4 mb-4">Booking</h1>
-      <h4 class="pt-4">Employee Bookings</h4>
       <div class="tableBox position-relative">
-        <button
-          type="button"
-          class="newButton btn btn-info"
-          data-bs-toggle="modal"
-          data-bs-target="#adminModal"
-        >
-          New
-        </button>
-        <button
-          type="button"
-          class="delButton btn btn-danger"
-          @click="deleteRecords()"
-        >
-          Delete
-        </button>
+        <hr />
+        <div class="container">
+          <div class="row">
+            <div class="col-10 text-start">
+              <h4 class="pt-4">Employee Bookings</h4>
+            </div>
+            <div class="col-2 gap-4 d-flex justify-content-end align-items-end">
+            <div
+              data-bs-toggle="modal"
+              data-bs-target="#adminModal"
+              data-bs-placement="bottom" 
+              title="Tooltip on bottom"
+            >
+              <i class="bi bi-calendar-plus fs-2 btnHover" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Booking"></i>
+            </div>
+            <div
+              data-bs-toggle="modal"
+              data-bs-target="#adminModal"
+            >
+              <i class="bi bi-calendar-x fs-2 btnHover" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete Booking"></i>
+            </div>
+            </div>
+
+          </div>
+        </div>
+
         <div id="table"></div>
       </div>
     </div>
+
+    <TheToastr :toastrResponse="toastrResponse"></TheToastr>
+
     <AdminBookingModal
       @toastrMsg="updateToastrMsg"
+      :key="componentKey"
       id="adminModal"
       modalType="create"
+      @bookingSubmitted="bookingSubmitted"
     ></AdminBookingModal>
-
   </div>
 </template>
 <script>
 import { Grid, html } from "gridjs";
 import { RowSelection } from "gridjs/plugins/selection";
-import * as bootstrap from "bootstrap";
 import AdminBookingModal from "@/components/AdminBookingModal.vue";
+import * as bootstrap from "bootstrap";
+import TheToastr from "@/components/TheToastr.vue";
 
 export default {
   name: "ManageBooking",
   components: {
-    AdminBookingModal
+    AdminBookingModal,
+    TheToastr,
   },
   data() {
     return {
@@ -49,6 +65,7 @@ export default {
         startStr: "null",
         endStr: "null",
       },
+      toastrResponse: "",
       pass: ["", ""],
       numPass: 2,
       componentKey: 0,
@@ -108,7 +125,7 @@ export default {
                   <option value="Cancelled">Cancelled</option>
                 `
               ),
-            sort: false
+            sort: false,
           },
         ],
         data: [
@@ -172,28 +189,17 @@ export default {
     });
   },
   methods: {
-    async createEmployee() {
-      // const employee = await EmployeeService.createEmployee();
-      // console.log(employee);
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
-      this.$emit("toastrMsg", "New employee has been created!");
+    updateToastrMsg(res) {
+      this.toastrResponse = res;
+    },
+    bookingSubmitted() {
+      this.forceRerender();
+      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
-    async deleteRecords() {
-      this.recordsToDelete.forEach((value, index) => {
-        console.log("Index to delete:", index, "Id value:", value);
-      });
-      // const employees = await EmployeeService.removeEmployees();
-      // console.log(employees);
+    forceRerender() {
+      this.componentKey += 1;
     },
-    async editEmployeeDetails() {
-      // const employees = await EmployeeService.editEmployeeDetails("1");
-      // console.log(employees);
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
-      this.$emit("toastrMsg", "Your changes have been saved!");
-      bsAlert.show();
-    },
-
     selectedDates($event) {
       console.log($event);
       this.retrievedData.push({
@@ -254,13 +260,6 @@ export default {
         };
       }
     },
-    forceRerender() {
-      this.pass = "";
-      this.componentKey += 1;
-      this.successFlag = true;
-      alert(JSON.stringify(this.retrievedData));
-      document.getElementById("toast").classList.add("show");
-    },
   },
 };
 </script>
@@ -268,5 +267,12 @@ export default {
 <style>
 .tableBox {
   width: 70vw;
+}
+.btnHover:hover {
+  color: #0d6efd;
+}
+
+.btnHover {
+  cursor: pointer;
 }
 </style>
