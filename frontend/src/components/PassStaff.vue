@@ -4,9 +4,9 @@
     </div>
 
     <div class="container">
-        <div class="row row-cols-auto g-4 d-flex justify-content-evenly">
+        <div class="row row-cols-md-auto g-5 d-flex justify-content-between">
             <div v-for="PassStaff in PassStaff_PassesCategory" :key="PassStaff.cid" >
-                    <div class="card h-100" style="width: 30rem;">
+                    <div class="card h-100" style="width: 25rem;">
                         <img :src="getImageUrl(PassStaff.image)" class="card-img-top">
                         <div class="card-body ">
                             <h5 class="card-title">{{PassStaff.name}}</h5>

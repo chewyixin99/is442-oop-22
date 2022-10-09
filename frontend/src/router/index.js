@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '../views/Home.vue'
-import Booking from '../views/Booking.vue'
+import ViewBooking from '../views/booking/ViewBooking.vue'
+import Booking from '../views/booking/Booking.vue'
+import ManageBooking from '../views/booking/ManageBooking.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Employee from '../views/Employee.vue'
 import Pass from '../views/Pass.vue'
@@ -18,6 +20,18 @@ const routes = [
       path: '/booking',
       name: 'Booking',
       component: Booking,
+    //   meta: { requiresAuth: true }
+    },
+    {
+      path: '/booking/view',
+      name: 'ViewBooking',
+      component: ViewBooking,
+    //   meta: { requiresAuth: true }
+    },
+    {
+      path: '/booking/manage',
+      name: 'ManageBooking',
+      component: ManageBooking,
     //   meta: { requiresAuth: true }
     },
     {

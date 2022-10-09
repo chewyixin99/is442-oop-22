@@ -13,7 +13,7 @@
         <p>3. Edit/delete passes</p>
     </div> -->
     <div class="container">
-
+<!-- 
         <div class="row">
             <h1>Passes(staff view)</h1>
         </div>
@@ -23,7 +23,7 @@
 
         <br>
         <hr>
-        <br>
+        <br> -->
 
         <div class="row">
             <h1>Passes(Admin view)</h1>
@@ -37,15 +37,15 @@
 </template>
 
 <script>
-import PassStaff from '../components/PassStaff.vue'
+// import PassStaff from '../components/PassStaff.vue'
 import PassAdmin from '../components/PassAdmin.vue'
 
 
 export default {
     name: 'Pass',
     components: {
-        PassStaff,
-        PassAdmin
+        // PassStaff,
+        PassAdmin,
     },
     data() {
         return {
@@ -57,7 +57,6 @@ export default {
         this.PassesCategory = [
             {
                 "cid": "1",
-                "modal": "modal1",
                 "name": "Mandai Wildlife Reserve",
                 "description": "Desc1",
                 "places": ["Singapore Zoo", "River Wonders"],
@@ -65,7 +64,6 @@ export default {
             },
             {
                 "cid": "2",
-                "modal": "modal2",
                 "name": "Pass 2",
                 "description": "Desc2",
                 "places": ["Place 2.1"],
@@ -74,7 +72,6 @@ export default {
             },
             {
                 "cid": "3",
-                "modal": "modal3",
                 "name": "Pass 3",
                 "description": "Desc3",
                 "places": ["Place 3.1", "Place 3.2"],
@@ -83,7 +80,6 @@ export default {
             },
                         {
                 "cid": "4",
-                "modal": "modal4",
                 "name": "Pass 4",
                 "description": "Desc4",
                 "places": ["Place 4.1", "Place 4.2"],

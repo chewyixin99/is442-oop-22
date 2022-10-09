@@ -26,46 +26,46 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    UserDAOInt UserDAOInt;
+    UserDAOInt userDAOInt;
     
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = UserDAOInt.getAllUsers();
+        List<User> users = userDAOInt.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") Integer id) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable("userId") Integer userId) {
         User user = null;
         try {
-            user = UserDAOInt.getUser(id);
+            user = userDAOInt.getUser(userId);
         } catch (Exception e) {
             return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<MessageResponse> createUser(@RequestBody CreateUserRequest createUserRequest) {
-        MessageResponse newUser = UserDAOInt.createUser(createUserRequest);
+        MessageResponse newUser = userDAOInt.createUser(createUserRequest);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Integer id, @RequestBody UpdateUserRequest updateUserRequest) {
-        User updateUser =null;
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable("userId") Integer userId, @RequestBody UpdateUserRequest updateUserRequest) {
+        User updateUser = null;
         try {
-            updateUser = UserDAOInt.updateUser(id, updateUserRequest);
+            updateUser = userDAOInt.updateUser(userId, updateUserRequest);
         } catch (Exception e) {
             return new ResponseEntity<>(updateUser, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("userId") Integer userId) {
         try {
-            UserDAOInt.deleteUser(id);
+            userDAOInt.deleteUser(userId);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

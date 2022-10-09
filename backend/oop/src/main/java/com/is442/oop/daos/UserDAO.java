@@ -30,11 +30,12 @@ public class UserDAO implements UserDAOInt {
     @Override
     public MessageResponse createUser(CreateUserRequest createUserRequest) {
         User user = new User();
-        user.setUserName(createUserRequest.getUserName());
+        user.setUsername(createUserRequest.getUsername());
         user.setPassword(createUserRequest.getPassword());
         user.setEmail(createUserRequest.getEmail());
         user.setContactNumber(createUserRequest.getContactNumber());
         user.setUserType(createUserRequest.getUserType());
+        user.setDefunct(createUserRequest.getDefunct());
         userRepository.save(user);
         return new MessageResponse(String.format("User created, ID: %d.", user.getId()));
     };
@@ -48,7 +49,7 @@ public class UserDAO implements UserDAOInt {
         }
 
         user = queryUser.get();
-        user.setUserName(updateUserRequest.getUserName());
+        user.setUsername(updateUserRequest.getUsername());
         user.setEmail(updateUserRequest.getEmail());
         user.setContactNumber(updateUserRequest.getContactNumber());
         user.setUserType(updateUserRequest.getUserType());
@@ -60,7 +61,6 @@ public class UserDAO implements UserDAOInt {
     public void deleteUser(Integer userId) throws ResourceNotFoundException {
         User user = userRepository.findById(userId).get();
         if (user.getId().equals(userId)) {
-            System.out.println(user);
             user.setDefunct(true);
             userRepository.save(user);
         } else {

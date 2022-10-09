@@ -6,10 +6,10 @@ import javax.persistence.*;
 public class Pass {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-    private String passName;
+    private int passId;
     private String passDesc;
-    private int numberOfGuests;
+    private String poi;
+    private int numGuests;
     private double replacementFee;
     private boolean isPhysical;
     @Enumerated(EnumType.STRING)
@@ -17,17 +17,17 @@ public class Pass {
     private boolean defunct;
 
     public int getId() {
-        return id;
+        return passId;
     }
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int passId) {
+        this.passId = passId;
     }
 
-    public String getPassName() {
-        return passName;
+    public String getPoi() {
+        return poi;
     }
-    public void setPassName(String passName) {
-        this.passName = passName;
+    public void setPoi(String poi) {
+        this.poi = poi;
     }
 
     public String getPassDesc() {
@@ -37,11 +37,11 @@ public class Pass {
         this.passDesc = passDesc;
     }
 
-    public int getNumberOfGuests() {
-        return numberOfGuests;
+    public int getNumGuests() {
+        return numGuests;
     }
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public void setNumGuests(int numGuests) {
+        this.numGuests = numGuests;
     }
 
     public double getReplacementFee() {
@@ -65,7 +65,7 @@ public class Pass {
         this.passStatus = passStatus;
     }
 
-    public boolean isDefunct() {
+    public boolean getDefunct() {
         return defunct;
     }
     public void setDefunct(boolean defunct) {
@@ -74,8 +74,8 @@ public class Pass {
     
     @Override
     public String toString() {
-        return "Pass [id=" + id + ", passName=" + passName + ", passDesc=" + passDesc + ", numberOfGuests="
-                + numberOfGuests + ", replacementFee=" + replacementFee + ", isPhysical=" + isPhysical + ", passStatus=" + passStatus
+        return "Pass [passId=" + passId + ", poi=" + poi + ", passDesc=" + passDesc + ", numGuests="
+                + numGuests + ", replacementFee=" + replacementFee + ", isPhysical=" + isPhysical + ", passStatus=" + passStatus
                 + ", defunct=" + defunct + "]";
     }
 
@@ -90,6 +90,6 @@ public class Pass {
         };
 
         Pass pass = (Pass) obj;
-        return pass.getId() == id;    
+        return pass.getId() == passId;    
     }
 }

@@ -10,30 +10,33 @@ import com.is442.oop.data.models.*;
 public class UpdateUserRequest {
     @NotBlank
     @NotNull
-    private String userName;
+    private String username;
     @NotBlank
     @NotNull
     @Email
     private String email;
     @NotBlank
     @NotNull
-    private int contactNumber;
+    private String contactNumber;
     @NotBlank
     @NotNull
     @Enumerated(EnumType.STRING)
     private UserType userType;
+    @NotBlank
+    @NotNull
+    private boolean defunct;
     
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public int getContactNumber() {
+    public String getContactNumber() {
         return contactNumber;
     }
-    public void setContactNumber(int contactNumber) {
+    public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
     }
 
@@ -49,5 +52,11 @@ public class UpdateUserRequest {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+    public boolean getDefunct() {
+        return defunct;
+    }
+    public void setDefunct(boolean defunct) {
+        this.defunct = defunct;
     }
 }

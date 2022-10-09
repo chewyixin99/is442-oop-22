@@ -5,25 +5,25 @@ import javax.persistence.*;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-    private String userName;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userId;
+    private String username;
     private String password;
     private String email;
-    private Integer contactNumber;
+    private String contactNumber;
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    private UserType userType; // admin; borrower; gop
     private boolean defunct; // Soft deletion of users
     
     public Integer getId() {
-        return id;
+        return userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -33,10 +33,10 @@ public class User {
         this.password = password;
     }
 
-    public Integer getContactNumber() {
+    public String getContactNumber() {
         return contactNumber;
     }
-    public void setContactNumber(Integer contactNumber) {
+    public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
     }
 
@@ -54,7 +54,7 @@ public class User {
         this.email = email;
     }
     
-    public boolean isDefunct() {
+    public boolean getDefunct() {
         return defunct;
     }
     public void setDefunct(boolean defunct) {
@@ -63,7 +63,7 @@ public class User {
     
     @Override
     public String toString() {
-        return "User [id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", contactNumber=" + contactNumber
+        return "User [id=" + userId + ", username=" + username + ", password=" + password + ", email=" + email + ", contactNumber=" + contactNumber
                 + ", userType=" + userType + ", defunct=" + defunct + "]";
     }
     
@@ -78,6 +78,6 @@ public class User {
         }
 
         User user = (User) obj;
-        return user.getId() == id;
+        return user.getId() == userId;
     }
 }

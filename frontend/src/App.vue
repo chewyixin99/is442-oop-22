@@ -2,6 +2,7 @@
     <Sidebar/>
 </template>
 
+
 <script>
 import Sidebar from './components/Sidebar.vue'
 
@@ -22,6 +23,5 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-
 
 </style>
