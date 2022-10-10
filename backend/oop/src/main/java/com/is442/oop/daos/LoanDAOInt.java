@@ -8,15 +8,17 @@ import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Component
 public interface LoanDAOInt {
 
     List<Loan> getAllLoan();
     MessageResponse createLoan(LoanRequest loanRequest);
-    Optional<Loan> updateLoan(Integer loanID, LoanRequest loanRequest) throws ResourceNotFoundException;
     Loan getLoanByLoanID(int loanID) throws ResourceNotFoundException;
     List<Loan> getLoanByUserID(int userID);
     List<Loan> getLoanByPassID(int passID);
-    Optional<Loan> updateLoanToCompleted(Integer loanID, Integer userID, Integer gopID, LoanRequest loanRequest) throws ResourceNotFoundException;
-    void deleteLoan(Integer loanID)throws ResourceNotFoundException;
+    MessageResponse deleteLoan(Integer loanID)throws ResourceNotFoundException;
+
+    MessageResponse updateLoanToCompleted(UpdateLoanRequest updateLoanRequest) throws ResourceNotFoundException;
 }

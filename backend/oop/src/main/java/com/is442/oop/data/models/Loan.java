@@ -80,7 +80,7 @@ public class Loan {
     
     @Override
     public String toString() {
-        return "Loan [loanId=" + loanId + ", userId" + userId + ", gopId=" + gopId + ", passId=" + passId + ", startDate=" + startDate
+        return "Loan [loanId=" + loanId + ", userId=" + userId + ", gopId=" + gopId + ", passId=" + passId + ", startDate=" + startDate
                 + ", endDate=" + endDate + ", isCompleted=" + isCompleted + "]";
     }
 

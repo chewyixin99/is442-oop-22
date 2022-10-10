@@ -11,16 +11,11 @@ public class LoanRequest {
 
     @NotBlank
     @NotNull
-    private Integer loanID;
-    @NotBlank
-    @NotNull
     private Integer userID;
     @NotBlank
     @NotNull
     private Integer passID;
 
-    private Integer gopID;
-    private Boolean isCompleted;
     private String startDate;
     private String endDate;
 
@@ -40,14 +35,6 @@ public class LoanRequest {
         this.endDate = endDate;
     }
 
-    public Integer getLoanID() {
-        return loanID;
-    }
-
-    public void setLoanID(Integer loanID) {
-        this.loanID = loanID;
-    }
-
     public Integer getUserID() {
         return userID;
     }
@@ -64,19 +51,4 @@ public class LoanRequest {
         this.passID = passID;
     }
 
-    public Integer getGopID() {
-        return gopID;
-    }
-
-    public void setGopID(Integer gopID) {
-        this.gopID = gopID;
-    }
-
-    public Boolean getCompleted() {
-        return isCompleted;
-    }
-
-    public void setCompleted(Boolean completed) {
-        isCompleted = completed;
-    }
 }
