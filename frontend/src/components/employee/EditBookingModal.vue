@@ -8,10 +8,9 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Create Booking</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Edit Booking {{rowId}}</h5>
           <i class="bi bi-x fs-1" id="close-btn" style="cursor: pointer" data-bs-dismiss="modal"
             aria-label="Close"></i>
-            
         </div>
         <div class="modal-body text-start" style="padding: 30px">
           <form>
@@ -210,10 +209,11 @@
 <script>
 import BookingCalendar from "@/components/BookingCalendar.vue";
 export default {
-  name: "AdminBookingModal",
+  name: "EditBookingModal",
   props: {
     modalType: String,
     bookingDetails: Object,
+    rowId: String
   },
   components: {
     BookingCalendar,
@@ -268,7 +268,6 @@ export default {
     };
   },
   methods: {
-
     selectedDates($event) {
       this.retrievedData = {
         passId: $event.passData.passId,
@@ -344,8 +343,11 @@ export default {
         document.getElementById("close-btn").click();
         this.$emit("bookingSubmitted", true);
         this.$emit("toastrMsg", {status: "Success", msg: "Booking is successful!"});
-      }, 1000);
 
+      }, 1000);
+      // var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
+      // this.$emit("toastrMsg", "New employee has been created!");
+      // bsAlert.show();
     },
   },
 };

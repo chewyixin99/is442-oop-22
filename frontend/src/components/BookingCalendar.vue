@@ -3,61 +3,6 @@
     <div class="" v-if="selectedPass != null">
       <h1>{{ selectedPass.title }}</h1>
         <FullCalendar id="calendar" :options="calendarOptions" />
-      <!-- <div class="form">
-        <div class="row">
-          <div class="col">
-            <label id="date">Start Date</label>
-            <input type="date" disabled :value="selectedDates.start" />
-          </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col">
-            <label id="date">End Date</label>
-            <input type="date" disabled :value="selectedDates.end" />
-          </div>
-        </div>
-        
-        <div class="row mt-4">
-          <div class="col">
-            <label>Staff Name</label>
-            <input type="text" placeholder="" />
-          </div>
-          <div class="col">
-            <label>Staff ID</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col">
-            <label>Guest Name</label>
-            <input type="text" placeholder="" />
-          </div>
-           <div class="col">
-            <label>Guest ID</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-          <div class="row mt-4">
-          <div class="col">
-            <label>Guest Name</label>
-            <input type="text" placeholder="" />
-          </div>
-           <div class="col">
-            <label>Guest ID</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col">
-            <label>Guest Name</label>
-            <input type="text" placeholder="" />
-          </div>
-           <div class="col">
-            <label>Guest ID</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>

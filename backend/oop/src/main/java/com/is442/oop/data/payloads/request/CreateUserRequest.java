@@ -1,7 +1,6 @@
 package com.is442.oop.data.payloads.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 
 public class CreateUserRequest extends UpdateUserRequest {

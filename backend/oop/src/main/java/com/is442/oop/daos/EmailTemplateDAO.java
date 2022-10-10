@@ -53,12 +53,13 @@ public class EmailTemplateDAO implements EmailTemplateDAOInt {
 
     @Override
     public void deleteTemplate(Integer templateId) throws ResourceNotFoundException {
-        EmailTemplate emailTemplate = templateRepository.findById(templateId).get();
-        if(emailTemplate.getId().equals(templateId)) {
-            emailTemplate.setDefunct(true);
-            templateRepository.save(emailTemplate);
-        } else {
+        EmailTemplate emailTemplate = null;
+        Optional<EmailTemplate> queryTemplate = templateRepository.findById(templateId);
+        if (queryTemplate.isEmpty()) {
             throw new ResourceNotFoundException("Resource not found.");
         }
+        emailTemplate = queryTemplate.get();
+        emailTemplate.setDefunct(true);
+        templateRepository.save(emailTemplate);
     }
 }
