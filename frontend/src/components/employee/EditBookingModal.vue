@@ -208,6 +208,7 @@
 
 <script>
 import BookingCalendar from "@/components/BookingCalendar.vue";
+// import { Toast } from 'bootstrap';
 export default {
   name: "EditBookingModal",
   props: {
@@ -345,7 +346,7 @@ export default {
         this.$emit("toastrMsg", {status: "Success", msg: "Booking is successful!"});
 
       }, 1000);
-      // var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
+      // var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
       // this.$emit("toastrMsg", "New employee has been created!");
       // bsAlert.show();
     },

@@ -66,7 +66,7 @@
 </template>
 <script>
     // import EmployeeService from "@/api/services/EmployeeService";   
-   import * as bootstrap from "bootstrap";
+    import { Toast } from "bootstrap";
 
     export default {
         name: "EmployeeModal",
@@ -83,7 +83,7 @@
             async createEmployee(){
                 // const employee = await EmployeeService.createEmployee();
                 // console.log(employee);
-                var bsAlert = new bootstrap.Toast(document.getElementById('theToastr'));//inizialize it
+                var bsAlert = new Toast(document.getElementById('theToastr'));//inizialize it
                 this.$emit("toastrMsg", {status: "Success", msg: "New employee has been created!"});
                 // this.$emit("toastrMsg", {status: "Error", msg: "Opps, something went wrong!"});
                 bsAlert.show();
@@ -91,7 +91,7 @@
             async editEmployeeDetails(){
                 // const employees = await EmployeeService.editEmployeeDetails("1");
                 // console.log(employees);
-                var bsAlert = new bootstrap.Toast(document.getElementById('theToastr'));//inizialize it
+                var bsAlert = new Toast(document.getElementById('theToastr'));//inizialize it
                 // this.$emit("toastrMsg", {status: "Success", msg: "Your changes have been saved!"});
                 this.$emit("toastrMsg", {status: "Error", msg: "Opps, something went wrong!"});
                 bsAlert.show();

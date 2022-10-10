@@ -11,8 +11,8 @@
             <div id="buttonsHolder" class="d-flex">
 
                 <div>
-                    <input id="fileid" type="file" hidden/>
-                    <input id="buttonid" type="button" class="importBtn funcBtn btn btn-info" value='Import' @click="openDialog"/>
+                    <input id="fileId" type="file" hidden/>
+                    <input id="buttonId" type="button" class="importBtn funcBtn btn btn-info" value='Import' @click="openDialog"/>
                 </div>
                 <div class="px-3"><button type="button" class="newBtn funcBtn btn btn-warning" data-bs-toggle="modal" data-bs-target="#createModal">New</button></div>
                 <div><button type="button" class="delBtn funcBtn btn btn-danger" @click="deleteRecords()">Delete</button></div>
@@ -30,8 +30,9 @@
     import { Grid, html } from "gridjs";
     import { RowSelection } from "gridjs/plugins/selection";
     import TheToastr from "@/components/TheToastr.vue";
-    import * as bootstrap from "bootstrap";
+    import { Toast } from "bootstrap";
     import EmployeeModal from "../components/EmployeeModal.vue"
+    import * as XLSX from 'xlsx/xlsx.mjs';
 
     export default {
         name: "GridComponent",
@@ -73,12 +74,6 @@
                         'Role', 
                         { 
                             name: '#',
-                            // formatter: (cell, row) => {
-                            //     return h('button', {
-                            //         className: 'py-2 px-3 border rounded text-white bg-primary',
-                            //         onClick: () => alert(`Editing "${row.cells[0].data}" "${row.cells[1].data}"`)
-                            //     }, 'Edit');
-                            // }
                             formatter: () => html(`<i class="fa-lg button bi bi-pencil text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
                             width: '1%'
                         },
@@ -102,13 +97,8 @@
                     noRecordsFound: 'No matching records found',
                     error: 'An error happened while fetching the data',
                     style: {
-                        table: {
-                            // border: '3px solid #ccc'
-                        },
                         th: {
                             'background-color': 'rgba(0, 0, 0, 0.1)',
-                            // 'color': '#000',
-                            // 'border-bottom': '3px solid #ccc',
                             'text-align': 'center'
                         },
                         td: {
@@ -130,20 +120,19 @@
                     this.recordsToDelete = state["rowIds"];
                 });
             })
-            this.updateGridJsTable();
+            this.refreshTable();
         },
         methods: {
             updateToastrMsg(res){
                 this.toastrResponse = res;
             },
             async deleteRecords(){
-                var bsAlert = new bootstrap.Toast(document.getElementById("theToastr"));//inizialize it
                 if (this.recordsToDelete.length > 0){
                     this.recordsToDelete.forEach((value, index) => {
                         console.log("Index to delete:", index, "Id value:", value);
                         this.gridJsTableData.splice(value, 1);
                     })
-                    this.updateGridJsTable();
+                    this.refreshTable();
                     // const employees = await EmployeeService.removeEmployees();
                     // console.log(employees);
                     this.toastrResponse = {status: "Success", msg: "Records have been successfully deleted!"};
@@ -151,12 +140,79 @@
                 } else {
                     this.toastrResponse = {status: "Error", msg: "Please select at least 1 record to delete!"};           
                 }
+                var bsAlert = new Toast(document.getElementById("theToastr"));
                 bsAlert.show();
             },
             openDialog() {
-                document.getElementById('fileid').click();
+                let file = document.getElementById("fileId");
+                file.click();
+                file.onchange = () => {
+                    let selected = file.files[0];
+                    let reader = new FileReader();
+                    let fileType = selected.name.split('.')[1];
+                    this.toastrResponse = {status: "Success", msg: "Records from ." + fileType + " file have been imported successfully!"};
+                    if (fileType == "csv" || fileType == "txt"){
+                        this.csvImport(selected, reader);   
+
+                    } else if (fileType == "xlsx") {
+                        this.xlsxImport(selected, reader);
+
+                    } else {
+                        this.toastrResponse = {status: "Error", msg: "Invalid file extension, please only use .csv, .txt, or .xlsx!"};  
+                    }
+
+                    file.value = ''; //clear input field so that we can upload the same file again
+
+                    var bsAlert = new Toast(document.getElementById("theToastr"));
+                    bsAlert.show();
+                }
             },
-            updateGridJsTable(){
+            csvImport(selected, reader){
+                reader.onloadend = () => { 
+                    let data = reader.result.split("\r\n");
+                    for (let i in data) {
+                        data[i] = data[i].split(",");
+                        let name = data[i][0];
+                        let doesNameExist = this.gridJsTableData.some(row => row.includes(name));
+                        if (!doesNameExist && name != "" && name != "Name"){ //check if name exist in current table, if name is empty, or is first row a header row
+                            this.pushRow(data[i]);
+                        }
+                    }
+                    this.refreshTable();
+                }
+                reader.readAsText(selected);
+            },
+            xlsxImport(selected, reader){
+                reader.onloadend = (e) => {
+                    var data = e.target.result;
+                    var workbook = XLSX.read(data, { type: 'binary' });
+                    workbook.SheetNames.forEach((sheetName) => {
+                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                        for (let row of XL_row_object){
+                            let doesNameExist = this.gridJsTableData.some(z => z.includes(row.Name)) ;
+                            if (!doesNameExist && row.Name != ""){
+                                var record = Object.keys(row).map((key) => row[key]); //convert object to array form
+                                this.pushRow(record);
+                            }
+                        }
+                    })
+                    this.refreshTable();
+                };
+
+                reader.readAsBinaryString(selected);
+            },
+            pushRow(row){
+                if (row.length == 3){
+                    let nextIdToInsert = this.gridJsTableData.length + 1;
+                    row.unshift(nextIdToInsert);
+                    row.push("d");
+                    this.gridJsTableData.push(row);
+                } else {
+                    this.toastrResponse = {status: "Error", msg: "Your data is invalid, please check your data set for missing fields or cells!"}; 
+                    throw new Error("Invalid file");
+                }
+            },
+            refreshTable(){
                 this.grid.updateConfig({
                     search: true,
                     data: this.gridJsTableData
@@ -210,15 +266,15 @@
         }
         
         .importBtn{
-                right: 160px;
+            right: 160px;
         }
         
         .newBtn{
-                right: 90px;
+            right: 90px;
         }
 
         .delBtn{
-                right: 5px;
+            right: 5px;
         }
     }
 </style>

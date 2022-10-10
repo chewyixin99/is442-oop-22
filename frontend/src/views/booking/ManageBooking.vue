@@ -48,7 +48,7 @@
 import { Grid, html } from "gridjs";
 import { RowSelection } from "gridjs/plugins/selection";
 import AdminBookingModal from "@/components/AdminBookingModal.vue";
-import * as bootstrap from "bootstrap";
+import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 
 export default {
@@ -194,7 +194,7 @@ export default {
     },
     bookingSubmitted() {
       this.forceRerender();
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr"));
+      var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
     forceRerender() {

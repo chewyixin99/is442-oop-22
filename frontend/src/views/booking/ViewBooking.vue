@@ -57,7 +57,7 @@
 <script>
 import { Grid, h } from "gridjs";
 import CreateBookingModal from "@/components/employee/CreateBookingModal.vue";
-import * as bootstrap from "bootstrap";
+import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/employee/CancelBookingModal.vue";
 
@@ -327,12 +327,12 @@ export default {
     },
     bookingSubmitted() {
       this.forceRerender();
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr"));
+      var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
     cancelSubmitted() {
       this.forceRerender();
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr"));
+      var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
     forceRerender() {
