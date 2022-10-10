@@ -4,18 +4,13 @@
     tabindex="-1"
     aria-labelledby="exampleModalLabel"
     aria-hidden="true"
-    id="myModal"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Create Booking</h5>
-          <button
-            type="button"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-            id="close-btn"
-          ></button>
+          <i class="bi bi-x fs-1" id="create-close-btn" style="cursor: pointer" data-bs-dismiss="modal"
+            aria-label="Close"></i>
         </div>
         <div class="modal-body text-start" style="padding: 30px">
           <form>
@@ -214,7 +209,7 @@
 <script>
 import BookingCalendar from "@/components/BookingCalendar.vue";
 export default {
-  name: "EmployeeBookingModal",
+  name: "CreateBookingModal",
   props: {
     modalType: String,
     bookingDetails: Object,
@@ -344,9 +339,9 @@ export default {
     async submitBooking() {
       this.isLoading = true;
       setTimeout(() => {
-        document.getElementById("close-btn").click();
+        document.getElementById("create-close-btn").click();
         this.$emit("bookingSubmitted", true);
-        this.$emit("toastrMsg", {status: "Success", msg: "Bookng is successful!"});
+        this.$emit("toastrMsg", {status: "Success", msg: "Booking is successful!"});
 
       }, 1000);
       // var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
