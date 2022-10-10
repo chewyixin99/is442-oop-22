@@ -18,6 +18,11 @@ public class LoanDAO implements LoanDAOInt{
     LoanRepository loanRepository;
 
     @Override
+    public List<Loan> getAllLoan() {
+        return loanRepository.findAll();
+    }
+
+    @Override
     public MessageResponse createLoan(LoanRequest loanRequest) {
         Loan newLoan = new Loan();
         newLoan.setId(loanRequest.getLoanID());
@@ -26,8 +31,8 @@ public class LoanDAO implements LoanDAOInt{
 
         // THese 2 set the start and end date. Can be done within this header itself, aka,
         // I will set the start and end here
-        newLoan.setStartDate((Date) loanRequest.getStartDate());
-        newLoan.setEndDate((Date) loanRequest.getEndDate());
+        newLoan.setStartDate(loanRequest.getStartDate());
+        newLoan.setEndDate(loanRequest.getEndDate());
         loanRepository.save(newLoan);
 
         return new MessageResponse("New Loan has successfully been created");
@@ -41,8 +46,8 @@ public class LoanDAO implements LoanDAOInt{
             throw new ResourceNotFoundException("Loan of ID "+loanID+" is not found");
         }
         else{
-            loan.get().setStartDate((Date) loanRequest.getStartDate());
-            loan.get().setEndDate((Date) loanRequest.getEndDate());
+            loan.get().setStartDate(loanRequest.getStartDate());
+            loan.get().setEndDate(loanRequest.getEndDate());
             loan.get().setPassId(loanRequest.getPassID());
             loanRepository.save(loan.get());
             return loan;

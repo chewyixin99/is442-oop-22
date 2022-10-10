@@ -1,5 +1,7 @@
 package com.is442.oop.data.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.*;
 import javax.persistence.*;
 
@@ -17,10 +19,29 @@ public class Loan {
     // @ManyToOne
     // private Pass pass;
     private int passId;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
+
     private boolean isCompleted;
-    
+
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+
     public int getId() {
         return loanId;
     }
@@ -48,20 +69,7 @@ public class Loan {
     public void setPassId(int passId) {
         this.passId = passId;
     }
-    
-    public Date getStartDate() {
-        return startDate;
-    }
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-    
-    public Date getEndDate() {
-        return endDate;
-    }
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
+
 
     public boolean isCompleted() {
         return isCompleted;

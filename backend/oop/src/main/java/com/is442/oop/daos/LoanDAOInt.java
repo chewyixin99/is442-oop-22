@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface LoanDAOInt {
+
+    List<Loan> getAllLoan();
     MessageResponse createLoan(LoanRequest loanRequest);
     Optional<Loan> updateLoan(Integer loanID, LoanRequest loanRequest) throws ResourceNotFoundException;
     Loan getLoanByLoanID(int loanID) throws ResourceNotFoundException;

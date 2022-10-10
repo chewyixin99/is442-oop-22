@@ -1,5 +1,7 @@
 package com.is442.oop.data.payloads.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -19,8 +21,24 @@ public class LoanRequest {
 
     private Integer gopID;
     private Boolean isCompleted;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 
     public Integer getLoanID() {
         return loanID;
@@ -61,24 +79,4 @@ public class LoanRequest {
     public void setCompleted(Boolean completed) {
         isCompleted = completed;
     }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-
-
-
 }
