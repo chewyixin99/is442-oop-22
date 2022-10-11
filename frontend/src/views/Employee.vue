@@ -20,8 +20,8 @@
             <div id="wrapper">
             </div>
         </div>
-        <EmployeeModal @toastrMsg="updateToastrMsg" id="createModal" modalType="create"></EmployeeModal>
-        <EmployeeModal @toastrMsg="updateToastrMsg" id="editModal" modalType="edit"></EmployeeModal>
+        <EmployeeModal @toastrMsg="updateToastrMsg" id="createModal" modalType="create" @createEmployee="createEmployee"></EmployeeModal>
+        <EmployeeModal @toastrMsg="updateToastrMsg" id="editModal" modalType="edit" @editEmployeeDetails="editEmployeeDetails"></EmployeeModal>
         <TheToastr :toastrResponse="toastrResponse"></TheToastr>
     </div>
 </template>
@@ -126,6 +126,36 @@
             updateToastrMsg(res){
                 this.toastrResponse = res;
             },
+            async createEmployee(details){
+                // const employee = await EmployeeService.createEmployee();
+                // console.log(employee);
+
+                // this.$emit("toastrMsg", {status: "Error", msg: "Opps, something went wrong!"});
+
+                var row = Object.keys(details).map((key) => details[key]);
+                row.unshift(this.gridJsTableData.length + 1);
+                row.push("d");
+                this.gridJsTableData.push(row);
+                this.refreshTable();
+
+                var bsAlert = new Toast(document.getElementById('theToastr'));       
+                this.toastrResponse = {status: "Success", msg: "New employee has been created!"};      
+                bsAlert.show();
+            },
+            async editEmployeeDetails(details){
+                // const employees = await EmployeeService.editEmployeeDetails("1");
+                // console.log(employees);
+
+                var row = Object.keys(details).map((key) => details[key]);
+                console.log(row);
+                // this.gridJsTableData.push(row);
+                this.refreshTable();
+
+                var bsAlert = new Toast(document.getElementById('theToastr'));
+                // this.toastrResponse = {status: "Success", msg: "Your changes have been saved!"};
+                this.toastrResponse = {status: "Error", msg: "Opps, something went wrong!"};
+                bsAlert.show();
+            },
             async deleteRecords(){
                 if (this.recordsToDelete.length > 0){
                     this.recordsToDelete.forEach((value, index) => {
@@ -206,8 +236,7 @@
             },
             pushRow(row){
                 if (row.length == 4 && !row.includes("")){
-                    let nextIdToInsert = this.gridJsTableData.length + 1;
-                    row.unshift(nextIdToInsert);
+                    row.unshift(this.gridJsTableData.length + 1);
                     row.push("d");
                     this.gridJsTableData.push(row);
                 } else {
