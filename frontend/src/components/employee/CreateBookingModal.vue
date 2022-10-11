@@ -9,8 +9,13 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Create Booking</h5>
-          <i class="bi bi-x fs-1" id="create-close-btn" style="cursor: pointer" data-bs-dismiss="modal"
-            aria-label="Close"></i>
+          <i
+            class="bi bi-x fs-1"
+            id="create-close-btn"
+            style="cursor: pointer"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></i>
         </div>
         <div class="modal-body text-start" style="padding: 30px">
           <form>
@@ -88,6 +93,7 @@
                   class="form-control"
                   id="exampleFormControlSelect1"
                   v-model.number="numOfGuest"
+                  @change="updateGuestNum"
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -102,6 +108,8 @@
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
+                      @input="updateGuestDetails($event, index, 'name')"
+                      :placeholder="index"
                     />
                   </div>
                   <div class="col">
@@ -110,6 +118,7 @@
                       type="email"
                       class="form-control"
                       id="exampleFormControlInput1"
+                      @input="updateGuestDetails($event, index, 'email')"
                     />
                   </div>
                   <div class="col">
@@ -118,6 +127,7 @@
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
+                      @input="updateGuestDetails($event, index, 'contact')"
                     />
                   </div>
                 </div>
@@ -219,6 +229,13 @@ export default {
   },
   data() {
     return {
+      bookingGuestDetails: [
+        {
+          name: "",
+          email: "",
+          contact: "",
+        },
+      ],
       isChecked: false,
       selectedPassId: null,
       selectedPass: null,
@@ -267,6 +284,23 @@ export default {
     };
   },
   methods: {
+    updateGuestDetails($event, index, type) {
+      if (type == "name") {
+        this.bookingGuestDetails[index - 1].name = $event.target.value;
+      } else if (type == "email") {
+        this.bookingGuestDetails[index - 1].email = $event.target.value;
+      } else {
+        this.bookingGuestDetails[index - 1].contact = $event.target.value;
+      }
+    },
+    updateGuestNum() {
+      this.bookingGuestDetails = Array(this.numOfGuest).fill({
+        name: "",
+        email: "",
+        contact: "",
+      });
+      console.log(this.bookingGuestDetails);
+    },
     selectedDates($event) {
       this.retrievedData = {
         passId: $event.passData.passId,
@@ -337,12 +371,19 @@ export default {
       }
     },
     async submitBooking() {
+            console.log(this.bookingGuestDetails);
+
       this.isLoading = true;
       setTimeout(() => {
+        console.log(this.bookingDetails);
+
         document.getElementById("create-close-btn").click();
         this.$emit("bookingSubmitted", true);
-        this.$emit("toastrMsg", {status: "Success", msg: "Booking is successful!"});
-
+        // this.$emit("bookingDetails", this.bookingDetails);
+        this.$emit("toastrMsg", {
+          status: "Success",
+          msg: "Booking is successful!",
+        });
       }, 1000);
       // var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
       // this.$emit("toastrMsg", "New employee has been created!");
