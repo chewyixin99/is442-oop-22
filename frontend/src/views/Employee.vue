@@ -189,9 +189,12 @@
                     workbook.SheetNames.forEach((sheetName) => {
                         var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                         for (let row of XL_row_object){
-                            let doesNameExist = this.gridJsTableData.some(z => z.includes(row.Name)) ;
+                            console.log( Object.values(row)[1]);
+                            let doesNameExist = this.gridJsTableData.some(z => z.includes(row.Name ?? Object.values(row)[1])) ;
                             if (!doesNameExist && row.Name != ""){
-                                var record = Object.keys(row).map((key) => row[key]); //convert object to array form
+                                var record = Object.keys(row).map((key) => String(row[key])); //convert object to array form
+                                //If .xlsx file has no header, switch the position of affected elements in the array. From [Phone number, Name, Email] to [Name, Email, Phone Number]
+                                [record[0], record[1], record[2]] = row.Name == undefined ? [record[1], record[2], record[0]] : [record[0], record[1], record[2]]; 
                                 this.pushRow(record);
                             }
                         }
@@ -202,7 +205,7 @@
                 reader.readAsBinaryString(selected);
             },
             pushRow(row){
-                if (row.length == 3){
+                if (row.length == 4 && !row.includes("")){
                     let nextIdToInsert = this.gridJsTableData.length + 1;
                     row.unshift(nextIdToInsert);
                     row.push("d");
