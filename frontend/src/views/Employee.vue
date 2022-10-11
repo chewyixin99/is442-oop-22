@@ -46,38 +46,38 @@
                 toastrResponse: "",
                 recordsToDelete: [],
                 gridJsTableData: [
-                        [1, 'John Cena', 'john@example.com', '(353) 01 222 3333', 'c', 'd'],
-                        [2, 'Joe Mama', 'mark@gmail.com',   '(01) 22 888 4444' , 'c', 'd'],
-                        [3, 'Imagine Dragon Deez Nuts', 'eo3n@yahoo.com',   '(05) 10 878 5554', 'c', 'd'],
-                        [4, 'Nisen', 'nis900@gmail.com',   '313 333 1923', 'c', 'd'],
-                        [5, 'Marco Polo', 'mp@gmail.com',   '(05) 10 878 6757', 'c', 'd'],
-                        [6, 'Nisen', 'nis900@gmail.com',   '313 333 1923', 'c', 'd']
-                    ],
+                    {id: 1, name: 'John Cena', email: 'john@example.com', phoneNumber: '(353) 01 222 3333', role: 'c'},
+                    {id: 2, name: 'Joe Mama', email: 'mark@gmail.com', phoneNumber: '(01) 22 888 4444' , role: 'c'},
+                    {id: 3, name: 'Imagine Dragon Deez Nuts', email: 'eo3n@yahoo.com', phoneNumber: '(05) 10 878 5554', role: 'c'},
+                    {id: 4, name: 'Nisen', email: 'nis900@gmail.com', phoneNumber: '313 333 1923', role: 'c'},
+                    {id: 5, name: 'Marco Polo', email: 'mp@gmail.com', phoneNumber: '(05) 10 878 6757', role: 'c'},
+                    {id: 6, name: 'Nisen', email: 'nis900@gmail.com', phoneNumber: '313 333 1923', role: 'c'}
+                ],
                 grid: new Grid({
                     resizable: true,
                     columns: [
-                        {
-                            id: 'employeeCheckBox',
-                            plugin: {
-                                component: RowSelection,
-                                props: {
-                                    // use the "id" column as the row identifier
-                                    id: (row) => row.cell(1).data - 1
-                                }
-                            },
-                            width: '5%',
+                    {
+                        id: 'employeeCheckBox',
+                        plugin: {
+                            component: RowSelection,
+                            props: {
+                                // use the "id" column as the row identifier
+                                id: (row) => row.cell(1).data - 1
+                            }
                         },
-                        { name: 'ID', width: '10%' },
-                        { name: 'Name', width: '20%' },
-                        { name: 'Email',  width: '25%' },
-                        { name: 'Phone Number',  width: '20%' },
-                        'Role', 
-                        { 
-                            name: '#',
-                            formatter: () => html(`<i class="fa-lg button bi bi-pencil text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
-                            width: '1%'
-                        },
-                    ],
+                        width: '5%',
+                    },
+                    { name: 'ID', width: '10%' },
+                    { name: 'Name', width: '20%' },
+                    { name: 'Email',  width: '25%' },
+                    { name: 'Phone Number',  width: '20%' },
+                    'Role', 
+                    { 
+                        name: '#',
+                        formatter: () => html(`<i class="fa-lg button bi bi-pencil text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
+                        width: '1%'
+                    }
+                ],
                     data: [],
                     search: true,
                     sort: true,
@@ -130,16 +130,17 @@
                 // const employee = await EmployeeService.createEmployee();
                 // console.log(employee);
 
-                // this.$emit("toastrMsg", {status: "Error", msg: "Opps, something went wrong!"});
-
                 var row = Object.keys(details).map((key) => details[key]);
-                row.unshift(this.gridJsTableData.length + 1);
-                row.push("d");
-                this.gridJsTableData.push(row);
+                let doesNameExist = this.gridJsTableData.some((e) => e.name === details.eName);
+                if (!doesNameExist && details.name != ""){ //check if name exist in current table, if name is empty, or is first row a header row
+                    this.pushRow(row);
+                    this.toastrResponse = {status: "Success", msg: "New employee has been created!"};    
+                } else {
+                    this.toastrResponse = {status: "Error", msg: "Employee name already exist!"};            
+                }
                 this.refreshTable();
 
-                var bsAlert = new Toast(document.getElementById('theToastr'));       
-                this.toastrResponse = {status: "Success", msg: "New employee has been created!"};      
+                var bsAlert = new Toast(document.getElementById('theToastr'));         
                 bsAlert.show();
             },
             async editEmployeeDetails(details){
@@ -159,8 +160,10 @@
             async deleteRecords(){
                 if (this.recordsToDelete.length > 0){
                     this.recordsToDelete.forEach((value, index) => {
-                        console.log("Index to delete:", index, "Id value:", value);
-                        this.gridJsTableData.splice(value, 1);
+                        console.log("Index to delete:", index, "Id value:", value + 1);
+                        this.gridJsTableData = this.gridJsTableData.filter(function( obj ) {
+                            return obj.id !== value + 1;
+                        });
                     })
                     this.refreshTable();
                     // const employees = await EmployeeService.removeEmployees();
@@ -203,7 +206,7 @@
                     for (let i in data) {
                         data[i] = data[i].split(",");
                         let name = data[i][0];
-                        let doesNameExist = this.gridJsTableData.some(row => row.includes(name));
+                        let doesNameExist = this.gridJsTableData.some((row) => row.name === name);
                         if (!doesNameExist && name != "" && name != "Name"){ //check if name exist in current table, if name is empty, or is first row a header row
                             this.pushRow(data[i]);
                         }
@@ -219,12 +222,11 @@
                     workbook.SheetNames.forEach((sheetName) => {
                         var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                         for (let row of XL_row_object){
-                            console.log( Object.values(row)[1]);
-                            let doesNameExist = this.gridJsTableData.some(z => z.includes(row.Name ?? Object.values(row)[1])) ;
+                            let doesNameExist = this.gridJsTableData.some(z => row?.Name == undefined ? z.name === Object.values(row)[1] : z.name === row.Name);
                             if (!doesNameExist && row.Name != ""){
                                 var record = Object.keys(row).map((key) => String(row[key])); //convert object to array form
                                 //If .xlsx file has no header, switch the position of affected elements in the array. From [Phone number, Name, Email] to [Name, Email, Phone Number]
-                                [record[0], record[1], record[2]] = row.Name == undefined ? [record[1], record[2], record[0]] : [record[0], record[1], record[2]]; 
+                                [record[0], record[1], record[2]] = row.Name == undefined ? [record[1], record[2], record[0]] : [record[0], record[1], record[2]];
                                 this.pushRow(record);
                             }
                         }
@@ -236,18 +238,46 @@
             },
             pushRow(row){
                 if (row.length == 4 && !row.includes("")){
-                    row.unshift(this.gridJsTableData.length + 1);
-                    row.push("d");
-                    this.gridJsTableData.push(row);
+                    let record = {
+                        "id": this.gridJsTableData[this.gridJsTableData.length - 1].id + 1,
+                        "name": row[0],
+                        "email": row[1],
+                        "phoneNumber": row[2],
+                        "role": row[3]
+                    };
+                    this.gridJsTableData.push(record);
                 } else {
                     this.toastrResponse = {status: "Error", msg: "Your data is invalid, please check your data set for missing fields or cells!"}; 
                     throw new Error("Invalid file");
                 }
             },
             refreshTable(){
+                //Need to redeclare grid js columns properties if not won't work
                 this.grid.updateConfig({
-                    search: true,
-                    data: this.gridJsTableData
+                    data: this.gridJsTableData,
+                    columns: [
+                    {
+                        id: 'employeeCheckBox',
+                        plugin: {
+                            component: RowSelection,
+                            props: {
+                                // use the "id" column as the row identifier
+                                id: (row) => row.cell(1).data - 1
+                            }
+                        },
+                        width: '5%',
+                    },
+                    { name: 'ID', width: '10%' },
+                    { name: 'Name', width: '20%' },
+                    { name: 'Email',  width: '25%' },
+                    { name: 'Phone Number',  width: '20%' },
+                    'Role', 
+                    { 
+                        name: '#',
+                        formatter: () => html(`<i class="fa-lg button bi bi-pencil text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
+                        width: '1%'
+                    }
+                ],
                 }).forceRender();
             }
         }

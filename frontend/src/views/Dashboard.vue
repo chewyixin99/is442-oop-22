@@ -8,6 +8,16 @@
         <p>2. Chart to show number of borrowers per month</p>
         <p>3. Search function to show a specific employee's loan history - monthly, 6monthly, anually</p>
         <p>4. Chart to show  number of loans per pass per month - optional</p>
+        <div class="row justify-content-center ">
+          <div class="w-25">
+            <select v-model="timeRange" class="form-select" aria-label="Default select example">
+              <option value="" selected disabled>Select Time Range</option>
+              <option value="14">2 Weeks</option>
+              <option value="30">1 Month</option>
+              <option value="180">6 Months</option>
+            </select>
+          </div>
+        </div>
         <div class="row">
           <div class="col-lg-6">
             <div class="mb-5"><canvas id="barChart"></canvas></div>
@@ -29,6 +39,7 @@ export default {
     },
     data(){
         return {
+          timeRange: "",
           ratio: 1.75,
           bar: {
             type: 'bar',
