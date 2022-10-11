@@ -83,6 +83,7 @@ export default {
       componentKey: 0,
       successFlag: false,
       retrievedData: [],
+      bookingDetails: {},
       currentBookingsGrid: new Grid({
         resizable: true,
         columns: [
@@ -325,7 +326,8 @@ export default {
         };
       }
     },
-    bookingSubmitted() {
+    bookingSubmitted(data) {
+      alert(JSON.stringify(data))
       this.forceRerender();
       var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();

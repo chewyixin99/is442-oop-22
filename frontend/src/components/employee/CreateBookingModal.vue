@@ -87,8 +87,16 @@
               </div>
               <hr />
               <div class="form-group">
-                <h4>Guest Details</h4>
-                <label for="exampleFormControlSelect1">Number of Guest</label>
+                <div class="d-flex justify-content-between align-items-top">
+                  <h4>Guest Details</h4>
+                  <i
+                    class="bi bi-plus fs-1"
+                    style="cursor: pointer"
+                    @click="addNewGuest"
+                  ></i>
+                </div>
+
+                <!-- <label for="exampleFormControlSelect1">Number of Guest</label>
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
@@ -98,18 +106,21 @@
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
-                </select>
+                </select> -->
               </div>
               <div class="form-group">
-                <div class="row mt-3" v-for="index in numOfGuest" :key="index">
+                <div
+                  class="row mt-3"
+                  v-for="(detail, index) in bookingGuestDetails"
+                  :key="detail"
+                >
                   <div class="col">
                     <label for="exampleFormControlInput1">Name</label>
                     <input
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      @input="updateGuestDetails($event, index, 'name')"
-                      :placeholder="index"
+                      v-model="detail.name"
                     />
                   </div>
                   <div class="col">
@@ -118,7 +129,7 @@
                       type="email"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      @input="updateGuestDetails($event, index, 'email')"
+                      v-model="detail.email"
                     />
                   </div>
                   <div class="col">
@@ -127,9 +138,22 @@
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      @input="updateGuestDetails($event, index, 'contact')"
+                      v-model="detail.contact"
                     />
                   </div>
+                  <div class="col-1 d-flex align-items-end">
+                    <i
+                      class="bi bi-trash fs-5"
+                      style="cursor: pointer"
+                      @click.stop="removeGuest($event, index)"
+                    ></i>
+                  </div>
+                </div>
+                <div
+                  class="d-flex justify-content-center text-center"
+                  v-if="bookingGuestDetails.length < 1"
+                >
+                  No guest selected.
                 </div>
                 <br />
               </div>
@@ -175,6 +199,7 @@
                   class="form-control"
                   id="exampleFormControlTextarea1"
                   rows="3"
+                  v-model="bookingRemarks"
                 ></textarea>
               </div>
             </div>
@@ -198,8 +223,8 @@
               <button
                 type="button"
                 class="btn btn-primary"
-                :disabled="!isChecked"
-                @click.prevent="submitBooking"
+                :disabled="!isChecked || retrievedData.start == ''"
+                @click.stop="submitBooking"
                 style="min-width: 100px"
               >
                 <div class="" v-show="!isLoading">Submit</div>
@@ -222,7 +247,6 @@ export default {
   name: "CreateBookingModal",
   props: {
     modalType: String,
-    bookingDetails: Object,
   },
   components: {
     BookingCalendar,
@@ -236,11 +260,12 @@ export default {
           contact: "",
         },
       ],
+      bookingRemarks: "",
+      bookingDetails: {},
       isChecked: false,
       selectedPassId: null,
       selectedPass: null,
       isLoading: false,
-      numOfGuest: 1,
       numPass: 2,
       componentKey: 0,
       availablePasses: [
@@ -284,22 +309,16 @@ export default {
     };
   },
   methods: {
-    updateGuestDetails($event, index, type) {
-      if (type == "name") {
-        this.bookingGuestDetails[index - 1].name = $event.target.value;
-      } else if (type == "email") {
-        this.bookingGuestDetails[index - 1].email = $event.target.value;
-      } else {
-        this.bookingGuestDetails[index - 1].contact = $event.target.value;
-      }
+    removeGuest(e, index) {
+      console.log(index);
+      this.bookingGuestDetails.splice(index, 1);
     },
-    updateGuestNum() {
-      this.bookingGuestDetails = Array(this.numOfGuest).fill({
+    addNewGuest() {
+      this.bookingGuestDetails.push({
         name: "",
         email: "",
         contact: "",
       });
-      console.log(this.bookingGuestDetails);
     },
     selectedDates($event) {
       this.retrievedData = {
@@ -371,23 +390,31 @@ export default {
       }
     },
     async submitBooking() {
-            console.log(this.bookingGuestDetails);
+      console.log(this.bookingGuestDetails);
 
       this.isLoading = true;
       setTimeout(() => {
-        console.log(this.bookingDetails);
-
         document.getElementById("create-close-btn").click();
-        this.$emit("bookingSubmitted", true);
-        // this.$emit("bookingDetails", this.bookingDetails);
+        this.bookingDetails = {
+          passData: {
+            passId: this.retrievedData.passId,
+            passTitle: this.retrievedData.passTitle,
+          },
+          duration: {
+            start: this.retrievedData.start,
+            end: this.retrievedData.end,
+          },
+          remarks: this.bookingRemarks,
+          guestData: this.bookingGuestDetails,
+          timeStamp: new Date().toISOString(),
+        }
+        this.$emit("bookingSubmitted", this.bookingDetails);
+
         this.$emit("toastrMsg", {
           status: "Success",
           msg: "Booking is successful!",
         });
       }, 1000);
-      // var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
-      // this.$emit("toastrMsg", "New employee has been created!");
-      // bsAlert.show();
     },
   },
 };
