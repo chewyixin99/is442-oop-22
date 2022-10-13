@@ -8,33 +8,36 @@
         <p>2. Settings for automated email</p> -->
         <h1>Email</h1>
         <h2>Email Types and Templates</h2>
-        <div class="container">
-          <div class="row row-cols-auto g-5 d-flex justify-content-around">
+        <div class="container-fluid">
+          <div class="row row-cols-1 g-5">
             <div v-for="(template, index) in EmailTemplates" :key="template.templateName" >
-                <div class="card" style="width: 30rem;">
+                <div class="card">
                   <div class="card-body">
                     <h5 class="card-title">{{template.templateName}}</h5>
-                    <p class="card-text break-text">{{template.templateDraft}}</p>
+                    <div v-html="template.templateDraft">
+                    </div>
+                    <!-- <p class="card-text break-text">
+                      {{template.templateDraft}}
+                      </p> -->
                     <!-- Update button -->
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="`#emailModal`+template.templateName" @click="backupContent(template.templateDraft)">
                       Update
                     </button> 
                     <!-- Update modal -->
-                    <div class="modal fade" :id="`emailModal`+template.templateName" tabindex="-1"  aria-hidden="true">
+                    <div class="modal fade" data-bs-backdrop="static" :id="`emailModal`+template.templateName" tabindex="-1"  aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Update {{template.templateName}} information</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="cancelUpdate(template.templateName)"></button>
                                 </div>
                                 <div class="modal-body">
-                                  <QuillEditor theme="snow" toolbar="full"  v-model:content="EmailTemplates[index]['templateDraft']" contentType="text">
+                                  <QuillEditor theme="snow" toolbar="full"  v-model:content="EmailTemplates[index]['templateDraft']" contentType="html">
                                   </QuillEditor>
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="saveContent(template.templateName)">Save</button>
                                   <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="cancelUpdate(template.templateName)">Cancel</button>
-                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -45,11 +48,11 @@
 
           </div>
         </div>
-
-        <!-- <hr>
+<!-- 
+        <hr>
         <hr> -->
 
-        <!-- <h2>Emails Editor</h2> -->
+        <!-- <h2>Emails Editor Test</h2> -->
         <!-- <div class="container" id="vueQuillEditor_1">
           <QuillEditor v-model:content="content_1" contentType="text" theme="snow" toolbar="#custom-toolbar_1">
             <template #toolbar>
@@ -96,7 +99,7 @@
         <!-- <div class="container" id="vueQuillEditor_TemplateTest">
           <QuillEditor theme="snow" toolbar="full" v-model:content="vueContent" contentType="html">
           </QuillEditor>
-          <button type="button" class="btn btn-warning" @click="saveContent('ePass')">Save</button>
+          <button type="button" class="btn btn-warning" @click="saveContentTest()">Save</button>
         </div> -->
           <!-- <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[0]['templateDraft']" contentType="text">
           </QuillEditor>
@@ -140,7 +143,7 @@ export default {
             "templateName": "ePass",
             "templateDraft": `Dear borrower’s name,
                       ePass Draft this is
-                      Enjoy your visit to attraction name! `,
+                      Enjoy your visit to attraction name11! `,
               
           },
           { 
@@ -153,15 +156,8 @@ export default {
     },
     methods: {
             saveContent(){
-              // for (let i = 0; i < this.EmailTemplates.length; i++) {
-              //   console.log(this.EmailTemplates[i]["templateName"])
-              //   if(this.EmailTemplates[i]["templateName"]==selectedTemplateName){
-              //     this.EmailTemplates[i]["templateDraft"] = this.vueContent
-              //     console.log(this.EmailTemplates[i]["templateDraft"])
-              //   }
-              // }
               this.backupContentData = ``
-              // window.location.reload()
+              console.log(this.EmailTemplates[0]["templateDraft"])
             },
             backupContent(draftToBackup){
               this.backupContentData = draftToBackup
@@ -173,7 +169,7 @@ export default {
                   this.EmailTemplates[i]["templateDraft"] = this.backupContentData
                 }
               }
-            }
+            },
         },
 }
 

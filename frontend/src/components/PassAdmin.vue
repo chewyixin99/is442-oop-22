@@ -16,25 +16,29 @@
                             </div>
                             <ul class="list-group list-group-flush">
                                 <span><b>Eligible places: </b><br>
-                                    {{getPlaces(PassAdmin.cid)}}</span>
+                                {{getPlaces(PassAdmin.cid)}}</span>
+                            </ul>
+                            <ul class="list-group list-group-flush">
+                                <span><b>Applicable for: </b><br>
+                                1 Employee + 3 Guests</span>
                             </ul>
                             <div class="card-footer btn-group-vertical">
                                 <!-- Update button prompt Pass modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#AdminView`+PassAdmin.cid">
+                                <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#AdminView`+PassAdmin.cid">
                                     View
-                                </button>     
+                                </button>      -->
                                 <!-- Update button prompt Passes update modal -->
                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="`#AdminUpdate`+PassAdmin.cid">
                                     Update
                                 </button> 
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal">
+                                <!-- <button type="button" class="btn btn-danger" data-bs-toggle="modal">
                                     Delete
-                                </button> 
+                                </button>  -->
                             </div>
                     </div>
 
                     <!-- View Passes Modal  -->
-                    <div class="modal fade" :id="`AdminView`+PassAdmin.cid" tabindex="-1" aria-hidden="true">
+                    <!-- <div class="modal fade" :id="`AdminView`+PassAdmin.cid" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable">
                             
                             <div class="modal-content">
@@ -56,7 +60,7 @@
                             </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     
                     <!-- Pass update modal -->
                     <div class="modal fade" :id="`AdminUpdate`+PassAdmin.cid" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -84,6 +88,8 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" @click="UpdatePass" data-bs-dismiss="modal">Update Now</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal">
+                                    Delete</button> 
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
