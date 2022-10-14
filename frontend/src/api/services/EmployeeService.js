@@ -4,9 +4,18 @@ import BaseApiService from "../BaseApiService";
 class EmployeeService extends BaseApiService {
     async createEmployee(employeeDetails) {
         try {
-            let employee = await axiosClient.post("/create_employee", {
-                params: {...employeeDetails}
-            });
+            let employee = await axiosClient.post("/users", { ...employeeDetails });
+            console.log(employee);
+            return employee.data
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+
+    async getEmployee(val) {
+        try {
+            let employee = await axiosClient.get("users/" + val);
             console.log(employee);
             return employee.data
 
@@ -17,7 +26,7 @@ class EmployeeService extends BaseApiService {
 
     async getAllEmployees() {
         try {
-            let employees = await axiosClient.get("/get_all_employees");
+            let employees = await axiosClient.get("/users");
             console.log(employees);
             return employees.data
 
@@ -28,22 +37,23 @@ class EmployeeService extends BaseApiService {
 
     async editEmployeeDetails(employeeDetails) {
         try {
-            let employee = await axiosClient.patch("/edit_employee", {
-                params: {...employeeDetails}
+            let employee = await axiosClient.put("/users/9", {
+                ...employeeDetails
             });
             console.log(employee);
             return employee.data
 
         } catch (error) {
+            console.log(error);
             return this.handleError(error);
         }
     }
 
-    async removeEmployees(employeeIDs) {
+    async removeEmployees(employeeID) {
         try {
-            let deletionStatus = await axiosClient.delete("/remove_employees", {
+            let deletionStatus = await axiosClient.delete("/users", {
                 params : {
-                    employee_id: employeeIDs
+                    "userId": employeeID
                 }
             });
             console.log(deletionStatus);

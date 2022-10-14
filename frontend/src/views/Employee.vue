@@ -21,12 +21,12 @@
             </div>
         </div>
         <EmployeeModal @toastrMsg="updateToastrMsg" id="createModal" modalType="create" @createEmployee="createEmployee"></EmployeeModal>
-        <EmployeeModal @toastrMsg="updateToastrMsg" id="editModal" modalType="edit" @editEmployeeDetails="editEmployeeDetails"></EmployeeModal>
+        <EmployeeModal @toastrMsg="updateToastrMsg" id="editModal" modalType="edit" @editEmployee="editEmployee" :selectedEmployeeToEdit="selectedEmployeeToEdit"></EmployeeModal>
         <TheToastr :toastrResponse="toastrResponse"></TheToastr>
     </div>
 </template>
 <script>
-    // import EmployeeService from "@/api/services/EmployeeService";   
+    import EmployeeService from "@/api/services/EmployeeService";   
     import { Grid, html } from "gridjs";
     import { RowSelection } from "gridjs/plugins/selection";
     import TheToastr from "@/components/TheToastr.vue";
@@ -45,39 +45,11 @@
                 form: { file: null },
                 toastrResponse: "",
                 recordsToDelete: [],
-                gridJsTableData: [
-                    {id: 1, name: 'John Cena', email: 'john@example.com', phoneNumber: '(353) 01 222 3333', role: 'c'},
-                    {id: 2, name: 'Joe Mama', email: 'mark@gmail.com', phoneNumber: '(01) 22 888 4444' , role: 'c'},
-                    {id: 3, name: 'Imagine Dragon Deez Nuts', email: 'eo3n@yahoo.com', phoneNumber: '(05) 10 878 5554', role: 'c'},
-                    {id: 4, name: 'Nisen', email: 'nis900@gmail.com', phoneNumber: '313 333 1923', role: 'c'},
-                    {id: 5, name: 'Marco Polo', email: 'mp@gmail.com', phoneNumber: '(05) 10 878 6757', role: 'c'},
-                    {id: 6, name: 'Nisen', email: 'nis900@gmail.com', phoneNumber: '313 333 1923', role: 'c'}
-                ],
+                gridJsTableData: [],
+                selectedEmployeeToEdit: {},
                 grid: new Grid({
                     resizable: true,
-                    columns: [
-                    {
-                        id: 'employeeCheckBox',
-                        plugin: {
-                            component: RowSelection,
-                            props: {
-                                // use the "id" column as the row identifier
-                                id: (row) => row.cell(1).data - 1
-                            }
-                        },
-                        width: '5%',
-                    },
-                    { name: 'ID', width: '10%' },
-                    { name: 'Name', width: '20%' },
-                    { name: 'Email',  width: '25%' },
-                    { name: 'Phone Number',  width: '20%' },
-                    'Role', 
-                    { 
-                        name: '#',
-                        formatter: () => html(`<i class="fa-lg button bi bi-pencil text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
-                        width: '1%'
-                    }
-                ],
+                    columns: [],
                     data: [],
                     search: true,
                     sort: true,
@@ -108,7 +80,19 @@
                 })
             }
         },
-        mounted() {
+        async mounted() {
+            var employees = await EmployeeService.getAllEmployees();
+            for(let e of employees){
+                let gridJsEmployeeObject = {
+                    "id": e.id,
+                    "name": e.username,
+                    "email": e.email,
+                    "phoneNumber": e.contactNumber,
+                    "role": e.userType
+                }
+                this.gridJsTableData.push(gridJsEmployeeObject);
+            }
+
             this.grid.render(document.getElementById("wrapper"));
             this.grid.on("ready", () => {
                 // find the plugin with the give plugin ID
@@ -120,6 +104,17 @@
                     this.recordsToDelete = state["rowIds"];
                 });
             })
+            this.grid.on('rowClick',    (...args) => {
+                let allArgs = args[1]["_cells"];
+                this.selectedEmployeeToEdit = {
+                    "id": allArgs[1].data,
+                    "eName": allArgs[2].data,
+                    "email": allArgs[3].data,
+                    "phoneNumber": allArgs[4].data,
+                    "role": allArgs[5].data
+                }
+            });
+
             this.refreshTable();
         },
         methods: {
@@ -127,9 +122,6 @@
                 this.toastrResponse = res;
             },
             async createEmployee(details){
-                // const employee = await EmployeeService.createEmployee();
-                // console.log(employee);
-
                 var row = Object.keys(details).map((key) => details[key]);
                 let doesNameExist = this.gridJsTableData.some((e) => e.name === details.eName);
                 if (!doesNameExist && details.name != ""){ //check if name exist in current table, if name is empty, or is first row a header row
@@ -143,31 +135,34 @@
                 var bsAlert = new Toast(document.getElementById('theToastr'));         
                 bsAlert.show();
             },
-            async editEmployeeDetails(details){
-                // const employees = await EmployeeService.editEmployeeDetails("1");
-                // console.log(employees);
+            async editEmployee(details){
 
-                var row = Object.keys(details).map((key) => details[key]);
-                console.log(row);
-                // this.gridJsTableData.push(row);
+                details.password = "test";
+                console.log(details);
+                try{
+                    const employee = await EmployeeService.editEmployeeDetails(details);
+                    console.log(employee);
+                    this.toastrResponse = {status: "Success", msg: "Your changes have been saved!"};
+                } catch (e){
+                    this.toastrResponse = {status: "Error", msg: "Opps, something went wrong!"};
+                } finally {
+                    var bsAlert = new Toast(document.getElementById('theToastr'));
+                    bsAlert.show();
+                }
                 this.refreshTable();
 
-                var bsAlert = new Toast(document.getElementById('theToastr'));
-                // this.toastrResponse = {status: "Success", msg: "Your changes have been saved!"};
-                this.toastrResponse = {status: "Error", msg: "Opps, something went wrong!"};
-                bsAlert.show();
             },
             async deleteRecords(){
                 if (this.recordsToDelete.length > 0){
-                    this.recordsToDelete.forEach((value, index) => {
-                        console.log("Index to delete:", index, "Id value:", value + 1);
-                        this.gridJsTableData = this.gridJsTableData.filter(function( obj ) {
-                            return obj.id !== value + 1;
-                        });
-                    })
+
+
+                    for (let value of this.recordsToDelete){
+                        console.log("Id value:", value + 1);
+                        const employees = await EmployeeService.removeEmployees(value + 1);
+                        console.log(employees);
+                    }
+
                     this.refreshTable();
-                    // const employees = await EmployeeService.removeEmployees();
-                    // console.log(employees);
                     this.toastrResponse = {status: "Success", msg: "Records have been successfully deleted!"};
 
                 } else {
@@ -236,16 +231,15 @@
 
                 reader.readAsBinaryString(selected);
             },
-            pushRow(row){
+            async pushRow(row){
                 if (row.length == 4 && !row.includes("")){
-                    let record = {
-                        "id": this.gridJsTableData[this.gridJsTableData.length - 1].id + 1,
-                        "name": row[0],
-                        "email": row[1],
-                        "phoneNumber": row[2],
-                        "role": row[3]
-                    };
-                    this.gridJsTableData.push(record);
+                    let record = { "username": row[0], "email": row[1], "contactNumber": row[2], "userType": row[3], "password": "test" };
+                    try {
+                        const employee = await EmployeeService.createEmployee(record);
+                        console.log(employee);
+                    } catch (e){
+                        console.log(e);
+                    }
                 } else {
                     this.toastrResponse = {status: "Error", msg: "Your data is invalid, please check your data set for missing fields or cells!"}; 
                     throw new Error("Invalid file");
@@ -279,7 +273,7 @@
                     }
                 ],
                 }).forceRender();
-            }
+            },
         }
         
     }
