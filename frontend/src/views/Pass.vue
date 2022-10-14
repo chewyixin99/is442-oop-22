@@ -29,7 +29,9 @@
             <h1>Passes(Admin view)</h1>
         </div>
         <div class="row">
-            <PassAdmin :PassAdmin_PassesCategory="PassesCategory"/>
+            <!-- <PassAdmin :PassAdmin_PassesCategory="PassesCategory"/> -->
+            <PassAdmin :PassAdminPasses="Passes"/>
+
         </div>
 
     </div>
@@ -50,7 +52,7 @@ export default {
     data() {
         return {
             PassesCategory: [],
-            // passes_cid1: [],
+            Passes: [],
         }
     },
     created(){
@@ -86,6 +88,50 @@ export default {
                 "image": "passPic_test.jpg"
 
             },
+            
+        ],
+
+        this.Passes = [
+            {
+                "passDesc": "Pass 1 description",
+                "poi": "Gardens By The Bay",
+                "numGuests": 2,
+                "replacementFee": 20,
+                "passStatus": "ONLOAN",
+                "defunct": false,
+                "id": 1,
+                "physical": true
+            },
+            {
+                "passDesc": "Pass 2 description",
+                "poi": "Singapore Zoo",
+                "numGuests": 2,
+                "replacementFee": 20,
+                "passStatus": "AVAILABLE",
+                "defunct": true,
+                "id": 2,
+                "physical": true
+            },
+            {
+                "passDesc": "Pass 3 description",
+                "poi": "Sea Aquarium",
+                "numGuests": 2,
+                "replacementFee": 20,
+                "passStatus": "AVAILABLE",
+                "defunct": false,
+                "id": 3,
+                "physical": false
+            },
+            {
+                "passDesc": "Pass 4 description",
+                "poi": "Sea Aquarium",
+                "numGuests": 2,
+                "replacementFee": 20,
+                "passStatus": "ONLOAN",
+                "defunct": false,
+                "id": 4,
+                "physical": false
+            }
         ]
     }
 }
