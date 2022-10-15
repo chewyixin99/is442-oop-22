@@ -141,17 +141,16 @@
                             <div class="modal-body text-start">
                                 <form>
                                     <div class="mb-3">
-                                            <label class="col-form-label"><b>ID:</b></label><br>
-                                            <input type="number" class="form-control" required >
+                                            <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
                                             <label class="col-form-label">Description:</label> 
-                                            <input class="form-control" required >
+                                            <input class="form-control" required v-model="NewPassObject.passDesc">
                                             <label class="col-form-label">Point of Interests:</label>
-                                            <input class="form-control" required >
+                                            <input class="form-control" required v-model="NewPassObject.poi">
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
                                             <div class="col-7">
-                                                <input type="number" class="form-control" required>
+                                                <input type="number" class="form-control" required v-model="NewPassObject.numGuests">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -159,32 +158,43 @@
                                             <div class="col-7">
                                                 <div class="input-group">
                                                     <div class="input-group-text">$</div>
-                                                    <input type="number" class="form-control" required>
+                                                    <input type="number" class="form-control" required v-model="NewPassObject.replacementFee">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Status</b></label>
                                             <div class="col-7">
-                                                <input type="text" class="form-control" required>
+                                                <select class="form-select" v-model="NewPassObject.passStatus">
+                                                    <option value="AVAILABLE">Available</option>
+                                                    <option value="ONLOAN">On Loan</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Defunct?</b></label>
                                             <div class="col-7">
-                                                <input type="text" class="form-control" required>
+                                                <select class="form-select" v-model="NewPassObject.physical">
+                                                    <option value="true">true</option>
+                                                    <option value="false">false</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
-                                                <input type="text" class="form-control" required>
+                                                <select class="form-select" v-model="NewPassObject.defunct">
+                                                    <option value="true">true</option>
+                                                    <option value="false">false</option>
+                                                </select>
                                             </div>
+                                            <!-- <div>{{NewPassObject.defunct}}</div> -->
                                         </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                                <button type="button" class="btn btn-primary" @click="addNewPass()" data-bs-dismiss="modal">Create Pass</button>
+                                <!-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="CreateNewPass">Create Pass</button> -->
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
@@ -202,26 +212,58 @@
 </template>
 
 <script>
-
+import PassService from '@/api/services/PassService'
+// import axios from 'axios'
 export default ({
     name: 'PassAdmin',
         props: {
             PassAdminPasses: Array,
         },
+        
+        components: {
+        },
+        data() {
+        return {
+            // Capital for testing, small capital for database data
+            // AdminPasses: this.PassAdminPasses,
+            NewPassObject: {
+                passDesc: "",
+                poi: "",
+                numGuests: 0,
+                replacementFee: 0,
+                passStatus: "AVAILABLE",
+                defunct: true,
+                // id: 5,
+                physical: true
+            },
+            
+            }
+        },
         methods: {
-            getImageUrl(pic){
+            GetImageUrl(pic){
                 return require('../assets/'+pic)
             },
-            // getPlaces(card_id){
-            //     for(const i in this.PassAdmin_PassesCategory){
-            //         if(card_id == this.PassAdmin_PassesCategory[i]["cid"]){
-            //             return this.PassAdmin_PassesCategory[i]["places"].join(', ')
-            //         }
-
+            async addNewPass(){
+                try{
+                    await PassService.createPass(this.NewPassObject);
+                    this.$emit('getPassData')
+                }catch(e){
+                    console.log(e);
+                }
+            },
+            // CreateNewPass(){
+            //     this.AdminPasses.push(this.NewPassObject)
+            //     this.NewPassObject = {
+            //     passDesc: "",
+            //     poi: "",
+            //     numGuests: 0,
+            //     replacementFee: 0,
+            //     passStatus: "AVAILABLE",
+            //     defunct: true,
+            //     id: 5,
+            //     physical: true
             //     }
             // }
-        },
-        components: {
         },
 
 })

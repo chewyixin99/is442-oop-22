@@ -6,10 +6,12 @@
         ------------------------------------
         <p>1. Edit email template for the two types of email</p>
         <p>2. Settings for automated email</p> -->
+
         <h1>Email</h1>
         <h2>Email Types and Templates</h2>
         <div class="container-fluid">
           <div class="row row-cols-1 g-5">
+<<<<<<< Updated upstream
             <div v-for="(template, index) in EmailTemplates" :key="template.templateName" >
                 <div class="card">
                   <div class="card-body">
@@ -42,6 +44,40 @@
                             </div>
                         </div>
                     </div>
+=======
+            <!-- change here start -->
+            <div v-for="(template, index) in emailTemplates" :key="template.id" >
+            <!-- change here end -->
+              <div class="card mb-3 border-secondary">
+                <div class="card-header text-dark bg-light">Template {{index+1}}</div>
+                <div class="card-header text-white bg-dark"><h2>{{template.templateName}}</h2></div>
+                <div class="card-body border-secondary">
+                  <p class="text-start" v-html="template.templateData"></p>
+                </div>
+                <div class="card-footer border-secondary btn-group-vertical">
+                  <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="`#emailModal`+template.templateName" @click="backupContent(template.templateData)">
+                      Edit
+                  </button> 
+                </div>
+              </div>
+              <!-- Update modal -->
+              <div class="modal fade" data-bs-backdrop="static" :id="`emailModal`+template.templateName" tabindex="-1"  aria-hidden="true">
+                  <div class="modal-dialog modal-xl">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Update {{template.templateName}} information</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="cancelUpdate(template.templateName)"></button>
+                          </div>
+                          <div class="modal-body">
+                            <QuillEditor theme="snow" toolbar="full"  v-model:content="template.templateData" contentType="html">
+                            </QuillEditor>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="saveContent(template.templateName)">Save</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="cancelUpdate(template.templateName)">Cancel</button>
+                          </div>
+                      </div>
+>>>>>>> Stashed changes
                   </div>
                 </div>
             </div>
@@ -129,7 +165,12 @@ export default {
   },
   data(){
     return {
+<<<<<<< Updated upstream
     EmailTemplates: [],
+=======
+    emailTemplates: [],
+    // EmailTemplates: [],
+>>>>>>> Stashed changes
     vueContent: ``,
     backupContentData: ``,
     // content_1: "Content 1",
@@ -137,6 +178,7 @@ export default {
     // custom toolbar
     }
   },
+<<<<<<< Updated upstream
   created(){
       this.EmailTemplates = [
           {
@@ -170,6 +212,56 @@ export default {
                 }
               }
             },
+=======
+  async mounted(){
+      var allTemplates = await EmailService.getAllEmailTemplates();
+      console.log(allTemplates)
+      for(let i of allTemplates){
+        let perTemplateObject = {
+          "templateName": i.templateName,
+          "templateData": i.templateData,
+          "defunct": i.defunct,
+          "id": i.id
+        }
+        if(perTemplateObject.templateName!=null){
+          this.emailTemplates.push(perTemplateObject)
+        }
+      }
+    },
+  created(){
+      // this.EmailTemplates = [
+      //     {
+      //       "templateName": "ePass",
+      //       "templateData": "<h1>Dear %s!!borrower's name!!,</h1><p>We are pleased to inform that your booking to %s!!attraction name!! is confirmed as follows:&nbsp;</p><p><br></p><p>Date of Visit :Saturday, 12 February 2022 (1 day only)</p><p>Membership ID :%d!!corp pass number!!</p><p><strong>&nbsp;</strong></p><p>For any change in visit date, you are required to cancel your booking (at least 1 day before) and to submit a new booking in the system.&nbsp;</p><p><br></p><p>Attached is the Corporate Membership letter to %s!!attraction name!!. Please check that the details are accurate.&nbsp;</p><p><br></p><p>Please take note of the following on the day of your visit to %s!!attraction name!!:</p><ul><li>Present this email, the attached corporate membership letter and your staff pass at the entrance of %s!!attraction name!!.&nbsp;</li><li>Entry is strictly based on your details in this email and corporate membership letter.</li><li>Your presence is required on the day of visit. Entry will be denied without staff's presence.&nbsp;</li><li>Your booking is non-transferable. Entry is strictly based on the details in this email and Corporate Membership letter.&nbsp;</li><li>Visit date is strictly based on the date stated in this email and Corporate Membership letter.&nbsp;</li><li>Staff found abusing the Corporate Membership letter will be subject to disciplinary actions.&nbsp;</li></ul><p>Enjoy your visit to %s!!attraction name!!!&nbsp;</p><p><br></p><p>Warm regards</p><p>HR Department </p>",
+      //       "defunct": false,
+      //       "id": 1,
+              
+      //     },
+      //     { 
+      //       "templateName": "physicalPass",
+      //       "templateData": "<h1>Dear %s!!borrower's name!!,</h1><p><br></p><p>We are pleased to inform that your booking to %s!!attraction name!! is confirmed as follows:&nbsp;</p><p><br></p><p>Date of Visit :Saturday, 12 February 2022 (1 day only)</p><p>Membership ID :%d!!corp pass number!!</p><p><strong>&nbsp;</strong></p><p>For any change in visit date, you are required to cancel your booking (at least 1 day before) and to submit a new booking in the system.&nbsp;</p><p><br></p><p>Attached is the authorisation letter to %s!!attraction name!!. Please check that the details are accurate.&nbsp;</p><p><br></p><p>Please take note of the following for your visit to %s!!attraction name!!:</p><ul><li>Present this email confirmation to the General Office to collect the membership card(s).</li><li>Collect the membership card(s) from the General Office one day before your visit date and return the membership card(s) by 9am the next working day after your visit.&nbsp;</li><li>Present the membership card(s), the authorisation letter and your staff pass at the entrance of %s!!attraction name!!.&nbsp;</li><li>Entry is strictly based on the membership card(s) and the authorisation letter.</li><li>Your presence is required on the day of visit. Entry will be denied without staff’s presence.&nbsp;</li><li>Your booking is non-transferable.&nbsp;</li><li>Visit date is strictly based on the date stated in this email and the authorisation letter.&nbsp;</li><li>Staff found abusing the membership(s) will be subject to disciplinary actions.&nbsp;</li></ul><p><br></p><p>Enjoy your visit to %s!!attraction name!!!&nbsp;</p><p><br></p><p>Warm regards</p><p>HR Department </p><p>",
+      //       "defunct": false,
+      //       "id": 2,
+      //     }
+      // ]
+    },
+    methods: {
+            // saveContent(){
+            //   this.backupContentData = ``
+            //   console.log(this.EmailTemplates[1]["templateData"])
+            // },
+            // backupContent(draftToBackup){
+            //   this.backupContentData = draftToBackup
+            // },
+            // cancelUpdate(selectedTemplateName){
+            //   for (let i = 0; i < this.EmailTemplates.length; i++) {
+            //     console.log(this.EmailTemplates[i]["templateName"])
+            //     if(this.EmailTemplates[i]["templateName"]==selectedTemplateName){
+            //       this.EmailTemplates[i]["templateData"] = this.backupContentData
+            //     }
+            //   }
+            // },
+>>>>>>> Stashed changes
         },
 }
 
