@@ -16,7 +16,7 @@
                     </div>
                     <div class="mb-3 has-validation">
                         <label for="name" class="col-form-label">Name:</label>
-                        <input v-model="eName" type="text" class="form-control name" id="name" required>
+                        <input v-model="name" type="text" class="form-control name" id="name" required>
                         <div class="invalid-feedback">
                             Please enter a valid name!
                         </div>
@@ -29,10 +29,10 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="phoneNumber" class="col-form-label">Phone Number:</label>
-                        <input v-model="phoneNumber" type="text" class="form-control phoneNumber" id="phoneNumber" required>
+                        <label for="contactNumber" class="col-form-label">Contact Number:</label>
+                        <input v-model="contactNumber" type="text" class="form-control contactNumber" id="contactNumber" required>
                         <div class="invalid-feedback">
-                            Please enter a valid phone number!
+                            Please enter a valid contact number!
                         </div>
                     </div>
                     <div class="mb-3">
@@ -48,8 +48,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button v-if="modalType == 'create'" type="button" class="btn btn-primary" @click="sendEmployeeDetails" :disabled="!eName || !email || !phoneNumber || !role">Create</button>
-                <button v-else type="button" class="btn btn-primary" @click="sendEmployeeDetails" :disabled="!eName || !email || !phoneNumber || !role">Save</button>
+                <button v-if="modalType == 'create'" type="button" class="btn btn-primary" @click="sendEmployeeDetails" :disabled="!name || !email || !contactNumber || !role">Create</button>
+                <button v-else type="button" class="btn btn-primary" @click="sendEmployeeDetails" :disabled="!name || !email || !contactNumber || !role">Save</button>
             </div>
             </div>
         </div>
@@ -68,29 +68,28 @@
         data(){
             return{
                 employeeDetails: Object,
-                eName: "",
+                name: "",
                 email: "",
-                phoneNumber: "",
+                contactNumber: "",
                 role: "",
             };
         }, 
         watch: {
             selectedEmployeeToEdit(data) {
-                console.log(data);
-                this.eName = data.eName;
+                this.name = data.name;
                 this.email = data.email;
-                this.phoneNumber = data.phoneNumber;
+                this.contactNumber = data.contactNumber;
                 this.role = data.role;                
             }
         },
         methods: {
-            validateFields(name, email, phoneNumber){
+            validateFields(name, email, contactNumber){
                 var isValidName = (name.length < 2) ? this.isInvalid("name") : this.isValid("name");
                 const validRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 var isValidEmail = (!email.match(validRegex)) ? this.isInvalid("email") : this.isValid("email");
-                var isValidPhoneNumber = (phoneNumber.length != 8 || (phoneNumber.split("")[0] != "9" && phoneNumber.split("")[0] != "8")) ? this.isInvalid("phoneNumber") : this.isValid("phoneNumber");
+                var isValidcontactNumber = (contactNumber.length != 8 || (contactNumber.split("")[0] != "9" && contactNumber.split("")[0] != "8")) ? this.isInvalid("contactNumber") : this.isValid("contactNumber");
 
-                return isValidName && isValidEmail && isValidPhoneNumber;
+                return isValidName && isValidEmail && isValidcontactNumber;
             },
             isInvalid(ele){
                 let index = this.modalType == "create" ? 0 : 1;
@@ -103,9 +102,9 @@
                 return true;
             },
             sendEmployeeDetails(){
-                let isValid = this.validateFields(this.eName, this.email, this.phoneNumber);
+                let isValid = this.validateFields(this.name, this.email, this.contactNumber);
                 if (isValid){
-                    this.employeeDetails = { "username": this.eName, "email": this.email, "contactNumber": this.phoneNumber,"userType": this.role }
+                    this.employeeDetails = { "username": this.name, "email": this.email, "contactNumber": this.contactNumber,"userType": this.role }
                     this.$emit(this.modalType + "Employee", this.employeeDetails);
                     const modal = Modal.getInstance(document.getElementById(this.modalType + "Modal"));    
                     modal.hide();             

@@ -5,7 +5,6 @@ class EmployeeService extends BaseApiService {
     async createEmployee(employeeDetails) {
         try {
             let employee = await axiosClient.post("/users", { ...employeeDetails });
-            console.log(employee);
             return employee.data
 
         } catch (error) {
@@ -16,7 +15,6 @@ class EmployeeService extends BaseApiService {
     async getEmployee(val) {
         try {
             let employee = await axiosClient.get("users/" + val);
-            console.log(employee);
             return employee.data
 
         } catch (error) {
@@ -27,7 +25,6 @@ class EmployeeService extends BaseApiService {
     async getAllEmployees() {
         try {
             let employees = await axiosClient.get("/users");
-            console.log(employees);
             return employees.data
 
         } catch (error) {
@@ -36,27 +33,21 @@ class EmployeeService extends BaseApiService {
     }
 
     async editEmployeeDetails(employeeDetails) {
+        console.log(employeeDetails);
         try {
-            let employee = await axiosClient.put("/users/9", {
+            let employee = await axiosClient.put("/users/" + employeeDetails.id, {
                 ...employeeDetails
             });
-            console.log(employee);
             return employee.data
 
         } catch (error) {
-            console.log(error);
             return this.handleError(error);
         }
     }
 
     async removeEmployees(employeeID) {
         try {
-            let deletionStatus = await axiosClient.delete("/users", {
-                params : {
-                    "userId": employeeID
-                }
-            });
-            console.log(deletionStatus);
+            let deletionStatus = await axiosClient.delete("/users/" + employeeID);
             return deletionStatus.data.message
 
         } catch (error) {
