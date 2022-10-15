@@ -6,7 +6,7 @@ use `oop`;
 -- Link here: https://app.diagrams.net/#G1TDR1A4IQ3V2OcwaAHy8hvXOS3MokRVjd
 create table if not exists `email_template` (
                                                 `template_id` int auto_increment not null,
-                                                `template_data` varchar(1000) not null,
+                                                `template_data` varchar(8000) not null,
     `defunct` bit not null, -- 1 for True and 0 for False
     primary key (`template_id`)
     ) engine = InnoDB default charset = utf8;
