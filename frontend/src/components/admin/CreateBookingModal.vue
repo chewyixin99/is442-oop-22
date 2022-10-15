@@ -42,8 +42,8 @@
             <div class="p-4">
               <BookingCalendar
                 :key="componentKey"
-                :passId="passFn('5')"
-                @selectedDates="selectedDates"
+                :selectedPassLoans="selectedPassLoans"
+                @selectedData="selectedData"
                 :selectedPass="selectedPass"
                 class="mt-4"
               />
@@ -85,7 +85,10 @@
                   </div>
                 </div>
               </div>
-              <hr />
+              <!-- <hr /> -->
+
+              <!-- Booking Details Form start --------------------------------------------------- -->
+
               <!-- <div class="form-group">
                 <div class="d-flex justify-content-between align-items-top">
                   <h4>Guest Details</h4>
@@ -157,9 +160,11 @@
                 </div>
                 <br /> -->
               <!-- </div> -->
-              <hr />
+
+              <!-- Booking Details Form end --------------------------------------------------- -->
+
               <div class="form-group">
-                <h4>Booking Details</h4>
+                <!-- <h4>Booking Details</h4> -->
                 <div class="row">
                   <div class="col">
                     <label for="exampleFormControlInput1">Pass Type</label>
@@ -320,22 +325,21 @@ export default {
         contact: "",
       });
     },
-    selectedDates($event) {
+    selectedData($event) {
       this.retrievedData = {
-        passId: $event.passData.passId,
-        passTitle: $event.passData.passTitle,
-        start: $event.start,
-        end: $event.end,
+        passID: $event.passID,
+        userID: 0,
+        start: $event.startDate,
+        end: $event.endDate,
       };
       console.log(this.retrievedData);
     },
     selectPass(event) {
-      this.selectedPassId = event.target.value;
       this.selectedPass = this.availablePasses.find(
-        (pass) => pass.id === this.selectedPassId
+        (pass) => pass.id === event.target.value
       );
 
-      console.log(this.selectedPass);
+      console.log(this.selectedPass)
     },
     forceRerender() {
       this.componentKey += 1;

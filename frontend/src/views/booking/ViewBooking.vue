@@ -15,10 +15,16 @@
               data-bs-toggle="modal"
               data-bs-target="#createModal"
             >
-              <i class="bi bi-calendar-plus fs-2 btnHover" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Booking"></i>
+              <i
+                class="bi bi-calendar-plus fs-2 btnHover"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Add New Booking"
+              ></i>
             </div>
           </div>
         </div>
+        
         <!-- current bookings table -->
         <div id="table1"></div>
         <hr />
@@ -60,6 +66,7 @@ import CreateBookingModal from "@/components/employee/CreateBookingModal.vue";
 import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/employee/CancelBookingModal.vue";
+import axios from "axios";
 
 export default {
   name: "ViewBooking",
@@ -84,6 +91,7 @@ export default {
       successFlag: false,
       retrievedData: [],
       bookingDetails: {},
+      userId: 1,
       currentBookingsGrid: new Grid({
         resizable: true,
         columns: [
@@ -148,17 +156,20 @@ export default {
             width: "10%",
           },
         ],
-        data: [
-          [
-            1,
-            "Zoo 1",
-            "26/09/22",
-            "30/09/22",
-            "Charlie - 86541253",
-            "Daisy - 85454126",
-          ],
-          [2, "Bird Park", "02/11/22", "04/11/22", "N.A.", "N.A."],
-        ],
+        server: {
+          url: "http://localhost:8081/loan",
+          then: (data) =>
+            data
+              .map((data) => [
+                data.id,
+                data.passId,
+                data.startDate,
+                data.endDate,
+              ])
+              .filter(
+                (data) => this.processDate(data[2]) >= new Date().toISOString().replace(/T.*$/, "") 
+              ),
+        },
         search: true,
         sort: true,
         pagination: {
@@ -220,12 +231,20 @@ export default {
             width: "15%",
           },
         ],
-        data: [
-          [1, "John Doe", "30/07/22", "02/08/22", "Bob - 86556232", "N.A."],
-          [2, "Joe Tan", "29/08/22", "01/09/22", "N.A.", "N.A."],
-          [3, "Zoo 2", "05/09/22", "07/09/22", "Alan - 98756232", "N.A."],
-          [4, "Gardens By The Bay", "15/09/22", "16/09/22", "N.A.", "N.A."],
-        ],
+        server: {
+          url: "http://localhost:8081/loan",
+          then: (data) =>
+            data
+              .map((data) => [
+                data.id,
+                data.passId,
+                data.startDate,
+                data.endDate,
+              ])
+              .filter(
+                (data) => this.processDate(data[2]) < new Date().toISOString().replace(/T.*$/, "")
+              ),
+        },
         search: true,
         sort: true,
         pagination: {
@@ -258,8 +277,13 @@ export default {
   mounted() {
     this.currentBookingsGrid.render(document.getElementById("table1"));
     this.employeeBookingsGrid.render(document.getElementById("table2"));
+    this.getData();
   },
   methods: {
+    processDate(date){
+      let split = date.split("/")
+      return new Date(parseInt(split[2]), parseInt(split[1])-1, parseInt(split[0])).toISOString().replace(/T.*$/, "")
+    },
     retrieveCancelData(data) {
       this.currentCancelData = data;
     },
@@ -326,14 +350,49 @@ export default {
         };
       }
     },
+    getData() {
+      axios
+        .get("http://localhost:8081/loan")
+        .then((response) => {
+          let resList = [];
+          console.log(response.data);
+          console.log(this.selectedPass);
+          resList = response.data.filter((pass) => pass.userId == this.userId);
+
+          // loop through resList
+          for (let i = 0; i < resList.length; i++) {
+            let passTitle = resList[i].passId;
+            let id = resList[i].id;
+            let startDate = resList[i].startDate;
+            let endDate = resList[i].endDate;
+            let previous = "N.A.";
+            let following = "N.A.";
+            this.currentBookingsGrid.data.push([
+              id,
+              passTitle,
+              startDate,
+              endDate,
+              previous,
+              following,
+            ]);
+          }
+          // [1, "John Doe", "30/07/22", "02/08/22", "Bob - 86556232", "N.A."],
+          console.log(this.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     bookingSubmitted(data) {
-      alert(JSON.stringify(data))
+      alert(JSON.stringify(data));
+      this.currentBookingsGrid.forceRender();
       this.forceRerender();
       var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
     cancelSubmitted() {
-      this.forceRerender();
+      this.$emit("reloadComponent", true);
+      this.currentBookingsGrid.forceRender();
       var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
