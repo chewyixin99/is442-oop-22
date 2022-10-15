@@ -1,4 +1,4 @@
-package com.is442.oop.daos;
+package com.is442.oop.service;
 
 import java.util.*;
 
@@ -10,10 +10,10 @@ import com.is442.oop.data.payloads.request.CreateUserRequest;
 import com.is442.oop.data.payloads.request.UpdateUserRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.data.repository.UserRepository;
-import com.is442.oop.exceptions.ResourceNotFoundException;
+import com.is442.oop.exception.ResourceNotFoundException;
 
 @Service
-public class UserDAO implements UserDAOInt {
+public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
@@ -35,7 +35,6 @@ public class UserDAO implements UserDAOInt {
         user.setEmail(createUserRequest.getEmail());
         user.setContactNumber(createUserRequest.getContactNumber());
         user.setUserType(createUserRequest.getUserType());
-        user.setDefunct(createUserRequest.getDefunct());
         userRepository.save(user);
         return new MessageResponse(String.format("User created, ID: %d.", user.getId()));
     };
