@@ -43,7 +43,7 @@
               <BookingCalendar
                 :key="componentKey"
                 :passId="passFn('5')"
-                @selectedDates="selectedDates"
+                @selectedData="selectedData"
                 :selectedPass="selectedPass"
                 class="mt-4"
               />
@@ -51,7 +51,7 @@
 
             <div class="mt-4" v-if="selectedPass">
               <div class="form-group">
-                <h4>My Details</h4>
+                <h4>Booking Details</h4>
                 <div class="row my-4">
                   <div class="col">
                     <label for="exampleFormControlInput1">Email address</label>
@@ -85,8 +85,11 @@
                   </div>
                 </div>
               </div>
-              <hr />
-              <div class="form-group">
+              <!-- <hr /> -->
+
+              <!-- Booking Details Form start --------------------------------------------------- -->
+
+              <!-- <div class="form-group">
                 <div class="d-flex justify-content-between align-items-top">
                   <h4>Guest Details</h4>
                   <i
@@ -96,7 +99,7 @@
                   ></i>
                 </div>
 
-                <!-- <label for="exampleFormControlSelect1">Number of Guest</label>
+                <label for="exampleFormControlSelect1">Number of Guest</label>
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
@@ -106,7 +109,7 @@
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
-                </select> -->
+                </select> 
               </div>
               <div class="form-group">
                 <div
@@ -157,9 +160,12 @@
                 </div>
                 <br />
               </div>
-              <hr />
+              <hr /> -->
+
+              <!-- Booking Details Form end --------------------------------------------------- -->
+
               <div class="form-group">
-                <h4>Booking Details</h4>
+                <!-- <h4>Booking Details</h4> -->
                 <div class="row">
                   <div class="col">
                     <label for="exampleFormControlInput1">Pass Type</label>
@@ -301,8 +307,8 @@ export default {
         },
       ],
       retrievedData: {
-        passId: null,
-        passTitle: "",
+        passID: null,
+        userID: 0,
         start: "",
         end: "",
       },
@@ -320,12 +326,12 @@ export default {
         contact: "",
       });
     },
-    selectedDates($event) {
+    selectedData($event) {
       this.retrievedData = {
-        passId: $event.passData.passId,
-        passTitle: $event.passData.passTitle,
-        start: $event.start,
-        end: $event.end,
+        passID: $event.passID,
+        userID: 0,
+        start: $event.startDate,
+        end: $event.endDate,
       };
       console.log(this.retrievedData);
     },

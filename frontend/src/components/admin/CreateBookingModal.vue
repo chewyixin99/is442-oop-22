@@ -86,7 +86,7 @@
                 </div>
               </div>
               <hr />
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <div class="d-flex justify-content-between align-items-top">
                   <h4>Guest Details</h4>
                   <i
@@ -96,7 +96,7 @@
                   ></i>
                 </div>
 
-                <!-- <label for="exampleFormControlSelect1">Number of Guest</label>
+                 <label for="exampleFormControlSelect1">Number of Guest</label>
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
@@ -106,7 +106,7 @@
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
-                </select> -->
+                </select> 
               </div>
               <div class="form-group">
                 <div
@@ -155,8 +155,8 @@
                 >
                   No guest selected.
                 </div>
-                <br />
-              </div>
+                <br /> -->
+              <!-- </div> -->
               <hr />
               <div class="form-group">
                 <h4>Booking Details</h4>
