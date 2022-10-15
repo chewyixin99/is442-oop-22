@@ -29,7 +29,9 @@
             <h1>Passes(Admin view)</h1>
         </div>
         <div class="row">
-            <PassAdmin :PassAdmin_PassesCategory="PassesCategory"/>
+            <!-- <PassAdmin :PassAdmin_PassesCategory="PassesCategory"/> -->
+            <PassAdmin :PassAdminPasses="passes" @getPassData="getAllPasses"/>
+
         </div>
 
     </div>
@@ -39,7 +41,7 @@
 <script>
 // import PassStaff from '../components/PassStaff.vue'
 import PassAdmin from '../components/PassAdmin.vue'
-
+import PassService from "@/api/services/PassService";  
 
 export default {
     name: 'Pass',
@@ -49,44 +51,64 @@ export default {
     },
     data() {
         return {
-            PassesCategory: [],
-            // passes_cid1: [],
+            // Capital for testing, small capital for database data
+            // Passes: [],
+            
+            passes: [],
+
         }
     },
+    async mounted(){
+        this.getAllPasses()
+    },
     created(){
-        this.PassesCategory = [
-            {
-                "cid": "1",
-                "name": "Mandai Wildlife Reserve",
-                "description": "Desc1",
-                "places": ["Singapore Zoo", "River Wonders"],
-                "image": "passPic_test.jpg"
-            },
-            {
-                "cid": "2",
-                "name": "Pass 2",
-                "description": "Desc2",
-                "places": ["Place 2.1"],
-                "image": "passPic_test.jpg"
-
-            },
-            {
-                "cid": "3",
-                "name": "Pass 3",
-                "description": "Desc3",
-                "places": ["Place 3.1", "Place 3.2"],
-                "image": "passPic_test.jpg"
-
-            },
-                        {
-                "cid": "4",
-                "name": "Pass 4",
-                "description": "Desc4",
-                "places": ["Place 4.1", "Place 4.2"],
-                "image": "passPic_test.jpg"
-
-            },
-        ]
+        // this.Passes = [
+        //     {
+        //         "passDesc": "Passx  description",
+        //         "poi": "Gardens By The Bay",
+        //         "numGuests": 2,
+        //         "replacementFee": 20,
+        //         "passStatus": "ONLOAN",
+        //         "defunct": false,
+        //         "id": 1,
+        //         "physical": true
+        //     },
+        //     {
+        //         "passDesc": "Pass 2 description",
+        //         "poi": "Singapore Zoo",
+        //         "numGuests": 2,
+        //         "replacementFee": 20,
+        //         "passStatus": "AVAILABLE",
+        //         "defunct": true,
+        //         "id": 2,
+        //         "physical": true
+        //     },
+        //     {
+        //         "passDesc": "Pass 3 description",
+        //         "poi": "Sea Aquarium",
+        //         "numGuests": 2,
+        //         "replacementFee": 20,
+        //         "passStatus": "AVAILABLE",
+        //         "defunct": false,
+        //         "id": 3,
+        //         "physical": false
+        //     },
+        //     {
+        //         "passDesc": "Pass 4 description",
+        //         "poi": "Sea Aquarium",
+        //         "numGuests": 2,
+        //         "replacementFee": 20,
+        //         "passStatus": "ONLOAN",
+        //         "defunct": false,
+        //         "id": 4,
+        //         "physical": false
+        //     }
+        // ]
+    },
+    methods:{
+        async getAllPasses(){
+            this.passes = await PassService.getAllPasses();
+        }
     }
 }
 

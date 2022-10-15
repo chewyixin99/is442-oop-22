@@ -8,12 +8,22 @@
         <p>2. Chart to show number of borrowers per month</p>
         <p>3. Search function to show a specific employee's loan history - monthly, 6monthly, anually</p>
         <p>4. Chart to show  number of loans per pass per month - optional</p>
+        <div class="row justify-content-center ">
+          <div class="w-25">
+            <select v-model="timeRange" class="form-select" aria-label="Default select example" @change="refreshCharts()">
+              <option value=0 selected disabled>Filter by Time Range</option>
+              <option value=1>Every 2 Weeks</option>
+              <option value=2>Every Month</option>
+              <option value=3>Every 6 Months</option>
+            </select>
+          </div>
+        </div>
         <div class="row">
           <div class="col-lg-6">
-            <div class="mb-5"><canvas id="barChart"></canvas></div>
-            <div class="my-5"><canvas id="donutChart"></canvas></div>
+            <div id="barHolder" class="mb-5"><canvas id="barChart"></canvas></div>
+            <div id="donutHolder" class="my-5"><canvas id="donutChart"></canvas></div>
           </div>
-          <div class="col-lg-6">
+          <div id="lineHolder" class="col-lg-6">
             <canvas id="lineChart"></canvas>
           </div>
         </div>
@@ -29,11 +39,12 @@ export default {
     },
     data(){
         return {
+          timeRange: 0,
           ratio: 1.75,
           bar: {
             type: 'bar',
             data: {
-              labels: ['1','2','3','4','5','6','7'],
+              labels: [],
               datasets: [{
                 label: 'Progress',
                 data: [65, 59, 80, 81, 56, 55, 40],
@@ -93,7 +104,7 @@ export default {
           line : {
             type: 'line',
             data: {
-              labels: ['1','2','3','4','5','6','7'],
+              labels: [],
               datasets: [{
                 label: 'My First Dataset',
                 data: [65, 59, 80, 81, 56, 55, 40],
@@ -106,38 +117,88 @@ export default {
         }
     },
     mounted(){
-      var that = this;
+      this.initCharts();
+      // let month = date.getMonth();
 
-      this.donut.plugins = [{
-        beforeDraw: function(chart) {
-          var width = chart.chart.width,
-              height = chart.chart.height,
-              ctx = chart.chart.ctx;
+      // console.log(month);
+      // console.log(newDate);
 
-          ctx.restore();
-          var fontSize = (height / 114).toFixed(2);
-          ctx.font = fontSize + "em sans-serif";
-          ctx.textBaseline = "middle";
-
-          // var text = (that.complete / that.total * 100).toFixed(0);
-          // text = that.total == 0 ? 0 + '%': text + '%';
-          var text = "0%";
-          var textX = Math.round((width - ctx.measureText(text).width) / 2);
-          var textY = height / that.ratio;
-
-          ctx.fillText(text, textX, textY);
-          ctx.save();
-        }
-      }];
-      this.myEventHandler();
-      new Chart(document.getElementById("barChart"), this.bar);
-      new Chart(document.getElementById("donutChart"), this.donut);
-      new Chart(document.getElementById("lineChart"), this.line);
     },
     methods: {
       myEventHandler() {
         window.innerWidth - 7 > 390 ? this.ratio = 1.75 : this.ratio = 1.5;
       },
+      refreshCharts(){
+        document.getElementById('barChart').remove();
+        document.getElementById('donutChart').remove();
+        document.getElementById('lineChart').remove();
+
+        document.getElementById('barHolder').innerHTML += '<canvas id="barChart"></canvas>';
+        document.getElementById('donutHolder').innerHTML += '<canvas id="donutChart"></canvas>';
+        document.getElementById('lineHolder').innerHTML += '<canvas id="lineChart"></canvas>';
+
+        this.bar.data.labels = [];
+        this.line.data.labels = [];
+
+        this.initCharts();
+      },  
+      initCharts() {
+        this.initChartLabels();
+        var that = this;
+        this.donut.plugins = [{
+          beforeDraw: function(chart) {
+            var width = chart.chart.width,
+                height = chart.chart.height,
+                ctx = chart.chart.ctx;
+
+            ctx.restore();
+            var fontSize = (height / 114).toFixed(2);
+            ctx.font = fontSize + "em sans-serif";
+            ctx.textBaseline = "middle";
+
+            // var text = (that.complete / that.total * 100).toFixed(0);
+            // text = that.total == 0 ? 0 + '%': text + '%';
+            var text = "0%";
+            var textX = Math.round((width - ctx.measureText(text).width) / 2);
+            var textY = height / that.ratio;
+
+            ctx.fillText(text, textX, textY);
+            ctx.save();
+          }
+        }];
+        this.myEventHandler();
+        new Chart(document.getElementById("barChart"), this.bar);
+        new Chart(document.getElementById("donutChart"), this.donut);
+        new Chart(document.getElementById("lineChart"), this.line);
+      },
+      initChartLabels(){
+        let timeRangeOptions = [7, 14, 1, 6]; //7days (default), 14days, 1 month, 6 months
+        let today = new Date();
+        let newDate;
+
+        let daysToIncrement = timeRangeOptions[this.timeRange];
+        Date.prototype.addDays = function(days) {
+          let date = new Date(this.valueOf());
+          date.setDate(date.getDate() + days);
+          return date;
+        }
+
+        for (let i=0; i <= 6; i++){
+          if (this.timeRange == 0 || this.timeRange == 1){
+            //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleString
+            newDate = today.addDays(daysToIncrement).toLocaleString('en-GB', { day: 'numeric', month: 'numeric' }); 
+            daysToIncrement += timeRangeOptions[this.timeRange];
+          } else if ((this.timeRange == 2 || this.timeRange == 3)) {
+            //https://stackoverflow.com/questions/5645058/how-to-add-months-to-a-date-in-javascript
+            newDate = new Date(today.setMonth(today.getMonth() + timeRangeOptions[this.timeRange])).toLocaleString('default', { year: 'numeric', month: 'short' });
+          } else {
+            throw Error("Error with getting time range option");
+          }
+
+          this.bar.data.labels.push(newDate);
+          this.line.data.labels.push(newDate);
+        }
+      }
     }
 }
 </script>

@@ -1,26 +1,56 @@
 package com.is442.oop.data.models;
 
-import java.sql.*;
 import javax.persistence.*;
+
+import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "loan_id", nullable = false)
     private int loanId;
     // @ManyToOne
     // private User user;
+    @Column(name = "user_id", nullable = false)
     private int userId;
     // @ManyToOne
     // private User gop;
+    @Column(name = "gop_id")
     private int gopId;
     // @ManyToOne
     // private Pass pass;
+    @Column(name = "pass_id", nullable = false)
     private int passId;
-    private Date startDate;
-    private Date endDate;
+
+    @Column(name = "start_date", nullable = false)
+    private String startDate;
+
+    @Column(name = "end_date", nullable = false)
+    private String endDate;
+
+    @Column(name = "is_completed", nullable = false)
+    @Value("false") // Default value
     private boolean isCompleted;
-    
+
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+
     public int getId() {
         return loanId;
     }
@@ -48,20 +78,7 @@ public class Loan {
     public void setPassId(int passId) {
         this.passId = passId;
     }
-    
-    public Date getStartDate() {
-        return startDate;
-    }
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-    
-    public Date getEndDate() {
-        return endDate;
-    }
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
+
 
     public boolean isCompleted() {
         return isCompleted;
@@ -72,7 +89,7 @@ public class Loan {
     
     @Override
     public String toString() {
-        return "Loan [loanId=" + loanId + ", userId" + userId + ", gopId=" + gopId + ", passId=" + passId + ", startDate=" + startDate
+        return "Loan [loanId=" + loanId + ", userId=" + userId + ", gopId=" + gopId + ", passId=" + passId + ", startDate=" + startDate
                 + ", endDate=" + endDate + ", isCompleted=" + isCompleted + "]";
     }
 

@@ -2,62 +2,7 @@
   <div class="container-fluid">
     <div class="" v-if="selectedPass != null">
       <h1>{{ selectedPass.title }}</h1>
-        <FullCalendar id="calendar" :options="calendarOptions" />
-      <!-- <div class="form">
-        <div class="row">
-          <div class="col">
-            <label id="date">Start Date</label>
-            <input type="date" disabled :value="selectedDates.start" />
-          </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col">
-            <label id="date">End Date</label>
-            <input type="date" disabled :value="selectedDates.end" />
-          </div>
-        </div>
-        
-        <div class="row mt-4">
-          <div class="col">
-            <label>Staff Name</label>
-            <input type="text" placeholder="" />
-          </div>
-          <div class="col">
-            <label>Staff ID</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col">
-            <label>Guest Name</label>
-            <input type="text" placeholder="" />
-          </div>
-           <div class="col">
-            <label>Guest ID</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-          <div class="row mt-4">
-          <div class="col">
-            <label>Guest Name</label>
-            <input type="text" placeholder="" />
-          </div>
-           <div class="col">
-            <label>Guest ID</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-        <div class="row mt-4">
-          <div class="col">
-            <label>Guest Name</label>
-            <input type="text" placeholder="" />
-          </div>
-           <div class="col">
-            <label>Guest ID</label>
-            <input type="text" placeholder="" />
-          </div>
-        </div>
-      </div> -->
+      <FullCalendar id="calendar" :options="calendarOptions" />
     </div>
   </div>
 </template>
@@ -80,7 +25,7 @@ export default {
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
         initialView: "dayGridMonth",
-        initialEvents: this.passId.events, 
+        initialEvents: this.passId.events,
         editable: true,
         selectable: true,
         selectMirror: true,
@@ -93,10 +38,10 @@ export default {
         changeInfo: this.handleChange,
         selectOverlap: false,
         eventOverlap: false,
-        // events: [
-        //   { title: 'event 1', date: '2022-09-01' },
-        //   { title: 'event 2', date: '2022-09-02' }
-        // ],
+        events: [
+          { id: "1", title: "event 1", date: "2022-10-16", editable: false },
+          { id: "2", title: "event 2", date: "2022-10-17", editable: false },
+        ],
         droppable: true,
         eventDrop: this.handleDropChange,
       },
@@ -108,49 +53,98 @@ export default {
           passTitle: this.passId.title,
         },
       },
+      selectedData: {
+        userID: 0,
+        selectedData: this.passId.id,
+        startDate: "",
+        endDate: "",
+      },
+
+      // need to retrieve user events
+      userEvents: ["1"],
+      clickedEventId: ""
     };
   },
-    methods: {
+  methods: {
     forceRerender() {
       this.componentKey += 1;
     },
     handleDateClick: function (arg) {
-      alert("date click! " + arg.dateStr);
+      if (arg.dateStr < new Date().toISOString().replace(/T.*$/, "")) {
+        alert("Please select a date in the future!");
+      } 
+      else if (this.clickedEventId == ""){
+        console.log(arg.view.calendar.events);
+        this.selectedData.startDate = arg.dateStr;
+        this.selectedData.endDate = arg.dateStr;
+        let calendarApi = arg.view.calendar;
+        let existingEvents = this.calendarOptions.events;
+        if (
+          existingEvents.filter((event) => event.date === arg.dateStr).length >
+          0
+        ) {
+          alert("There is already a loan on this date!");
+        } else {
+          calendarApi.addEvent({
+            id: "3",
+            title: this.selectedPass.title,
+            date: arg.dateStr,
+            allDay: true,
+            color:"#18c735"
+          });
+          this.selectedData.startDate,this.selectedData.endDate = arg.dateStr;
+          this.userEvents.push("3");
+          this.clickedEventId = "3"
+          this.$emit("selectedData", this.selectedData);
+        }
+      }
     },
     handleDropChange(info) {
       console.log(info.event.startStr);
-      this.selectedDates.start = info.event.startStr;
-      this.selectedDates.end = this.fullDayConversion(info.event.end);
+      this.selectedData.startDate = info.event.startStr;
+      this.selectedData.endDate = info.event.startStr;
+      this.$emit("selectedData", this.selectedData);
+
+      // this.selectedDates.start = info.event.startStr;
+      // this.selectedDates.end = this.fullDayConversion(info.event.end);
     },
     handleDateSelect(selectInfo) {
-      this.selectedDates.start = selectInfo.startStr;
-      this.selectedDates.end = this.fullDayConversion(selectInfo.end);
-      this.$emit("selectedDates", this.selectedDates);
-      let calendarApi = selectInfo.view.calendar;
+      console.log(selectInfo);
+      // this.selectedDates.start = selectInfo.startStr;
+      // this.selectedDates.end = this.fullDayConversion(selectInfo.end);
+      // this.$emit("selectedDates", this.selectedDates);
+      // let calendarApi = selectInfo.view.calendar;
 
-        calendarApi.addEvent({
-          id: 1,
-          title: "test",
-          start: selectInfo.startStr,
-          end: selectInfo.endStr,
-          allDay: selectInfo.allDay,
-      });
+      //   calendarApi.addEvent({
+      //     id: 1,
+      //     title: "test",
+      //     start: selectInfo.startStr,
+      //     end: selectInfo.endStr,
+      //     allDay: selectInfo.allDay,
+      // });
     },
     handleEventClick(clickInfo) {
-      if (
-        confirm(
-          `Are you sure you want to delete the event '${clickInfo.event.title}'`
-        )
-      ) {
-        clickInfo.event.remove();
-      }
+      let eventId = clickInfo.event.id;
+      console.log(eventId)
+      // if (eventId == this.clickedEventId) {
+      //   if (
+      //     confirm(
+      //       `Are you sure you want to delete the event '${clickInfo.event.title}'`
+      //     )
+      //   ) {
+      //     clickInfo.event.remove();
+      //   }
+      //   else {
+      //     return true
+      //   }
+      // }
     },
 
-    fullDayConversion(endDate) {
-      endDate.setMinutes(endDate.getMinutes() - 1);
+    // fullDayConversion(endDate) {
+    //   endDate.setMinutes(endDate.getMinutes() - 1);
 
-      return endDate.toISOString().replace(/T.*$/, ""); // YYYY-MM-DD of today
-  },
+    //   return endDate.toISOString().replace(/T.*$/, ""); // YYYY-MM-DD of today
+    // },
   },
 
   watch: {
@@ -158,6 +152,16 @@ export default {
       console.log(newVal);
       console.log(oldVal);
     },
+  },
+
+  mounted() {
+    let events = this.calendarOptions.events
+    for (let i = 0; i < events.length; i++) {
+      if (this.userEvents.includes(events[i].id)) {
+        events[i].color = "#18c735";
+      }
+    }
+
   },
 };
 </script>

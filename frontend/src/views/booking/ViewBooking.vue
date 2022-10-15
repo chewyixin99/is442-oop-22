@@ -13,84 +13,67 @@
             <div
               class="col d-flex align-items-end justify-content-end"
               data-bs-toggle="modal"
-              data-bs-target="#employeeModal"
+              data-bs-target="#createModal"
             >
-              <i class="bi bi-calendar-plus fs-2 btnHover"></i>
+              <i class="bi bi-calendar-plus fs-2 btnHover" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add New Booking"></i>
             </div>
           </div>
         </div>
-
+        <!-- current bookings table -->
         <div id="table1"></div>
         <hr />
         <div class="text-start">
           <h4 class="pt-4 ps-4">Past Bookings</h4>
         </div>
-
+        <!-- past bookings table -->
         <div id="table2"></div>
       </div>
     </div>
 
-    <!-- <div
-      id="toast"
-      class="toast fade position-fixed bottom-0 right-0"
-      role="alert"
-      aria-live="assertive"
-      aria-atomic="true"
-    >
-      <div class="toast-header">
-        <svg
-          class="bd-placeholder-img rounded me-2"
-          width="20"
-          height="20"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-          preserveAspectRatio="xMidYMid slice"
-          focusable="false"
-        >
-          <rect width="100%" height="100%" fill="#007aff"></rect>
-        </svg>
-
-        <strong class="me-auto">Loan Success!</strong>
-        <small>Just now</small>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="toast"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="toast-body">This is supposed to be on the right</div>
-    </div> -->
-    <!--       @toastrMsg="updateToastrMsg" -->
     <TheToastr :toastrResponse="toastrResponse"></TheToastr>
 
-    <EmployeeBookingModal
+    <CreateBookingModal
       @toastrMsg="updateToastrMsg"
       :key="componentKey"
-      id="employeeModal"
-      modalType="create"
+      id="createModal"
       @bookingSubmitted="bookingSubmitted"
-    ></EmployeeBookingModal>
+    ></CreateBookingModal>
+
+    <CancelBookingModal
+      @toastrMsg="updateToastrMsg"
+      :key="componentKey"
+      id="cancelModal"
+      @cancelSubmitted="cancelSubmitted"
+      :rowData="currentCancelData"
+    ></CancelBookingModal>
+
+    <div
+      data-bs-toggle="modal"
+      data-bs-target="#cancelModal"
+      id="openCancelModal"
+    ></div>
   </div>
 </template>
 <script>
-import { Grid } from "gridjs";
-
-import EmployeeBookingModal from "@/components/EmployeeBookingModal.vue";
-import * as bootstrap from "bootstrap";
+import { Grid, h } from "gridjs";
+import CreateBookingModal from "@/components/employee/CreateBookingModal.vue";
+import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
+import CancelBookingModal from "@/components/employee/CancelBookingModal.vue";
 
 export default {
   name: "ViewBooking",
   components: {
-    EmployeeBookingModal,
-    TheToastr
+    CreateBookingModal,
+    CancelBookingModal,
+    TheToastr,
   },
   data() {
     return {
       toastrResponse: "",
       formInput: { startStr: "null" },
       type: "employee",
+      currentCancelData: {},
       calendarInput: {
         startStr: "null",
         endStr: "null",
@@ -100,32 +83,69 @@ export default {
       componentKey: 0,
       successFlag: false,
       retrievedData: [],
+      bookingDetails: {},
       currentBookingsGrid: new Grid({
         resizable: true,
         columns: [
           {
-            name: "ID",
+            id: "id",
+            name: "Booking ID",
             width: "10%",
           },
           {
+            id: "passTitle",
             name: "Pass Title",
-            width: "25%",
+            width: "20%",
           },
           {
+            id: "startDate",
             name: "Start Date",
-            width: "12%",
+            width: "10%",
           },
           {
+            id: "endDate",
             name: "End Date",
-            width: "12%",
+            width: "10%",
           },
           {
+            id: "previous",
             name: "Previous Booker",
-            width: "20%",
+            width: "15%",
           },
           {
+            id: "following",
             name: "Following Booker",
-            width: "20%",
+            width: "15%",
+          },
+          {
+            id: "action",
+            sort: false,
+            formatter: (cell, row) => {
+              return h(
+                "button",
+                {
+                  style: {
+                    border: "1px solid #0d6efd",
+                    color: "#0d6efd",
+                    backgroundColor: "#fff",
+                    padding: "5px",
+                    "border-radius": "5px",
+                    "text-align": "center",
+                  },
+                  onClick: () => {
+                    this.retrieveCancelData({
+                      id: row.cells[0].data,
+                      passTitle: row.cells[1].data,
+                      startDate: row.cells[2].data,
+                      endDate: row.cells[3].data,
+                    });
+                    document.getElementById("openCancelModal").click();
+                  },
+                },
+                "Cancel"
+              );
+            },
+            width: "10%",
           },
         ],
         data: [
@@ -137,16 +157,7 @@ export default {
             "Charlie - 86541253",
             "Daisy - 85454126",
           ],
-          [2, "Zoo 2", "30/09/22", "2/10/22", "Alan - 98756232", "N.A."],
-          [
-            3,
-            "Imagine Dragon Deez Nuts",
-            "eo3n@yahoo.com",
-            "(05) 10 878 5554",
-            "c",
-            "d",
-          ],
-          [4, "Nisen", "nis900@gmail.com", "313 333 1923", "c", "d"],
+          [2, "Bird Park", "02/11/22", "04/11/22", "N.A.", "N.A."],
         ],
         search: true,
         sort: true,
@@ -155,10 +166,10 @@ export default {
         },
         language: {
           search: {
-            placeholder: "🔍 Search...",
+            placeholder: "Search...",
           },
           pagination: {
-            showing: "😃 Displaying",
+            showing: "Displaying",
             results: () => "Records",
           },
         },
@@ -179,42 +190,41 @@ export default {
       employeeBookingsGrid: new Grid({
         columns: [
           {
-            name: "ID",
+            id: "id",
+            name: "Booking ID",
             width: "10%",
           },
           {
+            id: "passTitle",
             name: "Pass Title",
-            width: "25%",
+            width: "20%",
           },
           {
+            id: "startDate",
             name: "Start Date",
-            width: "12%",
+            width: "10%",
           },
           {
+            id: "endDate",
             name: "End Date",
-            width: "12%",
+            width: "10%",
           },
           {
+            id: "previous",
             name: "Previous Booker",
-            width: "20%",
+            width: "15%",
           },
           {
+            id: "following",
             name: "Following Booker",
-            width: "20%",
+            width: "15%",
           },
         ],
         data: [
-          [1, "John Cena", "john@example.com", "(353) 01 222 3333", "c", "d"],
-          [2, "Joe Mama", "mark@gmail.com", "(01) 22 888 4444", "c", "d"],
-          [
-            3,
-            "Imagine Dragon Deez Nuts",
-            "eo3n@yahoo.com",
-            "(05) 10 878 5554",
-            "c",
-            "d",
-          ],
-          [4, "Nisen", "nis900@gmail.com", "313 333 1923", "c", "d"],
+          [1, "John Doe", "30/07/22", "02/08/22", "Bob - 86556232", "N.A."],
+          [2, "Joe Tan", "29/08/22", "01/09/22", "N.A.", "N.A."],
+          [3, "Zoo 2", "05/09/22", "07/09/22", "Alan - 98756232", "N.A."],
+          [4, "Gardens By The Bay", "15/09/22", "16/09/22", "N.A.", "N.A."],
         ],
         search: true,
         sort: true,
@@ -223,10 +233,10 @@ export default {
         },
         language: {
           search: {
-            placeholder: "🔍 Search...",
+            placeholder: "Search...",
           },
           pagination: {
-            showing: "😃 Displaying",
+            showing: "Displaying",
             results: () => "Records",
           },
         },
@@ -250,6 +260,9 @@ export default {
     this.employeeBookingsGrid.render(document.getElementById("table2"));
   },
   methods: {
+    retrieveCancelData(data) {
+      this.currentCancelData = data;
+    },
     selectedDates($event) {
       console.log($event);
       this.retrievedData.push({
@@ -264,7 +277,6 @@ export default {
     },
     updateToastrMsg(res) {
       this.toastrResponse = res;
-      console.log('dkjf');
     },
     // fixed events
     passFn(id) {
@@ -314,13 +326,15 @@ export default {
         };
       }
     },
-    bookingSubmitted() {
+    bookingSubmitted(data) {
+      alert(JSON.stringify(data))
       this.forceRerender();
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
-      this.$emit("toastrMsg", {
-        status: "Success",
-        msg: "New employee has been created!",
-      });
+      var bsAlert = new Toast(document.getElementById("theToastr"));
+      bsAlert.show();
+    },
+    cancelSubmitted() {
+      this.forceRerender();
+      var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
     forceRerender() {

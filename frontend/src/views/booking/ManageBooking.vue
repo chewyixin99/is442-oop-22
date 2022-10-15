@@ -2,44 +2,75 @@
   <div class="container-fluid">
     <div class="flex-column d-flex align-items-center justify-content-center">
       <h1 class="pt-4 mb-4">Booking</h1>
-      <h4 class="pt-4">Employee Bookings</h4>
       <div class="tableBox position-relative">
-        <button
-          type="button"
-          class="newButton btn btn-info"
-          data-bs-toggle="modal"
-          data-bs-target="#adminModal"
-        >
-          New
-        </button>
-        <button
-          type="button"
-          class="delButton btn btn-danger"
-          @click="deleteRecords()"
-        >
-          Delete
-        </button>
+        <hr />
+        <div class="container">
+          <div class="row">
+            <div class="col-10 text-start">
+              <h4 class="pt-4">Employee Bookings</h4>
+            </div>
+            <div class="col-2 gap-4 d-flex justify-content-end align-items-end">
+              <div data-bs-toggle="modal" data-bs-target="#cancelModal" v-if="recordsToDelete.length > 0">
+                <i
+                  class="bi bi-calendar-x fs-2 btnHover"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Delete Booking"
+                ></i>
+              </div>
+              <div
+                data-bs-toggle="modal"
+                data-bs-target="#createModal"
+                data-bs-placement="bottom"
+                title="Tooltip on bottom"
+              >
+                <i
+                  class="bi bi-calendar-plus fs-2 btnHover"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Add New Booking"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="table"></div>
       </div>
     </div>
-    <AdminBookingModal
-      @toastrMsg="updateToastrMsg"
-      id="adminModal"
-      modalType="create"
-    ></AdminBookingModal>
 
+    <TheToastr :toastrResponse="toastrResponse"></TheToastr>
+
+    <CreateBookingModal
+      @toastrMsg="updateToastrMsg"
+      :key="componentKey"
+      id="createModal"
+      @bookingSubmitted="bookingSubmitted"
+    ></CreateBookingModal>
+
+    <CancelBookingModal
+      @toastrMsg="updateToastrMsg"
+      :key="componentKey"
+      id="cancelModal"
+      :dataOfSelectedRow="dataOfSelectedRow"
+      @cancelSubmitted="cancelSubmitted"
+    ></CancelBookingModal>
   </div>
 </template>
 <script>
 import { Grid, html } from "gridjs";
 import { RowSelection } from "gridjs/plugins/selection";
-import * as bootstrap from "bootstrap";
-import AdminBookingModal from "@/components/AdminBookingModal.vue";
+import CreateBookingModal from "@/components/admin/CreateBookingModal.vue";
+import { Toast } from "bootstrap";
+import TheToastr from "@/components/TheToastr.vue";
+import CancelBookingModal from "@/components/admin/CancelBookingModal.vue";
 
 export default {
   name: "ManageBooking",
   components: {
-    AdminBookingModal
+    CreateBookingModal,
+    TheToastr,
+    CancelBookingModal,
   },
   data() {
     return {
@@ -49,6 +80,27 @@ export default {
         startStr: "null",
         endStr: "null",
       },
+      data: [
+        [
+          1,
+          "mark@gmail.com",
+          "26/09/22",
+          "30/09/22",
+          "Charlie - 86541253",
+          "Daisy - 85454126",
+        ],
+        [
+          2,
+          "bob@gmail.com",
+          "30/09/22",
+          "1/10/22",
+          "Mark - 86541253",
+          "Aloysius - 85454126",
+        ],
+      ],
+      recordsToDelete: [],
+      dataOfSelectedRow: [{}],
+      toastrResponse: "",
       pass: ["", ""],
       numPass: 2,
       componentKey: 0,
@@ -68,26 +120,32 @@ export default {
             width: "5%",
           },
           {
-            name: "Pass ID",
+            id: "id",
+            name: "Booking ID",
             width: "10%",
           },
           {
+            id: "email",
             name: "Borrower Email",
             width: "20%",
           },
           {
+            id: "startDate",
             name: "Start Date",
             width: "10%",
           },
           {
+            id: "endDate",
             name: "End Date",
             width: "10%",
           },
           {
+            id: "previous",
             name: "Previous Booker",
             width: "15%",
           },
           {
+            id: "following",
             name: "Following Booker",
             width: "15%",
           },
@@ -108,7 +166,7 @@ export default {
                   <option value="Cancelled">Cancelled</option>
                 `
               ),
-            sort: false
+            sort: false,
           },
         ],
         data: [
@@ -136,10 +194,10 @@ export default {
         },
         language: {
           search: {
-            placeholder: "🔍 Search...",
+            placeholder: "Search...",
           },
           pagination: {
-            showing: "😃 Displaying",
+            showing: "Displaying",
             results: () => "Records",
           },
         },
@@ -168,32 +226,32 @@ export default {
       checkboxPlugin.props.store.on("updated", (state, prevState) => {
         console.log("checkbox updated", state, prevState);
         this.recordsToDelete = state["rowIds"];
+        this.filterSelected();
       });
     });
   },
   methods: {
-    async createEmployee() {
-      // const employee = await EmployeeService.createEmployee();
-      // console.log(employee);
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
-      this.$emit("toastrMsg", "New employee has been created!");
-      bsAlert.show();
-    },
-    async deleteRecords() {
-      this.recordsToDelete.forEach((value, index) => {
-        console.log("Index to delete:", index, "Id value:", value);
+    filterSelected() {
+      this.dataOfSelectedRow = this.data.filter((row) => {
+        return this.recordsToDelete.includes(row[0]);
       });
-      // const employees = await EmployeeService.removeEmployees();
-      // console.log(employees);
     },
-    async editEmployeeDetails() {
-      // const employees = await EmployeeService.editEmployeeDetails("1");
-      // console.log(employees);
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
-      this.$emit("toastrMsg", "Your changes have been saved!");
+    cancelSubmitted() {
+      this.forceRerender()
+      var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
-
+    updateToastrMsg(res) {
+      this.toastrResponse = res;
+    },
+    bookingSubmitted() {
+      this.forceRerender();
+      var bsAlert = new Toast(document.getElementById("theToastr"));
+      bsAlert.show();
+    },
+    forceRerender() {
+      this.componentKey += 1;
+    },
     selectedDates($event) {
       console.log($event);
       this.retrievedData.push({
@@ -254,13 +312,6 @@ export default {
         };
       }
     },
-    forceRerender() {
-      this.pass = "";
-      this.componentKey += 1;
-      this.successFlag = true;
-      alert(JSON.stringify(this.retrievedData));
-      document.getElementById("toast").classList.add("show");
-    },
   },
 };
 </script>
@@ -268,5 +319,12 @@ export default {
 <style>
 .tableBox {
   width: 70vw;
+}
+.btnHover:hover {
+  color: #0d6efd;
+}
+
+.btnHover {
+  cursor: pointer;
 }
 </style>
