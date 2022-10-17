@@ -1,19 +1,27 @@
 <template>
-    <div class='container'>
-        <h2 class="header">Select your pass type</h2> 
-    </div>
-    
 
     <div class="container">
-            <div class="row row-cols-auto g-5">
+        <span>
+            <h2 class="d-inline p-2 ">
+                Select Your Pass
+                <button  type="button" class="btn btn-outline-success d-inline p-2" data-bs-toggle="modal" data-bs-target="#addNewPass">
+                    Add New Pass
+                    <i class="bi bi-plus-square"></i>
+                </button>
+            </h2>
+            
+        </span>
+
+
+            <div class="row row-cols-auto g-5 my-2">
                 <!-- Passes 'Card' -->
-                <div v-for="EachPass in PassAdminPasses" :key="EachPass.id" >
-                    <!-- <div><p>{{EachPass[0]}}</p></div> -->
+                <template v-for="EachPass in PassAdminPasses" :key="EachPass.id" >
+                <div v-if="EachPass.defunct=='0'">
+
                     <div class="card border-secondary h-100" style="width: 25rem;">
                         <img src="../assets/passPic_test.jpg" class="card-img-top">
                             <div class="card-body ">
                                 <b class="card-title">{{EachPass.passDesc}}</b>
-                                <!-- <p class="card-text">{{Pass.description}}</p> -->
                             </div>
                             <ul class="list-group list-group-flush">
                                 <span><b>Point of Interests </b><br>
@@ -40,9 +48,6 @@
                             
                             <div class="card-footer btn-group-vertical">
                                 <!-- View button prompt Passes update modal -->
-                                <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewUM">
-                                    123
-                                </button>  -->
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#viewUM`+EachPass.id">
                                     View
                                 </button> 
@@ -72,7 +77,7 @@
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
                                             <div class="col-7">
-                                                <input type="number" v-model="EachPass.numGuests" class="form-control">
+                                                <input type="number" v-model="EachPass.numGuests" class="form-control" min="1">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -80,18 +85,21 @@
                                             <div class="col-7">
                                                 <div class="input-group">
                                                     <div class="input-group-text">$</div>
-                                                    <input type="number" v-model="EachPass.replacementFee" class="form-control">
+                                                    <input type="number" v-model="EachPass.replacementFee" class="form-control" min="0">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Status</b></label>
                                             <div class="col-7">
-                                                <input type="text" v-model="EachPass.passStatus" class="form-control" disabled>
+                                                <select class="form-select" v-model="EachPass.passStatus">
+                                                    <option value="AVAILABLE">Available</option>
+                                                    <option value="ONLOAN">On Loan</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Defunct?</b></label>
+                                            <label class="col-5 col-form-label"><b>Deactivated?(Defunct)</b></label>
                                             <div class="col-7">
                                                 <input type="text" v-model="EachPass.defunct" class="form-control" disabled>
                                             </div>
@@ -99,21 +107,23 @@
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
-                                                <input type="text" v-model="EachPass.physical" class="form-control" disabled>
+                                                <input type="text" v-model="EachPass.physical" class="form-control">
                                             </div>
                                         </div>
                                             
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Update Now</button>
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal">Delete</button> 
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.id)">Update Now</button>
+                                    <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.id)" data-bs-dismiss="modal">Delete</button> 
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                </template>
 
 
 
@@ -124,12 +134,14 @@
                 <!-- ====================================Loop ends============================= -->
                 <!-- Add new passes section -->
                 <!-- Add new pass icon/button -->
-                <div class="card border-light h-100 ms-4" style="width: 25rem;">
+
+                <!-- <div class="card border-light h-100 ms-4" style="width: 25rem;">
                     <img src="../assets/plus-square-fill.svg" class="card-img-top">
                     <div class="card-body">
                         <button type="button"  class="btn stretched-link" data-bs-toggle="modal" data-bs-target="#addNewPass"><b>Add new passes</b></button>
                     </div>
-                </div> 
+                </div>  -->
+
                 <!-- Add New Pass Form Modal-->
                 <div class="modal fade" id="addNewPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -138,6 +150,7 @@
                                 <h5 class="modal-title" id="exampleModalLabel">Create new pass</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
+
                             <div class="modal-body text-start">
                                 <form>
                                     <div class="mb-3">
@@ -150,7 +163,7 @@
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
                                             <div class="col-7">
-                                                <input type="number" class="form-control" required v-model="NewPassObject.numGuests">
+                                                <input type="number" class="form-control" required v-model="NewPassObject.numGuests" min="1">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -158,7 +171,7 @@
                                             <div class="col-7">
                                                 <div class="input-group">
                                                     <div class="input-group-text">$</div>
-                                                    <input type="number" class="form-control" required v-model="NewPassObject.replacementFee">
+                                                    <input type="number" class="form-control" required v-model="NewPassObject.replacementFee" min="0">
                                                 </div>
                                             </div>
                                         </div>
@@ -172,7 +185,16 @@
                                             </div>
                                         </div>
                                         <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Defunct?</b></label>
+                                            <label class="col-5 col-form-label"><b>Deactivated?(defunct)</b></label>
+                                            <div class="col-7">
+                                                <select class="form-select" disabled v-model="NewPassObject.defunct">
+                                                    <option value="true">true</option>
+                                                    <option value="false" selected>false</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
                                                 <select class="form-select" v-model="NewPassObject.physical">
                                                     <option value="true">true</option>
@@ -180,21 +202,10 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Physical?</b></label>
-                                            <div class="col-7">
-                                                <select class="form-select" v-model="NewPassObject.defunct">
-                                                    <option value="true">true</option>
-                                                    <option value="false">false</option>
-                                                </select>
-                                            </div>
-                                            <!-- <div>{{NewPassObject.defunct}}</div> -->
-                                        </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" @click="addNewPass()" data-bs-dismiss="modal">Create Pass</button>
-                                <!-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="CreateNewPass">Create Pass</button> -->
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
@@ -212,8 +223,7 @@
 </template>
 
 <script>
-import PassService from '@/api/services/PassService'
-// import axios from 'axios'
+import axios from 'axios'
 export default ({
     name: 'PassAdmin',
         props: {
@@ -224,18 +234,29 @@ export default ({
         },
         data() {
         return {
-            // Capital for testing, small capital for database data
-            // AdminPasses: this.PassAdminPasses,
-            NewPassObject: {
-                passDesc: "",
-                poi: "",
-                numGuests: 0,
-                replacementFee: 0,
-                passStatus: "AVAILABLE",
-                defunct: true,
-                // id: 5,
-                physical: true
-            },
+                // Capital for testing, small capital for database data
+                passURL: "http://localhost:8081/passes",
+                passIDtoDelete: null,
+
+                NewPassObject: {
+                    passDesc: "",
+                    poi: "",
+                    numGuests: 1,
+                    replacementFee: 0,
+                    passStatus: "AVAILABLE",
+                    defunct: false,
+                    physical: true
+                },
+
+                UpdatePassObject:{
+                    passDesc: "",
+                    poi: "",
+                    numGuests: 1,
+                    replacementFee: 0,
+                    passStatus: "AVAILABLE",
+                    defunct: false,
+                    physical: true
+                }
             
             }
         },
@@ -245,25 +266,52 @@ export default ({
             },
             async addNewPass(){
                 try{
-                    await PassService.createPass(this.NewPassObject);
-                    this.$emit('getPassData')
-                }catch(e){
-                    console.log(e);
+                    await axios.post(this.passURL, this.NewPassObject)
+                    .then(response => {
+                        this.$emit('getPassData')
+                        console.log(response);
+                    });
+                } catch(err){
+                    console.error(err);
                 }
             },
-            // CreateNewPass(){
-            //     this.AdminPasses.push(this.NewPassObject)
-            //     this.NewPassObject = {
-            //     passDesc: "",
-            //     poi: "",
-            //     numGuests: 0,
-            //     replacementFee: 0,
-            //     passStatus: "AVAILABLE",
-            //     defunct: true,
-            //     id: 5,
-            //     physical: true
-            //     }
-            // }
+
+            async deleteExistingPass(passID){
+                try{
+                    await axios.delete(this.passURL+"/"+passID)
+                    .then(response => {
+                        this.NewPassObject={
+                                passDesc: "",
+                                poi: "",
+                                numGuests: 1,
+                                replacementFee: 0,
+                                passStatus: "AVAILABLE",
+                                defunct: false,
+                                physical: true
+                            }
+                        this.$emit('getPassData')
+                        console.log(response);
+                    });
+                } catch(err){
+                    console.error(err);
+                }
+            },
+
+            deletePassMethod(passID){
+                this.deleteExistingPass(passID)
+            },
+
+            async updatePassMethod(passID){
+                try{
+                    await axios.put(this.passURL+"/"+passID, this.PassAdminPasses[passID-1])
+                    .then(response => {
+                        this.$emit('getPassData')
+                        console.log(response);
+                    });
+                } catch(err){
+                    console.error(err);
+                }
+            }
         },
 
 })

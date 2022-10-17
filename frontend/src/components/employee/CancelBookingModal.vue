@@ -29,6 +29,14 @@
           <h4>Booking Details</h4>
           <div class="row gap-5">
             <div class="col text-end">
+              <span>Booking ID:</span>
+            </div>
+            <div class="col text-start">
+              <span>{{ rowData.id }}</span>
+            </div>
+          </div>
+          <div class="row gap-5">
+            <div class="col text-end">
               <span>Pass Name:</span>
             </div>
             <div class="col text-start">
@@ -84,7 +92,8 @@
 </template>
 
 <script>
-// import BookingCalendar from "@/components/BookingCalendar.vue";
+import axios from "axios";
+
 export default {
   name: "CancelBookingModal",
   props: {
@@ -219,14 +228,31 @@ export default {
     },
     async cancelBooking() {
       this.isLoading = true;
-      setTimeout(() => {
-        document.getElementById("cancel-close-btn").click();
-        this.$emit("cancelSubmitted", true);
-        this.$emit("toastrMsg", {
-          status: "Success",
-          msg: "Cancellation is successful!",
+      axios
+        .delete("http://localhost:8081/loan/" + this.rowData.id)
+        .then((response) => {
+          if (response.status != 500) {
+            this.isLoading = false;
+            document.getElementById("cancel-close-btn").click();
+            this.$emit("cancelSubmitted", true);
+            this.$emit("toastrMsg", {
+              status: "Success",
+              msg: "Cancellation is successful!",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      }, 1000);
+
+      // setTimeout(() => {
+      //   document.getElementById("cancel-close-btn").click();
+      //   this.$emit("cancelSubmitted", true);
+      //   this.$emit("toastrMsg", {
+      //     status: "Success",
+      //     msg: "Cancellation is successful!",
+      //   });
+      // }, 1000);
       // var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
       // this.$emit("toastrMsg", "New employee has been created!");
       // bsAlert.show();

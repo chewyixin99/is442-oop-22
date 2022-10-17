@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="" v-if="selectedPass != null">
-      <h1>{{ selectedPass.title }}</h1>
+      <h1>{{ selectedPass.poi }}</h1>
       <FullCalendar id="calendar" :options="calendarOptions" />
     </div>
   </div>
@@ -13,9 +13,10 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 // import { INITIAL_EVENTS } from './event-utils'
+import axios from "axios";
 
 export default {
-  props: ["passId", "selectedPass"],
+  props: ["selectedPass"],
   components: {
     FullCalendar,
   },
@@ -25,7 +26,7 @@ export default {
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
         initialView: "dayGridMonth",
-        initialEvents: this.passId.events,
+        // initialEvents: this.passId.events,
         editable: true,
         selectable: true,
         selectMirror: true,
@@ -39,30 +40,22 @@ export default {
         selectOverlap: false,
         eventOverlap: false,
         events: [
-          { id: "1", title: "event 1", date: "2022-10-16", editable: false },
-          { id: "2", title: "event 2", date: "2022-10-17", editable: false },
+          
         ],
         droppable: true,
         eventDrop: this.handleDropChange,
       },
-      selectedDates: {
-        start: new Date().toISOString().replace(/T.*$/, ""),
-        end: new Date().toISOString().replace(/T.*$/, ""),
-        passData: {
-          passId: this.passId.id,
-          passTitle: this.passId.title,
-        },
-      },
+      userId: 1,
       selectedData: {
         userID: 0,
-        selectedData: this.passId.id,
+        passID: 0,
         startDate: "",
         endDate: "",
       },
-
-      // need to retrieve user events
-      userEvents: ["1"],
-      clickedEventId: ""
+      clickedEventId: "",
+      selectedPassLoans: [],
+      
+      
     };
   },
   methods: {
@@ -72,9 +65,9 @@ export default {
     handleDateClick: function (arg) {
       if (arg.dateStr < new Date().toISOString().replace(/T.*$/, "")) {
         alert("Please select a date in the future!");
-      } 
-      else if (this.clickedEventId == ""){
+      } else if (this.clickedEventId == "") {
         console.log(arg.view.calendar.events);
+
         this.selectedData.startDate = arg.dateStr;
         this.selectedData.endDate = arg.dateStr;
         let calendarApi = arg.view.calendar;
@@ -87,14 +80,13 @@ export default {
         } else {
           calendarApi.addEvent({
             id: "3",
-            title: this.selectedPass.title,
+            title: this.userId,
             date: arg.dateStr,
             allDay: true,
-            color:"#18c735"
+            color: "#18c200",
           });
-          this.selectedData.startDate,this.selectedData.endDate = arg.dateStr;
-          this.userEvents.push("3");
-          this.clickedEventId = "3"
+          this.clickedEventId = "3";
+          console.log(this.selectedData);
           this.$emit("selectedData", this.selectedData);
         }
       }
@@ -104,65 +96,86 @@ export default {
       this.selectedData.startDate = info.event.startStr;
       this.selectedData.endDate = info.event.startStr;
       this.$emit("selectedData", this.selectedData);
-
-      // this.selectedDates.start = info.event.startStr;
-      // this.selectedDates.end = this.fullDayConversion(info.event.end);
     },
     handleDateSelect(selectInfo) {
       console.log(selectInfo);
-      // this.selectedDates.start = selectInfo.startStr;
-      // this.selectedDates.end = this.fullDayConversion(selectInfo.end);
-      // this.$emit("selectedDates", this.selectedDates);
-      // let calendarApi = selectInfo.view.calendar;
-
-      //   calendarApi.addEvent({
-      //     id: 1,
-      //     title: "test",
-      //     start: selectInfo.startStr,
-      //     end: selectInfo.endStr,
-      //     allDay: selectInfo.allDay,
-      // });
     },
     handleEventClick(clickInfo) {
       let eventId = clickInfo.event.id;
-      console.log(eventId)
-      // if (eventId == this.clickedEventId) {
-      //   if (
-      //     confirm(
-      //       `Are you sure you want to delete the event '${clickInfo.event.title}'`
-      //     )
-      //   ) {
-      //     clickInfo.event.remove();
-      //   }
-      //   else {
-      //     return true
-      //   }
-      // }
+      console.log(eventId);
     },
 
-    // fullDayConversion(endDate) {
-    //   endDate.setMinutes(endDate.getMinutes() - 1);
+    // retrieve data, process it, and set it as the events source
+    getData() {
+      axios
+        .get("http://localhost:8081/loan")
+        .then((response) => {
+          console.log(response.data);
+          console.log(this.selectedPass);
+          this.selectedPassLoans = response.data.filter(
+            (pass) => pass.passId == this.selectedPass.id
+          );
 
-    //   return endDate.toISOString().replace(/T.*$/, ""); // YYYY-MM-DD of today
-    // },
+          this.processData();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    // for now just process the data into the format FullCalendar expects
+    processDate1(date){
+      let split = date.split("/").reverse()
+      for (let i = 0; i < split.length; i++) {
+        if (split[i].length == 1) {
+          split[i] = "0" + split[i];
+        }
+      }
+      return split.join("-");
+    },
+
+    processDate2(date){
+      let split = date.split("-").reverse()
+      for (let i = 0; i < split.length; i++) {
+        if (split[i].length == 1) {
+          split[i] = "0" + split[i];
+        }
+      }
+      return split.join("/");
+    },
+
+    processData() {
+      let tempList = []
+      for (let i = 0; i < this.selectedPassLoans.length; i++) {
+        console.log(this.selectedPassLoans[i]);
+        let data = {
+            id: this.selectedPassLoans[i].id,
+            title: this.selectedPassLoans[i].userId,
+            date: this.processDate1(this.selectedPassLoans[i].startDate),
+            allDay: true,
+            editable: false,
+          };
+        if (this.selectedPassLoans[i].userId == "1") {
+          data.color = "#92f7a3"
+        } 
+        tempList.push(data);
+      }
+
+      this.calendarOptions.events = tempList;
+          },
+
   },
 
   watch: {
     selectedPass: function (newVal, oldVal) {
       console.log(newVal);
       console.log(oldVal);
+      this.selectedData.passID = this.selectedPass.id
+      this.selectedData.userID = this.userId
+      this.getData();
     },
   },
 
-  mounted() {
-    let events = this.calendarOptions.events
-    for (let i = 0; i < events.length; i++) {
-      if (this.userEvents.includes(events[i].id)) {
-        events[i].color = "#18c735";
-      }
-    }
-
-  },
+  mounted() {},
 };
 </script>
 
