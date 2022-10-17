@@ -12,7 +12,7 @@ public class Template {
     @Column(name = "template", nullable = false)
     private String templateName;
     
-    @Column(name = "template_date", nullable = true)
+    @Column(name = "template_data", nullable = true)
     private String templateData;
     
     private boolean defunct;

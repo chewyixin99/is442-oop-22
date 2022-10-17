@@ -1,12 +1,10 @@
-package com.is442.oop.service;
+package com.is442.oop.user;
 
 import java.util.*;
 
 import org.springframework.stereotype.Component;
 
 import com.is442.oop.data.models.User;
-import com.is442.oop.data.payloads.request.CreateUserRequest;
-import com.is442.oop.data.payloads.request.UpdateUserRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 

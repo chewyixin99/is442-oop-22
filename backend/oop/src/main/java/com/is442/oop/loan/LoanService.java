@@ -1,9 +1,8 @@
-package com.is442.oop.service;
+package com.is442.oop.loan;
 
 import java.util.*;
 
 import com.is442.oop.data.models.Loan;
-import com.is442.oop.data.payloads.request.*;
 import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 

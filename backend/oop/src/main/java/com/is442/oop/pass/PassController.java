@@ -1,4 +1,4 @@
-package com.is442.oop.controller;
+package com.is442.oop.pass;
 
 import java.util.*;
 
@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.is442.oop.data.models.Pass;
-import com.is442.oop.data.payloads.request.PassRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.service.PassService;
 
 @RestController
 @RequestMapping("/passes")

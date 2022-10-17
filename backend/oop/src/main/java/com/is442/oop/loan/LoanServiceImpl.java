@@ -1,11 +1,8 @@
-package com.is442.oop.service;
+package com.is442.oop.loan;
 
 import ch.qos.logback.core.recovery.ResilientOutputStreamBase;
 import com.is442.oop.data.models.Loan;
-import com.is442.oop.data.payloads.request.LoanRequest;
-import com.is442.oop.data.payloads.request.UpdateLoanRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.data.repository.LoanRepository;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 import org.aspectj.bridge.Message;

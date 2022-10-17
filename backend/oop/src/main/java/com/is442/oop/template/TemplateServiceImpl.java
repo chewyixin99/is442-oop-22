@@ -1,4 +1,4 @@
-package com.is442.oop.service;
+package com.is442.oop.template;
 
 import java.util.*;
 
@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.is442.oop.data.models.Template;
-import com.is442.oop.data.payloads.request.TemplateRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.data.repository.TemplateRepository;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 @Service

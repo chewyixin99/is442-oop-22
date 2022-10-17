@@ -1,12 +1,9 @@
-package com.is442.oop.controller;
+package com.is442.oop.loan;
 
 
 import com.is442.oop.data.models.Loan;
-import com.is442.oop.data.payloads.request.LoanRequest;
-import com.is442.oop.data.payloads.request.UpdateLoanRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
-import com.is442.oop.service.LoanService;
 
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;

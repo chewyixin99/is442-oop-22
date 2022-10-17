@@ -1,4 +1,4 @@
-package com.is442.oop.data.repository;
+package com.is442.oop.template;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

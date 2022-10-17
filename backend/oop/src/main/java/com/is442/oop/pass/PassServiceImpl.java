@@ -1,4 +1,4 @@
-package com.is442.oop.service;
+package com.is442.oop.pass;
 
 import java.util.*;
 
@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.is442.oop.data.models.Pass;
-import com.is442.oop.data.payloads.request.PassRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.data.repository.PassRepository;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 @Service

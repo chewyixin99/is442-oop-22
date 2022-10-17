@@ -1,4 +1,4 @@
-package com.is442.oop.controller;
+package com.is442.oop.template;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.is442.oop.data.models.Template;
-import com.is442.oop.data.payloads.request.TemplateRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.service.TemplateService;
 
 import java.util.List;
 
