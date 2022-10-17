@@ -1,4 +1,4 @@
-package com.is442.oop.daos;
+package com.is442.oop.service;
 
 import ch.qos.logback.core.recovery.ResilientOutputStreamBase;
 import com.is442.oop.data.models.Loan;
@@ -6,7 +6,8 @@ import com.is442.oop.data.payloads.request.LoanRequest;
 import com.is442.oop.data.payloads.request.UpdateLoanRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.data.repository.LoanRepository;
-import com.is442.oop.exceptions.ResourceNotFoundException;
+import com.is442.oop.exception.ResourceNotFoundException;
+
 import org.aspectj.bridge.Message;
 import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class LoanDAO implements LoanDAOInt{
+public class LoanServiceImpl implements LoanService{
     @Autowired
     LoanRepository loanRepository;
 

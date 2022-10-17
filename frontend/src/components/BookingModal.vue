@@ -92,7 +92,7 @@
 
 </template>
 <script>
-import * as bootstrap from "bootstrap";
+import { Toast } from "bootstrap";
 import BookingCalendar from "@/components/BookingCalendar.vue";
 export default {
   name: "BookingModal",
@@ -219,7 +219,7 @@ export default {
     async createEmployee() {
       // const employee = await EmployeeService.createEmployee();
       // console.log(employee);
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
+      var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
       this.$emit("toastrMsg", "New employee has been created!");
       bsAlert.show();
     },
@@ -231,7 +231,7 @@ export default {
       // console.log(employees);
     },
     async editEmployeeDetails() {
-      var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
+      var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
       this.$emit("toastrMsg", "Your changes have been saved!");
       bsAlert.show();
     },

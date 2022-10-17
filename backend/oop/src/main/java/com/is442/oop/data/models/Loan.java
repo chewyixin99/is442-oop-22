@@ -1,27 +1,36 @@
 package com.is442.oop.data.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.sql.*;
 import javax.persistence.*;
+
+import org.springframework.beans.factory.annotation.Value;
 
 @Entity
 public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "loan_id", nullable = false)
     private int loanId;
     // @ManyToOne
     // private User user;
+    @Column(name = "user_id", nullable = false)
     private int userId;
     // @ManyToOne
     // private User gop;
+    @Column(name = "gop_id")
     private int gopId;
     // @ManyToOne
     // private Pass pass;
+    @Column(name = "pass_id", nullable = false)
     private int passId;
+
+    @Column(name = "start_date", nullable = false)
     private String startDate;
+
+    @Column(name = "end_date", nullable = false)
     private String endDate;
 
+    @Column(name = "is_completed", nullable = false)
+    @Value("false") // Default value
     private boolean isCompleted;
 
 

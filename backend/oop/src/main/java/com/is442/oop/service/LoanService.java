@@ -1,17 +1,16 @@
-package com.is442.oop.daos;
+package com.is442.oop.service;
 
 import java.util.*;
 
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.payloads.request.*;
 import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.exceptions.ResourceNotFoundException;
+import com.is442.oop.exception.ResourceNotFoundException;
+
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-
 @Component
-public interface LoanDAOInt {
+public interface LoanService {
 
     List<Loan> getAllLoan();
     MessageResponse createLoan(LoanRequest loanRequest);

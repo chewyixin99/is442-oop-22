@@ -13,8 +13,9 @@
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">
             <p class="m-0">Cancel Booking</p>
-            <p class="text-muted m-0 fs-6 text-start">Booking ID: {{rowData.id}}</p>
-
+            <p class="text-muted m-0 fs-6 text-start">
+              Booking ID: {{ rowData.id }}
+            </p>
           </h5>
           <i
             class="bi bi-x fs-1"
@@ -67,7 +68,11 @@
               </button>
             </div>
             <div class="col text-start">
-              <button class="btn btn-secondary" style="min-width: 100px">
+              <button
+                class="btn btn-secondary"
+                style="min-width: 100px"
+                @click.stop="clickedCancel"
+              >
                 No
               </button>
             </div>
@@ -140,6 +145,9 @@ export default {
     };
   },
   methods: {
+    clickedCancel() {
+      document.getElementById("cancel-close-btn").click();
+    },
     selectedDates($event) {
       this.retrievedData = {
         passId: $event.passData.passId,
@@ -219,7 +227,7 @@ export default {
           msg: "Cancellation is successful!",
         });
       }, 1000);
-      // var bsAlert = new bootstrap.Toast(document.getElementById("theToastr")); //inizialize it
+      // var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
       // this.$emit("toastrMsg", "New employee has been created!");
       // bsAlert.show();
     },

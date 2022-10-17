@@ -1,12 +1,13 @@
-package com.is442.oop;
+package com.is442.oop.controller;
 
 
-import com.is442.oop.daos.LoanDAOInt;
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.payloads.request.LoanRequest;
 import com.is442.oop.data.payloads.request.UpdateLoanRequest;
 import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.exceptions.ResourceNotFoundException;
+import com.is442.oop.exception.ResourceNotFoundException;
+import com.is442.oop.service.LoanService;
+
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,11 @@ import java.util.List;
 @RequestMapping("/loan")
 public class LoanController {
     @Autowired
-    LoanDAOInt loanDAOInt;
+    LoanService loanService;
 
     @GetMapping("")
     public ResponseEntity<List<Loan>> getAllLoans(){
-        List<Loan> loans = loanDAOInt.getAllLoan();
+        List<Loan> loans = loanService.getAllLoan();
         return new ResponseEntity<>(loans, HttpStatus.OK);
     }
     // can be improved to give a more verbose error
@@ -32,7 +33,7 @@ public class LoanController {
     public ResponseEntity<Loan> getLoanByLoanID(@PathVariable("loanId") Integer loanId) {
         Loan loan = null;
         try{
-            loan = loanDAOInt.getLoanByLoanID(loanId);
+            loan = loanService.getLoanByLoanID(loanId);
         } catch (Exception e){
             return new ResponseEntity<>(loan, HttpStatus.NOT_FOUND);
         }
@@ -42,7 +43,7 @@ public class LoanController {
     // Done
     @GetMapping("/byUserId/{userId}")
     public ResponseEntity<List<Loan>> getLoanByUserID(@PathVariable("userId") Integer userId){
-        List<Loan> loans = loanDAOInt.getLoanByUserID(userId);
+        List<Loan> loans = loanService.getLoanByUserID(userId);
         if (loans.isEmpty()){
             return new ResponseEntity<>(loans, HttpStatus.NOT_FOUND);
         }
@@ -51,7 +52,7 @@ public class LoanController {
 
     @GetMapping("/byPassId/{passId}")
     public ResponseEntity<List<Loan>> getLoanByPassID(@PathVariable("passId") Integer passId){
-        List<Loan> loans = loanDAOInt.getLoanByPassID(passId);
+        List<Loan> loans = loanService.getLoanByPassID(passId);
         if (loans.isEmpty()){
             return new ResponseEntity<>(loans, HttpStatus.NOT_FOUND);
         }
@@ -60,7 +61,7 @@ public class LoanController {
     // Done
     @PostMapping("")
     public ResponseEntity<MessageResponse> createLoan(@RequestBody LoanRequest createLoanRequest){
-        MessageResponse newLoan = loanDAOInt.createLoan(createLoanRequest);
+        MessageResponse newLoan = loanService.createLoan(createLoanRequest);
         return new ResponseEntity<>(newLoan, HttpStatus.CREATED);
     }
 
@@ -68,7 +69,7 @@ public class LoanController {
     public ResponseEntity<MessageResponse> updateLoanToCompleted(@RequestBody UpdateLoanRequest updateLoanRequest){
         MessageResponse updatedLoan = null;
         try{
-            updatedLoan = loanDAOInt.updateLoanToCompleted(updateLoanRequest);
+            updatedLoan = loanService.updateLoanToCompleted(updateLoanRequest);
             return new ResponseEntity<>(updatedLoan, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(updatedLoan, HttpStatus.NOT_FOUND);
@@ -79,7 +80,7 @@ public class LoanController {
     public ResponseEntity<MessageResponse> deleteLoan(@PathVariable("loanId")Integer loanId){
         MessageResponse deletedLoan= null;
         try{
-            deletedLoan = loanDAOInt.deleteLoan(loanId);
+            deletedLoan = loanService.deleteLoan(loanId);
             return new ResponseEntity<>(deletedLoan,HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(deletedLoan,HttpStatus.NOT_FOUND);

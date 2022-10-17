@@ -9,9 +9,13 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Create Booking</h5>
-          <i class="bi bi-x fs-1" id="close-btn" style="cursor: pointer" data-bs-dismiss="modal"
-            aria-label="Close"></i>
-            
+          <i
+            class="bi bi-x fs-1"
+            id="create-close-btn"
+            style="cursor: pointer"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></i>
         </div>
         <div class="modal-body text-start" style="padding: 30px">
           <form>
@@ -82,27 +86,41 @@
                 </div>
               </div>
               <hr />
-              <div class="form-group">
-                <h4>Guest Details</h4>
-                <label for="exampleFormControlSelect1">Number of Guest</label>
+              <!-- <div class="form-group">
+                <div class="d-flex justify-content-between align-items-top">
+                  <h4>Guest Details</h4>
+                  <i
+                    class="bi bi-plus fs-1"
+                    style="cursor: pointer"
+                    @click="addNewGuest"
+                  ></i>
+                </div>
+
+                 <label for="exampleFormControlSelect1">Number of Guest</label>
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
                   v-model.number="numOfGuest"
+                  @change="updateGuestNum"
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
-                </select>
+                </select> 
               </div>
               <div class="form-group">
-                <div class="row mt-3" v-for="index in numOfGuest" :key="index">
+                <div
+                  class="row mt-3"
+                  v-for="(detail, index) in bookingGuestDetails"
+                  :key="detail"
+                >
                   <div class="col">
                     <label for="exampleFormControlInput1">Name</label>
                     <input
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
+                      v-model="detail.name"
                     />
                   </div>
                   <div class="col">
@@ -111,6 +129,7 @@
                       type="email"
                       class="form-control"
                       id="exampleFormControlInput1"
+                      v-model="detail.email"
                     />
                   </div>
                   <div class="col">
@@ -119,11 +138,25 @@
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
+                      v-model="detail.contact"
                     />
                   </div>
+                  <div class="col-1 d-flex align-items-end">
+                    <i
+                      class="bi bi-trash fs-5"
+                      style="cursor: pointer"
+                      @click.stop="removeGuest($event, index)"
+                    ></i>
+                  </div>
                 </div>
-                <br />
-              </div>
+                <div
+                  class="d-flex justify-content-center text-center"
+                  v-if="bookingGuestDetails.length < 1"
+                >
+                  No guest selected.
+                </div>
+                <br /> -->
+              <!-- </div> -->
               <hr />
               <div class="form-group">
                 <h4>Booking Details</h4>
@@ -166,6 +199,7 @@
                   class="form-control"
                   id="exampleFormControlTextarea1"
                   rows="3"
+                  v-model="bookingRemarks"
                 ></textarea>
               </div>
             </div>
@@ -189,8 +223,8 @@
               <button
                 type="button"
                 class="btn btn-primary"
-                :disabled="!isChecked"
-                @click.prevent="submitBooking"
+                :disabled="!isChecked || retrievedData.start == ''"
+                @click.stop="submitBooking"
                 style="min-width: 100px"
               >
                 <div class="" v-show="!isLoading">Submit</div>
@@ -210,21 +244,28 @@
 <script>
 import BookingCalendar from "@/components/BookingCalendar.vue";
 export default {
-  name: "AdminBookingModal",
+  name: "CreateBookingModal",
   props: {
     modalType: String,
-    bookingDetails: Object,
   },
   components: {
     BookingCalendar,
   },
   data() {
     return {
+      bookingGuestDetails: [
+        {
+          name: "",
+          email: "",
+          contact: "",
+        },
+      ],
+      bookingRemarks: "",
+      bookingDetails: {},
       isChecked: false,
       selectedPassId: null,
       selectedPass: null,
       isLoading: false,
-      numOfGuest: 1,
       numPass: 2,
       componentKey: 0,
       availablePasses: [
@@ -268,7 +309,17 @@ export default {
     };
   },
   methods: {
-
+    removeGuest(e, index) {
+      console.log(index);
+      this.bookingGuestDetails.splice(index, 1);
+    },
+    addNewGuest() {
+      this.bookingGuestDetails.push({
+        name: "",
+        email: "",
+        contact: "",
+      });
+    },
     selectedDates($event) {
       this.retrievedData = {
         passId: $event.passData.passId,
@@ -339,13 +390,31 @@ export default {
       }
     },
     async submitBooking() {
+      console.log(this.bookingGuestDetails);
+
       this.isLoading = true;
       setTimeout(() => {
-        document.getElementById("close-btn").click();
-        this.$emit("bookingSubmitted", true);
-        this.$emit("toastrMsg", {status: "Success", msg: "Booking is successful!"});
-      }, 1000);
+        document.getElementById("create-close-btn").click();
+        this.bookingDetails = {
+          passData: {
+            passId: this.retrievedData.passId,
+            passTitle: this.retrievedData.passTitle,
+          },
+          duration: {
+            start: this.retrievedData.start,
+            end: this.retrievedData.end,
+          },
+          remarks: this.bookingRemarks,
+          guestData: this.bookingGuestDetails,
+          timeStamp: new Date().toISOString(),
+        };
+        this.$emit("bookingSubmitted", this.bookingDetails);
 
+        this.$emit("toastrMsg", {
+          status: "Success",
+          msg: "Booking is successful!",
+        });
+      }, 1000);
     },
   },
 };

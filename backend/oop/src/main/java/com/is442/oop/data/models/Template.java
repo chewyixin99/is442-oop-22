@@ -3,12 +3,18 @@ package com.is442.oop.data.models;
 import javax.persistence.*;
 
 @Entity
-public class EmailTemplate {
+public class Template {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "template_id", nullable = false)
     private Integer templateId;
+
+    @Column(name = "template", nullable = false)
     private String templateName;
+    
+    @Column(name = "template_date", nullable = true)
     private String templateData;
+    
     private boolean defunct;
     
     public Integer getId() {
@@ -51,7 +57,7 @@ public class EmailTemplate {
             return false;
         };
 
-        EmailTemplate template = (EmailTemplate) obj;
+        Template template = (Template) obj;
         return template.getId() == templateId;
     } 
 }

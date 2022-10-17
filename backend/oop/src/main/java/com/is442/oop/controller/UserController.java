@@ -1,15 +1,14 @@
-package com.is442.oop;
+package com.is442.oop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.is442.oop.daos.UserDAOInt;
 import com.is442.oop.data.models.User;
 import com.is442.oop.data.payloads.request.*;
 import com.is442.oop.data.payloads.response.MessageResponse;
-
+import com.is442.oop.service.UserService;
 
 import java.util.List;
 
@@ -18,11 +17,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    UserDAOInt userDAOInt;
+    UserService userService;
     
     @GetMapping("")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userDAOInt.getAllUsers();
+        List<User> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -30,7 +29,7 @@ public class UserController {
     public ResponseEntity<User> getUser(@PathVariable("userId") Integer userId) {
         User user = null;
         try {
-            user = userDAOInt.getUser(userId);
+            user = userService.getUser(userId);
         } catch (Exception e) {
             return new ResponseEntity<>(user, HttpStatus.NOT_FOUND);
         }
@@ -39,7 +38,7 @@ public class UserController {
 
     @PostMapping("")
     public ResponseEntity<MessageResponse> createUser(@RequestBody CreateUserRequest createUserRequest) {
-        MessageResponse newUser = userDAOInt.createUser(createUserRequest);
+        MessageResponse newUser = userService.createUser(createUserRequest);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
@@ -47,7 +46,7 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable("userId") Integer userId, @RequestBody UpdateUserRequest updateUserRequest) {
         User updateUser = null;
         try {
-            updateUser = userDAOInt.updateUser(userId, updateUserRequest);
+            updateUser = userService.updateUser(userId, updateUserRequest);
         } catch (Exception e) {
             return new ResponseEntity<>(updateUser, HttpStatus.NOT_FOUND);
         }
@@ -57,7 +56,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("userId") Integer userId) {
         try {
-            userDAOInt.deleteUser(userId);
+            userService.deleteUser(userId);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

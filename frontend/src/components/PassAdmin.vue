@@ -7,59 +7,52 @@
     <div class="container">
             <div class="row row-cols-auto g-5">
                 <!-- Passes 'Card' -->
-                <div v-for="PassAdmin in PassAdmin_PassesCategory" :key="PassAdmin.cid" >
-                    <div class="card h-100" style="width: 25rem;">
-                        <img :src="getImageUrl(PassAdmin.image)" class="card-img-top">
+                <div v-for="EachPass in PassAdminPasses" :key="EachPass.id" >
+                    <!-- <div><p>{{EachPass[0]}}</p></div> -->
+                    <div class="card border-secondary h-100" style="width: 25rem;">
+                        <img src="../assets/passPic_test.jpg" class="card-img-top">
                             <div class="card-body ">
-                                <h5 class="card-title">{{PassAdmin.name}}</h5>
-                                <p class="card-text">{{PassAdmin.description}}</p>
+                                <b class="card-title">{{EachPass.passDesc}}</b>
+                                <!-- <p class="card-text">{{Pass.description}}</p> -->
                             </div>
                             <ul class="list-group list-group-flush">
-                                <span><b>Eligible places: </b><br>
-                                    {{getPlaces(PassAdmin.cid)}}</span>
+                                <span><b>Point of Interests </b><br>
+                                {{EachPass.poi}}</span>
                             </ul>
-                            <div class="card-footer btn-group-vertical">
-                                <!-- Update button prompt Pass modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#AdminView`+PassAdmin.cid">
-                                    View
-                                </button>     
-                                <!-- Update button prompt Passes update modal -->
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" :data-bs-target="`#AdminUpdate`+PassAdmin.cid">
-                                    Update
-                                </button> 
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal">
-                                    Delete
-                                </button> 
-                            </div>
-                    </div>
-
-                    <!-- View Passes Modal  -->
-                    <div class="modal fade" :id="`AdminView`+PassAdmin.cid" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable">
+                            <ul class="list-group list-group-flush">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-5 border"><b>ID</b></div>
+                                        <div class="col-7 border">{{EachPass.id}}</div>
+                                        <div class="col-5 border"><b>Guests Numbers</b></div>
+                                        <div class="col-7 border">{{EachPass.numGuests}}</div>
+                                        <div class="col-5 border"><b>Replacement Fee</b></div>
+                                        <div class="col-7 border">${{EachPass.replacementFee}}</div>
+                                        <div class="col-5 border"><b>Status</b></div>
+                                        <div class="col-7 border">{{EachPass.passStatus}}</div>
+                                        <div class="col-5 border"><b>Defunct?</b></div>
+                                        <div class="col-7 border">{{EachPass.defunct}}</div>
+                                        <div class="col-5 border"><b>Physical?</b></div>
+                                        <div class="col-7 border">{{EachPass.physical}}</div>
+                                    </div>
+                                </div>
+                            </ul>
                             
-                            <div class="modal-content">
-                                <img :src="getImageUrl(PassAdmin.image)" alt="Image" class="img-fluid" style="background-color: #b2fcff;">
-
-                            <div class="content-text p-4">
-                                <h3 class="mb-4">{{PassAdmin.name}}</h3>
-                                <p class="mb-4">{{PassAdmin.description}}</p>
-                                <span><b>test places: </b><br>
-                                {{getPlaces(PassAdmin.cid)}}</span>
+                            <div class="card-footer btn-group-vertical">
+                                <!-- View button prompt Passes update modal -->
+                                <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewUM">
+                                    123
+                                </button>  -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#viewUM`+EachPass.id">
+                                    View
+                                </button> 
                                 
-                                <div class="d-flex">
-                                <div class="ml-auto">
-                                </div>
-                                </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            </div>
-                            </div>
-                        </div>
                     </div>
-                    
                     <!-- Pass update modal -->
-                    <div class="modal fade" :id="`AdminUpdate`+PassAdmin.cid" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <!-- <div class="modal fade" id="viewUM" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+                    <div class="modal fade" :id="`viewUM`+EachPass.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -68,28 +61,65 @@
                                 </div>
                                 <div class="modal-body text-start">
                                     <form>
-                                        <div class="mb-3 has-validation">
-                                            <label for="name" class="col-form-label">Name:</label>
-                                            <input class="form-control" v-model ="PassAdmin.name" id="PassName" required >
-                                        </div>
                                         <div class="mb-3">
-                                            <label for="description" class="col-form-label">Description:</label>
-                                            <input class="form-control" v-model ="PassAdmin.description" id="PassDescription" required >
+                                            <label class="col-form-label"><b>ID: {{EachPass.id}}</b></label><br>
+
+                                            <label class="col-form-label">Description:</label> 
+                                            <input class="form-control" v-model ="EachPass.passDesc" required >
+                                            <label class="col-form-label">Point of Interests:</label>
+                                            <input class="form-control" v-model ="EachPass.poi" required >
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="places" class="col-form-label">Places:</label>
-                                            <input class="form-control" v-model ="PassAdmin.places" id="PassPlaces" required >
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
+                                            <div class="col-7">
+                                                <input type="number" v-model="EachPass.numGuests" class="form-control">
+                                            </div>
                                         </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Replacement Fee</b></label>
+                                            <div class="col-7">
+                                                <div class="input-group">
+                                                    <div class="input-group-text">$</div>
+                                                    <input type="number" v-model="EachPass.replacementFee" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Status</b></label>
+                                            <div class="col-7">
+                                                <input type="text" v-model="EachPass.passStatus" class="form-control" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Defunct?</b></label>
+                                            <div class="col-7">
+                                                <input type="text" v-model="EachPass.defunct" class="form-control" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Physical?</b></label>
+                                            <div class="col-7">
+                                                <input type="text" v-model="EachPass.physical" class="form-control" disabled>
+                                            </div>
+                                        </div>
+                                            
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" @click="UpdatePass" data-bs-dismiss="modal">Update Now</button>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Update Now</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal">Delete</button> 
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+
+
+
+
+
 
                 <!-- ====================================Loop ends============================= -->
                 <!-- Add new passes section -->
@@ -110,29 +140,70 @@
                             </div>
                             <div class="modal-body text-start">
                                 <form>
-                                    <div class="mb-3 has-validation">
-                                        <label for="name" class="col-form-label">Name:</label>
-                                        <input type="text" class="form-control" id="PassName" placeholder="Enter name here" required>
-
-                                    </div>
                                     <div class="mb-3">
-                                        <label for="description" class="col-form-label">Description:</label>
-                                        <input type="text" class="form-control" id="PassDescription" placeholder="Enter descriptions here" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="places" class="col-form-label">Eligible Places:</label>
-                                        <input type="text" class="form-control" id="PassPlaces" placeholder="Enter locations here" required>
-                                    </div>
+                                            <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
+                                            <label class="col-form-label">Description:</label> 
+                                            <input class="form-control" required v-model="NewPassObject.passDesc">
+                                            <label class="col-form-label">Point of Interests:</label>
+                                            <input class="form-control" required v-model="NewPassObject.poi">
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
+                                            <div class="col-7">
+                                                <input type="number" class="form-control" required v-model="NewPassObject.numGuests">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Replacement Fee</b></label>
+                                            <div class="col-7">
+                                                <div class="input-group">
+                                                    <div class="input-group-text">$</div>
+                                                    <input type="number" class="form-control" required v-model="NewPassObject.replacementFee">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Status</b></label>
+                                            <div class="col-7">
+                                                <select class="form-select" v-model="NewPassObject.passStatus">
+                                                    <option value="AVAILABLE">Available</option>
+                                                    <option value="ONLOAN">On Loan</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Defunct?</b></label>
+                                            <div class="col-7">
+                                                <select class="form-select" v-model="NewPassObject.physical">
+                                                    <option value="true">true</option>
+                                                    <option value="false">false</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="col-5 col-form-label"><b>Physical?</b></label>
+                                            <div class="col-7">
+                                                <select class="form-select" v-model="NewPassObject.defunct">
+                                                    <option value="true">true</option>
+                                                    <option value="false">false</option>
+                                                </select>
+                                            </div>
+                                            <!-- <div>{{NewPassObject.defunct}}</div> -->
+                                        </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" @click="CreateNewPass" data-bs-dismiss="modal">Save</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" @click="addNewPass()" data-bs-dismiss="modal">Create Pass</button>
+                                <!-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="CreateNewPass">Create Pass</button> -->
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+
 
         
         
@@ -141,26 +212,58 @@
 </template>
 
 <script>
-
+import PassService from '@/api/services/PassService'
+// import axios from 'axios'
 export default ({
     name: 'PassAdmin',
         props: {
-            PassAdmin_PassesCategory: Array,
+            PassAdminPasses: Array,
         },
-        methods: {
-            getImageUrl(pic){
-                return require('../assets/'+pic)
+        
+        components: {
+        },
+        data() {
+        return {
+            // Capital for testing, small capital for database data
+            // AdminPasses: this.PassAdminPasses,
+            NewPassObject: {
+                passDesc: "",
+                poi: "",
+                numGuests: 0,
+                replacementFee: 0,
+                passStatus: "AVAILABLE",
+                defunct: true,
+                // id: 5,
+                physical: true
             },
-            getPlaces(card_id){
-                for(const i in this.PassAdmin_PassesCategory){
-                    if(card_id == this.PassAdmin_PassesCategory[i]["cid"]){
-                        return this.PassAdmin_PassesCategory[i]["places"].join(', ')
-                    }
-
-                }
+            
             }
         },
-        components: {
+        methods: {
+            GetImageUrl(pic){
+                return require('../assets/'+pic)
+            },
+            async addNewPass(){
+                try{
+                    await PassService.createPass(this.NewPassObject);
+                    this.$emit('getPassData')
+                }catch(e){
+                    console.log(e);
+                }
+            },
+            // CreateNewPass(){
+            //     this.AdminPasses.push(this.NewPassObject)
+            //     this.NewPassObject = {
+            //     passDesc: "",
+            //     poi: "",
+            //     numGuests: 0,
+            //     replacementFee: 0,
+            //     passStatus: "AVAILABLE",
+            //     defunct: true,
+            //     id: 5,
+            //     physical: true
+            //     }
+            // }
         },
 
 })

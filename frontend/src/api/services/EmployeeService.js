@@ -4,10 +4,17 @@ import BaseApiService from "../BaseApiService";
 class EmployeeService extends BaseApiService {
     async createEmployee(employeeDetails) {
         try {
-            let employee = await axiosClient.post("/create_employee", {
-                params: {...employeeDetails}
-            });
-            console.log(employee);
+            let employee = await axiosClient.post("/users", { ...employeeDetails });
+            return employee.data
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+
+    async getEmployee(val) {
+        try {
+            let employee = await axiosClient.get("users/" + val);
             return employee.data
 
         } catch (error) {
@@ -17,8 +24,7 @@ class EmployeeService extends BaseApiService {
 
     async getAllEmployees() {
         try {
-            let employees = await axiosClient.get("/get_all_employees");
-            console.log(employees);
+            let employees = await axiosClient.get("/users");
             return employees.data
 
         } catch (error) {
@@ -27,11 +33,11 @@ class EmployeeService extends BaseApiService {
     }
 
     async editEmployeeDetails(employeeDetails) {
+        console.log(employeeDetails);
         try {
-            let employee = await axiosClient.patch("/edit_employee", {
-                params: {...employeeDetails}
+            let employee = await axiosClient.put("/users/" + employeeDetails.id, {
+                ...employeeDetails
             });
-            console.log(employee);
             return employee.data
 
         } catch (error) {
@@ -39,14 +45,9 @@ class EmployeeService extends BaseApiService {
         }
     }
 
-    async removeEmployees(employeeIDs) {
+    async removeEmployees(employeeID) {
         try {
-            let deletionStatus = await axiosClient.delete("/remove_employees", {
-                params : {
-                    employee_id: employeeIDs
-                }
-            });
-            console.log(deletionStatus);
+            let deletionStatus = await axiosClient.delete("/users/" + employeeID);
             return deletionStatus.data.message
 
         } catch (error) {
