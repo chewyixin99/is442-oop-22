@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         user.setContactNumber(createUserRequest.getContactNumber());
         user.setUserType(createUserRequest.getUserType());
         userRepository.save(user);
-        return new MessageResponse(String.format("User created, ID: %d.", user.getId()));
+        return new MessageResponse(String.format("User created, ID: %d.", user.getUserId()));
     };
 
     @Override

@@ -31,7 +31,7 @@ public class TemplateServiceImpl implements TemplateService {
         template.setTemplateData(createTemplateRequest.getTemplateData());
         template.setDefunct(createTemplateRequest.getDefunct());
         templateRepository.save(template);
-        return new MessageResponse(String.format("Template created, ID: %d.", template.getId()));
+        return new MessageResponse(String.format("Template created, ID: %d.", template.getTemplateId()));
     }
 
     @Override

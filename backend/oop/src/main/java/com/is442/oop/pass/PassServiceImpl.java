@@ -35,7 +35,7 @@ public class PassServiceImpl implements PassService {
         pass.setPassStatus(passRequest.getPassStatus());
         pass.setDefunct(passRequest.getDefunct());
         passRepository.save(pass);
-        return new MessageResponse(String.format("Pass created, ID: %d", pass.getId()));
+        return new MessageResponse(String.format("Pass created, ID: %d", pass.getPassId()));
     }
 
     @Override
