@@ -4,6 +4,18 @@ import javax.persistence.*;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+@Getter // provide default getters
+@Setter // provide default setters
+@ToString // provide default toString()
+@EqualsAndHashCode // provide default equals() and hashCode()
+@NoArgsConstructor // no args constructor 
+@AllArgsConstructor // all args constructor
 @Entity
 @Table(name="user")
 public class User {
@@ -31,70 +43,4 @@ public class User {
     @Column(name = "defunct", nullable = false)
     @Value("false") // Default value
     private boolean defunct;
-    
-    public Integer getId() {
-        return userId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    public UserType getUserType() {
-        return userType;
-    }
-    public void setUserType(UserType userType) {
-        this.userType = userType;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    public boolean getDefunct() {
-        return defunct;
-    }
-    public void setDefunct(boolean defunct) {
-        this.defunct = defunct;
-    }
-    
-    @Override
-    public String toString() {
-        return "User [id=" + userId + ", username=" + username + ", password=" + password + ", email=" + email + ", contactNumber=" + contactNumber
-                + ", userType=" + userType + ", defunct=" + defunct + "]";
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        User user = (User) obj;
-        return user.getId() == userId;
-    }
 }

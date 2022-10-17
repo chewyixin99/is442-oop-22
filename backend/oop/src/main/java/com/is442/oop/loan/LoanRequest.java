@@ -1,4 +1,4 @@
-package com.is442.oop.data.payloads.request;
+package com.is442.oop.loan;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

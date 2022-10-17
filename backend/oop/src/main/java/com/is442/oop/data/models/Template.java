@@ -2,6 +2,18 @@ package com.is442.oop.data.models;
 
 import javax.persistence.*;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+@Getter // provide default getters
+@Setter // provide default setters
+@ToString // provide default toString()
+@EqualsAndHashCode // provide default equals() and hashCode()
+@NoArgsConstructor // no args constructor 
+@AllArgsConstructor // all args constructor
 @Entity
 public class Template {
     @Id
@@ -12,52 +24,8 @@ public class Template {
     @Column(name = "template", nullable = false)
     private String templateName;
     
-    @Column(name = "template_date", nullable = true)
+    @Column(name = "template_data", nullable = true)
     private String templateData;
     
     private boolean defunct;
-    
-    public Integer getId() {
-        return templateId;
-    }
-
-    public String getTemplateName() {
-        return templateName;
-    }
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
-    }
-    
-    public String getTemplateData() {
-        return templateData;
-    }
-    public void setTemplateData(String templateData) {
-        this.templateData = templateData;
-    }
-    
-    public boolean getDefunct() {
-        return defunct;
-    }
-    public void setDefunct(boolean defunct) {
-        this.defunct = defunct;
-    }
-
-    @Override
-    public String toString() {
-        return "Template [templateId=" + templateId + ", templateData=" + templateData + ", defunct=" + defunct + "]";
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        };
-        
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        };
-
-        Template template = (Template) obj;
-        return template.getId() == templateId;
-    } 
 }

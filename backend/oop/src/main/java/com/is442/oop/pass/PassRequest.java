@@ -1,4 +1,4 @@
-package com.is442.oop.data.payloads.request;
+package com.is442.oop.pass;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
