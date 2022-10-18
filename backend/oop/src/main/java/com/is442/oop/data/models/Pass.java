@@ -2,6 +2,8 @@ package com.is442.oop.data.models;
 
 import javax.persistence.*;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,5 +43,6 @@ public class Pass {
     private PassStatus passStatus;
 
     @Column(name = "defunct", nullable = false)
+    @Value("false")
     private boolean defunct;
 }
