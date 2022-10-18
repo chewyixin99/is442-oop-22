@@ -32,7 +32,7 @@
                   <option
                     v-for="availablePass in availablePasses"
                     :key="availablePass"
-                    :value="availablePass.id"
+                    :value="availablePass.passId"
                   >
                     {{ availablePass.poi }}
                   </option>
@@ -44,6 +44,7 @@
                 :key="componentKey"
                 @selectedData="selectedData"
                 :selectedPass="selectedPass"
+                :selectedLoan="selectedLoan"
                 class="mt-4"
               />
             </div>
@@ -88,6 +89,7 @@
 
               <!-- Booking Details Form start --------------------------------------------------- -->
 
+              <!-- DO NOT DELETE IN CASE IT IS A BUSINESS REQUIREMENT  -->
               <!-- <div class="form-group">
                 <div class="d-flex justify-content-between align-items-top">
                   <h4>Guest Details</h4>
@@ -259,6 +261,7 @@ export default {
   },
   data() {
     return {
+      selectedLoan: {id:null}, // this to prevent a type error as edit booking modal is using this
       bookingGuestDetails: [
         {
           name: "",
@@ -309,7 +312,7 @@ export default {
       console.log(this.availablePasses);
       this.selectedPassId = event.target.value;
       this.selectedPass = this.availablePasses.find(
-        (pass) => pass.id == this.selectedPassId
+        (pass) => pass.passId == this.selectedPassId
       );
 
       console.log(this.selectedPass);
@@ -317,64 +320,16 @@ export default {
     forceRerender() {
       this.componentKey += 1;
     },
-
-    // fixed events
-    // passFn(id) {
-    //   if (id == "1") {
-    //     return {
-    //       title: "Zoo 1",
-    //       id: "1",
-    //       events: [
-    //         {
-    //           id: 1,
-    //           title: "Team 1",
-    //           start: new Date(2022, 8, 29).toISOString().replace(/T.*$/, ""),
-    //         },
-    //         {
-    //           id: 2,
-    //           title: "Team 3",
-    //           start: new Date(2022, 8, 30).toISOString().replace(/T.*$/, ""),
-    //         },
-    //       ],
-    //     };
-    //   } else if (id == "2") {
-    //     return {
-    //       title: "Zoo 2",
-    //       id: "2",
-    //       events: [
-    //         {
-    //           id: 1,
-    //           title: "Finance Dept",
-    //           start: new Date(2022, 8, 24).toISOString().replace(/T.*$/, ""),
-    //         },
-    //         {
-    //           id: 2,
-    //           title: "Teaching Dept",
-    //           start: new Date(2022, 8, 26).toISOString().replace(/T.*$/, ""),
-    //         },
-    //       ],
-    //     };
-    //   } else if (id == "5") {
-    //     return {
-    //       title: "Safari 2",
-    //       id: "5",
-    //     };
-    //   } else if (id == "6") {
-    //     return {
-    //       title: "Gardens By The Bay",
-    //       id: "6",
-    //     };
-    //   }
-    // },
     
     processDate2(date){
-      console.log(date)
+      
       let split = date.split("-").reverse()
       for (let i = 0; i < split.length; i++) {
         if (split[i].length == 1) {
           split[i] = "0" + split[i];
         }
       }
+console.log(date)
       return split.join("/");
     },
     async submitBooking() {
@@ -401,37 +356,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-
-      // setTimeout(() => {
-      //   document.getElementById("create-close-btn").click();
-      //   // this.bookingDetails = {
-      //   //   passData: {
-      //   //     passId: this.retrievedData.passId,
-      //   //     passTitle: this.retrievedData.passTitle,
-      //   //   },
-      //   //   duration: {
-      //   //     start: this.retrievedData.start,
-      //   //     end: this.retrievedData.end,
-      //   //   },
-      //   //   remarks: this.bookingRemarks,
-      //   //   guestData: this.bookingGuestDetails,
-      //   //   timeStamp: new Date().toISOString(),
-      //   // }
-
-      //   // post to backend
-      //   axios.post('http://localhost:8081/loan', this.retrievedData)
-      //   .then((response) => {
-      //     this.$emit("bookingSubmitted", this.bookingDetails);
-      //     this.$emit("toastrMsg", {
-      //     status: "Success",
-      //     msg: "Booking is successful!",
-      //   });
-      //   })
-      //   .catch((error) => {
-      //     console.log(error)
-      //   })
-
-      // }, 1000);
     },
 
     getData() {

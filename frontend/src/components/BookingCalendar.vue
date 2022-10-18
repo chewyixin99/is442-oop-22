@@ -16,13 +16,14 @@ import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
 
 export default {
-  props: ["selectedPass"],
+  props: ["selectedPass","selectedLoan"],
   components: {
     FullCalendar,
   },
   data() {
     return {
       componentKey: 0,
+      isEditing: false,
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
         initialView: "dayGridMonth",
@@ -62,7 +63,13 @@ export default {
     forceRerender() {
       this.componentKey += 1;
     },
+    handleDrop(info){
+      console.log(info);
+    },
     handleDateClick: function (arg) {
+      if (this.isEditing){
+        return;
+      }
       if (arg.dateStr < new Date().toISOString().replace(/T.*$/, "")) {
         alert("Please select a date in the future!");
       } else if (this.clickedEventId == "") {
@@ -73,11 +80,11 @@ export default {
         let calendarApi = arg.view.calendar;
         let existingEvents = this.calendarOptions.events;
         if (
-          existingEvents.filter((event) => event.date === arg.dateStr).length >
-          0
+          existingEvents.filter((event) => event.date === arg.dateStr).length >0
         ) {
           alert("There is already a loan on this date!");
         } else {
+
           calendarApi.addEvent({
             id: "3",
             title: this.userId,
@@ -88,11 +95,18 @@ export default {
           this.clickedEventId = "3";
           console.log(this.selectedData);
           this.$emit("selectedData", this.selectedData);
+          
+
         }
       }
     },
     handleDropChange(info) {
       console.log(info.event.startStr);
+      // function to stop event from dropping at a past date
+      if (info.event.startStr < new Date().toISOString().replace(/T.*$/, "")) {
+        alert("Please select a date in the future!");
+        info.revert()
+      }
       this.selectedData.startDate = info.event.startStr;
       this.selectedData.endDate = info.event.startStr;
       this.$emit("selectedData", this.selectedData);
@@ -113,7 +127,7 @@ export default {
           console.log(response.data);
           console.log(this.selectedPass);
           this.selectedPassLoans = response.data.filter(
-            (pass) => pass.passId == this.selectedPass.id
+            (pass) => pass.passId == this.selectedPass.passId
           );
 
           this.processData();
@@ -144,19 +158,26 @@ export default {
     },
 
     processData() {
+      console.log("in process data");
       let tempList = []
       for (let i = 0; i < this.selectedPassLoans.length; i++) {
         console.log(this.selectedPassLoans[i]);
         let data = {
-            id: this.selectedPassLoans[i].id,
+            id: this.selectedPassLoans[i].passId,
             title: this.selectedPassLoans[i].userId,
             date: this.processDate1(this.selectedPassLoans[i].startDate),
             allDay: true,
-            editable: false,
           };
-        if (this.selectedPassLoans[i].userId == "1") {
+
+        // need to account for various accounts and users here
+        if (this.selectedPassLoans[i].userId == "1" && this.selectedPassLoans[i].loanId != this.selectedLoan.id) {
           data.color = "#92f7a3"
+          data.editable = false
         } 
+        else {
+          data.color = "#40c958"
+          data.editable = true
+        }
         tempList.push(data);
       }
 
@@ -169,13 +190,22 @@ export default {
     selectedPass: function (newVal, oldVal) {
       console.log(newVal);
       console.log(oldVal);
-      this.selectedData.passID = this.selectedPass.id
+      console.log("selectedPass updated ------------------");
+      this.selectedData.passID = this.selectedPass.passId
       this.selectedData.userID = this.userId
       this.getData();
+      
     },
   },
 
-  mounted() {},
+  mounted() {
+    if (this.selectedPass){
+      this.getData();
+      this.selectedData.passID = this.selectedPass.passId
+      this.selectedData.userID = this.userId
+      this.isEditing = true;
+    }
+  },
 };
 </script>
 

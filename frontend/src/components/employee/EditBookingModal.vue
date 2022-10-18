@@ -8,45 +8,56 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit Booking {{rowId}}</h5>
-          <i class="bi bi-x fs-1" id="close-btn" style="cursor: pointer" data-bs-dismiss="modal"
-            aria-label="Close"></i>
+          <h5 class="modal-title" id="exampleModalLabel">Edit Booking</h5>
+          <i
+            class="bi bi-x fs-1"
+            id="create-close-btn"
+            style="cursor: pointer"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></i>
         </div>
         <div class="modal-body text-start" style="padding: 30px">
           <form>
             <div class="col-md">
-              <div class="mb-3 has-validation">
-                <label for="passType" class="col-form-label">Pass Type</label>
-                <select
-                  class="form-select"
-                  aria-label="Default select example"
-                  @change="selectPass($event)"
-                  id="passType"
-                >
-                  <option>Choose Pass</option>
-                  <option
-                    v-for="availablePass in availablePasses"
-                    :key="availablePass"
-                    :value="availablePass.id"
-                  >
-                    {{ availablePass.title }}
-                  </option>
-                </select>
+              <div class="row gap-5">
+                <div class="col text-end">
+                  <span>Booking ID:</span>
+                </div>
+                <div class="col text-start">
+                  <span>{{ rowData.id }}</span>
+                </div>
+              </div>
+              <div class="row gap-5">
+                <div class="col text-end">
+                  <span>Pass Name:</span>
+                </div>
+                <div class="col text-start">
+                  <span>{{ rowData.passTitle }}</span>
+                </div>
               </div>
             </div>
             <div class="p-4">
+              <div class="" v-if="selectedPass">
               <BookingCalendar
                 :key="componentKey"
-                :passId="passFn('5')"
-                @selectedDates="selectedDates"
+                @selectedData="selectedData"
                 :selectedPass="selectedPass"
+                :selectedLoan="rowData"
                 class="mt-4"
               />
+              </div>
+              <div class="d-flex text-center justify-content-center align-center mt-4" v-else>
+                <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              </div>
+
             </div>
 
             <div class="mt-4" v-if="selectedPass">
               <div class="form-group">
-                <h4>My Details</h4>
+                <h4>Booking Details</h4>
                 <div class="row my-4">
                   <div class="col">
                     <label for="exampleFormControlInput1">Email address</label>
@@ -80,52 +91,8 @@
                   </div>
                 </div>
               </div>
-              <hr />
+             
               <div class="form-group">
-                <h4>Guest Details</h4>
-                <label for="exampleFormControlSelect1">Number of Guest</label>
-                <select
-                  class="form-control"
-                  id="exampleFormControlSelect1"
-                  v-model.number="numOfGuest"
-                >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <div class="row mt-3" v-for="index in numOfGuest" :key="index">
-                  <div class="col">
-                    <label for="exampleFormControlInput1">Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="exampleFormControlInput1"
-                    />
-                  </div>
-                  <div class="col">
-                    <label for="exampleFormControlInput1">Email address</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="exampleFormControlInput1"
-                    />
-                  </div>
-                  <div class="col">
-                    <label for="exampleFormControlInput1">Contact Number</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="exampleFormControlInput1"
-                    />
-                  </div>
-                </div>
-                <br />
-              </div>
-              <hr />
-              <div class="form-group">
-                <h4>Booking Details</h4>
                 <div class="row">
                   <div class="col">
                     <label for="exampleFormControlInput1">Pass Type</label>
@@ -133,7 +100,7 @@
                       type="email"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      :value="selectedPass.title"
+                      :value="retrievedData.passTitle"
                       disabled
                     />
                   </div>
@@ -145,7 +112,7 @@
                       type="date"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      :value="retrievedData.start"
+                      :value="retrievedData.startDate"
                       disabled
                     />
                   </div>
@@ -155,7 +122,7 @@
                       type="date"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      :value="retrievedData.end"
+                      :value="retrievedData.endDate"
                       disabled
                     />
                   </div>
@@ -165,6 +132,7 @@
                   class="form-control"
                   id="exampleFormControlTextarea1"
                   rows="3"
+                  v-model="bookingRemarks"
                 ></textarea>
               </div>
             </div>
@@ -188,8 +156,8 @@
               <button
                 type="button"
                 class="btn btn-primary"
-                :disabled="!isChecked"
-                @click.prevent="submitBooking"
+                :disabled="!isChecked || retrievedData.start == ''"
+                @click.stop="submitBooking"
                 style="min-width: 100px"
               >
                 <div class="" v-show="!isLoading">Submit</div>
@@ -208,147 +176,134 @@
 
 <script>
 import BookingCalendar from "@/components/BookingCalendar.vue";
-// import { Toast } from 'bootstrap';
+import axios from "axios";
 export default {
   name: "EditBookingModal",
   props: {
     modalType: String,
-    bookingDetails: Object,
-    rowId: String
+    rowData: Object,
   },
   components: {
     BookingCalendar,
   },
   data() {
     return {
+      bookingGuestDetails: [
+        {
+          name: "",
+          email: "",
+          contact: "",
+        },
+      ],
+      bookingRemarks: "",
+      bookingDetails: {},
       isChecked: false,
       selectedPassId: null,
       selectedPass: null,
       isLoading: false,
-      numOfGuest: 1,
       numPass: 2,
       componentKey: 0,
-      availablePasses: [
-        {
-          id: "1",
-          title: "Zoo 1",
-          selected: false,
-        },
-        {
-          id: "2",
-          title: "Zoo 2",
-          selected: false,
-        },
-        {
-          id: "3",
-          title: "Zoo 3",
-          selected: false,
-        },
-        {
-          id: "4",
-          title: "Safari 1",
-          selected: false,
-        },
-        {
-          id: "5",
-          title: "Safari 2",
-          selected: false,
-        },
-        {
-          id: "6",
-          title: "Gardens By The Bay",
-          selected: false,
-        },
-      ],
-      retrievedData: {
-        passId: null,
-        passTitle: "",
-        start: "",
-        end: "",
-      },
+      availablePasses: [],
+      retrievedData: {},
+      retrievedPassData: {}
     };
   },
   methods: {
-    selectedDates($event) {
+    removeGuest(e, index) {
+      console.log(index);
+      this.bookingGuestDetails.splice(index, 1);
+    },
+    addNewGuest() {
+      this.bookingGuestDetails.push({
+        name: "",
+        email: "",
+        contact: "",
+      });
+    },
+    selectedData($event) {
       this.retrievedData = {
-        passId: $event.passData.passId,
-        passTitle: $event.passData.passTitle,
-        start: $event.start,
-        end: $event.end,
+        passID: $event.passID,
+        userID: $event.userID,
+        startDate: $event.startDate,
+        endDate: $event.endDate,
       };
       console.log(this.retrievedData);
     },
-    selectPass(event) {
-      this.selectedPassId = event.target.value;
-      this.selectedPass = this.availablePasses.find(
-        (pass) => pass.id === this.selectedPassId
-      );
 
-      console.log(this.selectedPass);
-    },
     forceRerender() {
       this.componentKey += 1;
     },
-
-    // fixed events
-    passFn(id) {
-      if (id == "1") {
-        return {
-          title: "Zoo 1",
-          id: "1",
-          events: [
-            {
-              id: 1,
-              title: "Team 1",
-              start: new Date(2022, 8, 29).toISOString().replace(/T.*$/, ""),
-            },
-            {
-              id: 2,
-              title: "Team 3",
-              start: new Date(2022, 8, 30).toISOString().replace(/T.*$/, ""),
-            },
-          ],
-        };
-      } else if (id == "2") {
-        return {
-          title: "Zoo 2",
-          id: "2",
-          events: [
-            {
-              id: 1,
-              title: "Finance Dept",
-              start: new Date(2022, 8, 24).toISOString().replace(/T.*$/, ""),
-            },
-            {
-              id: 2,
-              title: "Teaching Dept",
-              start: new Date(2022, 8, 26).toISOString().replace(/T.*$/, ""),
-            },
-          ],
-        };
-      } else if (id == "5") {
-        return {
-          title: "Safari 2",
-          id: "5",
-        };
-      } else if (id == "6") {
-        return {
-          title: "Gardens By The Bay",
-          id: "6",
-        };
+    
+    processDate2(date){
+      
+      let split = date.split("-").reverse()
+      for (let i = 0; i < split.length; i++) {
+        if (split[i].length == 1) {
+          split[i] = "0" + split[i];
+        }
       }
+      return split.join("/");
     },
     async submitBooking() {
-      this.isLoading = true;
-      setTimeout(() => {
-        document.getElementById("close-btn").click();
-        this.$emit("bookingSubmitted", true);
-        this.$emit("toastrMsg", {status: "Success", msg: "Booking is successful!"});
 
-      }, 1000);
-      // var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
-      // this.$emit("toastrMsg", "New employee has been created!");
-      // bsAlert.show();
+      this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
+      this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
+
+
+      this.isLoading = true;
+      console.log(this.retrievedData)
+      // axios
+      //   .post("http://localhost:8081/loan", this.retrievedData)
+      //   .then((response) => {
+      //     if (response.status != 500) {
+      //       this.isLoading = false;
+      //       document.getElementById("create-close-btn").click();
+      //       this.$emit("bookingSubmitted", this.retrievedData);
+      //       this.$emit("toastrMsg", {
+      //         status: "Success",
+      //         msg: "Booking is successful!",
+      //       });
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+    },
+
+    getData() {
+      axios
+        .get("http://localhost:8081/loan/" + this.rowData.id)
+        .then((response1) => {
+          this.retrievedLoanData = response1.data
+          
+          axios
+            .get("http://localhost:8081/passes/" + response1.data.passId)
+            .then((response2) => {
+              console.log('response2', response2.data);
+              setTimeout(() => {
+              this.retrievedPassData = response2.data
+              this.selectedPass = response2.data
+              console.log("specific pass data updated ------------------")
+            }, 1000);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          
+
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+
+  watch: {
+    rowData: function (newVal, oldVal) {
+      console.log(newVal);
+      console.log(oldVal)
+      console.log("rowData updated ------------------");
+      this.getData();
     },
   },
 };

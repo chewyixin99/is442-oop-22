@@ -45,6 +45,14 @@
       @bookingSubmitted="bookingSubmitted"
     ></CreateBookingModal>
 
+    <EditBookingModal
+      @toastrMsg="updateToastrMsg"
+      :key="componentKey"
+      id="editModal"
+      @bookingSubmitted="bookingSubmitted"
+      :rowData="currentEditData"
+    ></EditBookingModal>
+
     <CancelBookingModal
       @toastrMsg="updateToastrMsg"
       :key="componentKey"
@@ -58,6 +66,18 @@
       data-bs-target="#cancelModal"
       id="openCancelModal"
     ></div>
+
+    <div
+      data-bs-toggle="modal"
+      data-bs-target="#createModal"
+      id="openCreateModal"
+    ></div>
+
+        <div
+      data-bs-toggle="modal"
+      data-bs-target="#editModal"
+      id="openEditModal"
+    ></div>
   </div>
 </template>
 <script>
@@ -66,6 +86,8 @@ import CreateBookingModal from "@/components/employee/CreateBookingModal.vue";
 import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/employee/CancelBookingModal.vue";
+import EditBookingModal from "@/components/employee/EditBookingModal.vue";
+
 import axios from "axios";
 
 export default {
@@ -73,6 +95,7 @@ export default {
   components: {
     CreateBookingModal,
     CancelBookingModal,
+    EditBookingModal,
     TheToastr,
   },
   data() {
@@ -81,6 +104,7 @@ export default {
       formInput: { startStr: "null" },
       type: "employee",
       currentCancelData: {},
+      currentEditData: {},
       calendarInput: {
         startStr: "null",
         endStr: "null",
@@ -97,7 +121,7 @@ export default {
         columns: [
           {
             id: "id",
-            name: "Booking ID",
+            name: "ID",
             width: "10%",
           },
           {
@@ -107,22 +131,22 @@ export default {
           },
           {
             id: "startDate",
-            name: "Start Date",
+            name: "Start",
             width: "10%",
           },
           {
             id: "endDate",
-            name: "End Date",
+            name: "End",
             width: "10%",
           },
           {
             id: "previous",
-            name: "Previous Booker",
+            name: "Previous",
             width: "15%",
           },
           {
             id: "following",
-            name: "Following Booker",
+            name: "Next",
             width: "15%",
           },
           {
@@ -130,16 +154,48 @@ export default {
             sort: false,
             formatter: (cell, row) => {
               return h(
-                "button",
+               "i",
                 {
-                  style: {
-                    border: "1px solid #0d6efd",
-                    color: "#0d6efd",
-                    backgroundColor: "#fff",
-                    padding: "5px",
-                    "border-radius": "5px",
-                    "text-align": "center",
+                  class: "bi bi-pencil-fill fs-5 btnHover",
+                  // style: {
+                  //   border: "1px solid #0d6efd",
+                  //   color: "#0d6efd",
+                  //   backgroundColor: "#fff",
+                  //   padding: "5px",
+                  //   "border-radius": "5px",
+                  //   "text-align": "center",
+                  // },
+                  onClick: () => {
+                    this.retrieveEditData({
+                      id: row.cells[0].data,
+                      poi: row.cells[1].data,
+                      startDate: row.cells[2].data,
+                      endDate: row.cells[3].data,
+                    });
+                    document.getElementById("openEditModal").click();
                   },
+                },
+                ""
+              );
+            },
+            width: "5%",
+          },
+          {
+            id: "action",
+            sort: false,
+            formatter: (cell, row) => {
+              return h(
+                "i",
+                {
+                  class: "bi bi-trash-fill fs-4 btnHover",
+                  // style: {
+                  //   border: "1px solid #0d6efd",
+                  //   color: "#0d6efd",
+                  //   backgroundColor: "#fff",
+                  //   padding: "5px",
+                  //   "border-radius": "5px",
+                  //   "text-align": "center",
+                  // },
                   onClick: () => {
                     this.retrieveCancelData({
                       id: row.cells[0].data,
@@ -150,7 +206,7 @@ export default {
                     document.getElementById("openCancelModal").click();
                   },
                 },
-                "Cancel"
+                ""
               );
             },
             width: "10%",
@@ -161,7 +217,7 @@ export default {
           then: (data) =>
             data
               .map((data) => [
-                data.id,
+                data.loanId,
                 data.passId,
                 data.startDate,
                 data.endDate,
@@ -198,11 +254,11 @@ export default {
           },
         },
       }),
-      employeeBookingsGrid: new Grid({
+      pastBookingsGrid: new Grid({
         columns: [
           {
             id: "id",
-            name: "Booking ID",
+            name: "ID",
             width: "10%",
           },
           {
@@ -212,22 +268,22 @@ export default {
           },
           {
             id: "startDate",
-            name: "Start Date",
+            name: "Start",
             width: "10%",
           },
           {
             id: "endDate",
-            name: "End Date",
+            name: "End",
             width: "10%",
           },
           {
             id: "previous",
-            name: "Previous Booker",
+            name: "Previous",
             width: "15%",
           },
           {
             id: "following",
-            name: "Following Booker",
+            name: "Next",
             width: "15%",
           },
         ],
@@ -236,7 +292,7 @@ export default {
           then: (data) =>
             data
               .map((data) => [
-                data.id,
+                data.loanId,
                 data.passId,
                 data.startDate,
                 data.endDate,
@@ -276,7 +332,7 @@ export default {
   },
   mounted() {
     this.currentBookingsGrid.render(document.getElementById("table1"));
-    this.employeeBookingsGrid.render(document.getElementById("table2"));
+    this.pastBookingsGrid.render(document.getElementById("table2"));
     this.getData();
   },
   methods: {
@@ -286,6 +342,9 @@ export default {
     },
     retrieveCancelData(data) {
       this.currentCancelData = data;
+    },
+    retrieveEditData(data) {
+      this.currentEditData = data;
     },
     selectedDates($event) {
       console.log($event);
@@ -301,54 +360,6 @@ export default {
     },
     updateToastrMsg(res) {
       this.toastrResponse = res;
-    },
-    // fixed events
-    passFn(id) {
-      if (id == "1") {
-        return {
-          title: "Zoo 1",
-          id: "1",
-          events: [
-            {
-              id: 1,
-              title: "Team 1",
-              start: new Date(2022, 8, 29).toISOString().replace(/T.*$/, ""),
-            },
-            {
-              id: 2,
-              title: "Team 3",
-              start: new Date(2022, 8, 30).toISOString().replace(/T.*$/, ""),
-            },
-          ],
-        };
-      } else if (id == "2") {
-        return {
-          title: "Zoo 2",
-          id: "2",
-          events: [
-            {
-              id: 1,
-              title: "Finance Dept",
-              start: new Date(2022, 8, 24).toISOString().replace(/T.*$/, ""),
-            },
-            {
-              id: 2,
-              title: "Teaching Dept",
-              start: new Date(2022, 8, 26).toISOString().replace(/T.*$/, ""),
-            },
-          ],
-        };
-      } else if (id == "5") {
-        return {
-          title: "Safari 2",
-          id: "5",
-        };
-      } else if (id == "6") {
-        return {
-          title: "Gardens By The Bay",
-          id: "6",
-        };
-      }
     },
     getData() {
       axios
@@ -376,7 +387,6 @@ export default {
               following,
             ]);
           }
-          // [1, "John Doe", "30/07/22", "02/08/22", "Bob - 86556232", "N.A."],
           console.log(this.data);
         })
         .catch((error) => {
