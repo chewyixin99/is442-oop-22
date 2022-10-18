@@ -1,20 +1,15 @@
 package com.is442.oop.loan;
 
-import ch.qos.logback.core.recovery.ResilientOutputStreamBase;
-import com.is442.oop.data.models.Loan;
-import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.exception.ResourceNotFoundException;
-
-import org.aspectj.bridge.Message;
-import org.hibernate.sql.Update;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.is442.oop.data.models.Loan;
+import com.is442.oop.data.payloads.response.MessageResponse;
+import com.is442.oop.exception.ResourceNotFoundException;
 
 @Service
 public class LoanServiceImpl implements LoanService{
@@ -96,7 +91,7 @@ public class LoanServiceImpl implements LoanService{
 
     // Done
     @Override
-    public MessageResponse updateLoanToCompleted(UpdateLoanRequest updateLoanRequest) throws ResourceNotFoundException {
+    public MessageResponse updateLoanToCompleted(UpdateLoantoCompletedRequest updateLoanRequest) throws ResourceNotFoundException {
         Optional<Loan> queryLoan = loanRepository.findById(updateLoanRequest.getLoanId());
         if (queryLoan.isEmpty()){
             throw new ResourceNotFoundException("Loan ID "+updateLoanRequest.getLoanId() + " does not exist");
@@ -111,7 +106,7 @@ public class LoanServiceImpl implements LoanService{
         return new MessageResponse("Loan ID "+updateLoanRequest.getLoanId() + " successfully updated to completed");
     }
 
-    // unimplemented
+    // Done
     @Override
     public MessageResponse deleteLoan(Integer loanID) throws ResourceNotFoundException {
         Optional<Loan> queryLoan = loanRepository.findById(loanID);
@@ -121,5 +116,27 @@ public class LoanServiceImpl implements LoanService{
 
         loanRepository.deleteById(loanID);
         return new MessageResponse("Loan of ID "+loanID+" successfully deleted");
+    }
+
+    @Override
+    public MessageResponse updateLoan(UpdateLoanRequest updateLoanRequest){
+        Optional<Loan> queryLoan = loanRepository.findById(updateLoanRequest.getLoanId());
+        if (queryLoan.isEmpty()){
+            return new MessageResponse("Loan of ID "+updateLoanRequest.getLoanId()+" does not exist");
+        }
+        try{
+            Loan loan = queryLoan.get();
+            loan.setUserId(updateLoanRequest.getUserId());
+            loan.setPassId(updateLoanRequest.getPassId());
+            loan.setStartDate(updateLoanRequest.getStartDate());
+            loan.setEndDate(updateLoanRequest.getEndDate());
+            loan.setCompleted(updateLoanRequest.getIsCompleted());
+            loan.setGopId(updateLoanRequest.getGopId());
+            loanRepository.save(loan);
+            return new MessageResponse("Loan of ID "+updateLoanRequest.getLoanId()+" successfully updated");
+        } catch (Exception e){
+            return new MessageResponse("Loan of ID "+updateLoanRequest.getLoanId()+" failed to update. Please check the database to see if all inputs exist. Namely gopId, userId and passId.");
+        }
+        
     }
 }

@@ -1,12 +1,12 @@
 package com.is442.oop.loan;
 
-import java.util.*;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
-
-import org.springframework.stereotype.Component;
 
 @Component
 public interface LoanService {
@@ -18,5 +18,6 @@ public interface LoanService {
     List<Loan> getLoanByPassID(int passID);
     MessageResponse deleteLoan(Integer loanID)throws ResourceNotFoundException;
 
-    MessageResponse updateLoanToCompleted(UpdateLoanRequest updateLoanRequest) throws ResourceNotFoundException;
+    MessageResponse updateLoanToCompleted(UpdateLoantoCompletedRequest updateLoanRequest) throws ResourceNotFoundException;
+    MessageResponse updateLoan(UpdateLoanRequest updateLoanRequest) throws ResourceNotFoundException;
 }

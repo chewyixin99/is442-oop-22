@@ -1,18 +1,22 @@
 package com.is442.oop.loan;
 
 
-import com.is442.oop.data.models.Loan;
-import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.exception.ResourceNotFoundException;
+import java.util.List;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.is442.oop.data.models.Loan;
+import com.is442.oop.data.payloads.response.MessageResponse;
 
 @RestController
 @RequestMapping("/loan")
@@ -63,10 +67,21 @@ public class LoanController {
     }
 
     @PutMapping("/updateCompleted")
-    public ResponseEntity<MessageResponse> updateLoanToCompleted(@RequestBody UpdateLoanRequest updateLoanRequest){
+    public ResponseEntity<MessageResponse> updateLoanToCompleted(@RequestBody UpdateLoantoCompletedRequest updateLoanRequest){
         MessageResponse updatedLoan = null;
         try{
             updatedLoan = loanService.updateLoanToCompleted(updateLoanRequest);
+            return new ResponseEntity<>(updatedLoan, HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity<>(updatedLoan, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<MessageResponse> updateLoan(@RequestBody UpdateLoanRequest updateLoanRequest){
+        MessageResponse updatedLoan = null;
+        try{
+            updatedLoan = loanService.updateLoan(updateLoanRequest);
             return new ResponseEntity<>(updatedLoan, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(updatedLoan, HttpStatus.NOT_FOUND);
