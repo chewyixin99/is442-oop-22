@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.is442.oop.data.models.User;
-import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 @Service
@@ -16,7 +15,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Integer userId) throws ResourceNotFoundException {
-        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "User ID", userId));
     };
 
     @Override
@@ -25,7 +24,7 @@ public class UserServiceImpl implements UserService {
     };
 
     @Override
-    public MessageResponse createUser(CreateUserRequest createUserRequest) {
+    public User createUser(CreateUserRequest createUserRequest) {
         User user = new User();
         user.setUsername(createUserRequest.getUsername());
         user.setPassword(createUserRequest.getPassword());
@@ -33,7 +32,7 @@ public class UserServiceImpl implements UserService {
         user.setContactNumber(createUserRequest.getContactNumber());
         user.setUserType(createUserRequest.getUserType());
         userRepository.save(user);
-        return new MessageResponse(String.format("User created, ID: %d.", user.getUserId()));
+        return user;
     };
 
     @Override
@@ -41,7 +40,7 @@ public class UserServiceImpl implements UserService {
         User user = null;
         Optional<User> queryUser = userRepository.findById(userId);
         if (queryUser.isEmpty()) {
-            throw new ResourceNotFoundException("Resource not found.");
+            throw new ResourceNotFoundException("User", "User ID", userId);
         }
 
         user = queryUser.get();
@@ -54,14 +53,15 @@ public class UserServiceImpl implements UserService {
     };
 
     @Override
-    public void deleteUser(Integer userId) throws ResourceNotFoundException {
+    public User deleteUser(Integer userId) throws ResourceNotFoundException {
         User user = null;
         Optional<User> queryUser = userRepository.findById(userId);
         if (queryUser.isEmpty()) {
-            throw new ResourceNotFoundException("Resource not found.");
+            throw new ResourceNotFoundException("User", "User ID", userId);
         }
         user = queryUser.get();
         user.setDefunct(true);
         userRepository.save(user);
+        return user;
     }
 }

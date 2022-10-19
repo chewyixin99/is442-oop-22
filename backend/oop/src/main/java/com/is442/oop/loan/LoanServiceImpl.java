@@ -1,17 +1,12 @@
 package com.is442.oop.loan;
 
-import ch.qos.logback.core.recovery.ResilientOutputStreamBase;
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
-import org.aspectj.bridge.Message;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +53,7 @@ public class LoanServiceImpl implements LoanService{
         Loan loan = null;
         Optional<Loan> queryLoan = loanRepository.findById(loanID);
         if (queryLoan.isEmpty()){
-            throw new ResourceNotFoundException("Resource not found.");
+            throw new ResourceNotFoundException("Loan", "Loan ID", loanID);
         }
 
         loan = queryLoan.get();
@@ -97,9 +92,10 @@ public class LoanServiceImpl implements LoanService{
     // Done
     @Override
     public MessageResponse updateLoanToCompleted(UpdateLoanRequest updateLoanRequest) throws ResourceNotFoundException {
-        Optional<Loan> queryLoan = loanRepository.findById(updateLoanRequest.getLoanId());
+        Integer queryLoanId = updateLoanRequest.getLoanId();
+        Optional<Loan> queryLoan = loanRepository.findById(queryLoanId);
         if (queryLoan.isEmpty()){
-            throw new ResourceNotFoundException("Loan ID "+updateLoanRequest.getLoanId() + " does not exist");
+            throw new ResourceNotFoundException("Loan", "Loan ID", queryLoanId);
         }
         Loan loan = queryLoan.get();
         if (loan.isCompleted()){
@@ -116,7 +112,7 @@ public class LoanServiceImpl implements LoanService{
     public MessageResponse deleteLoan(Integer loanID) throws ResourceNotFoundException {
         Optional<Loan> queryLoan = loanRepository.findById(loanID);
         if (queryLoan.isEmpty()){
-            throw new ResourceNotFoundException("Loan of ID "+loanID+" does not exist");
+            throw new ResourceNotFoundException("Loan", "Loan ID", loanID);
         }
 
         loanRepository.deleteById(loanID);

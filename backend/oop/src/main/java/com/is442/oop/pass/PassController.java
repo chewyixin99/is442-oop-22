@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.is442.oop.data.models.Pass;
-import com.is442.oop.data.payloads.response.MessageResponse;
+import com.is442.oop.data.payloads.response.DataResponse;
 
 @RestController
 @RequestMapping("/passes")
@@ -17,30 +17,30 @@ public class PassController {
     PassService passService;
 
     @GetMapping("")
-    public ResponseEntity<List<Pass>> getAllPasses() {
+    public ResponseEntity<DataResponse> getAllPasses() {
         List<Pass> passes = passService.getAllPasses();
-        return new ResponseEntity<>(passes, HttpStatus.OK);
+        return new ResponseEntity<>(new DataResponse(passes, "Pass"), HttpStatus.OK);
     }
 
     @GetMapping("/{passId}")
-    public ResponseEntity<Pass> getPass(@PathVariable("passId") Integer passId) {
+    public ResponseEntity<DataResponse> getPass(@PathVariable("passId") Integer passId) {
         Pass pass = null;
         try {
             pass = passService.getPass(passId);
         } catch (Exception e) {
-            return new ResponseEntity<>(pass, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DataResponse(pass, e), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(pass, HttpStatus.OK);
+        return new ResponseEntity<>(new DataResponse(pass, "Pass"), HttpStatus.OK);
     }
 
     @PostMapping("")
-    public ResponseEntity<MessageResponse> createPass(@RequestBody PassRequest passRequest) {
-        MessageResponse newPass = passService.createPass(passRequest);
-        return new ResponseEntity<>(newPass, HttpStatus.CREATED);
+    public ResponseEntity<DataResponse> createPass(@RequestBody PassRequest passRequest) {
+        Pass newPass = passService.createPass(passRequest);
+        return new ResponseEntity<>(new DataResponse(newPass, "Pass"), HttpStatus.CREATED);
     }
 
     @PutMapping("/{passId}")
-    public ResponseEntity<Pass> updatePass(
+    public ResponseEntity<DataResponse> updatePass(
         @PathVariable("passId") Integer passId, 
         @RequestBody PassRequest passRequest
     ) {
@@ -48,18 +48,19 @@ public class PassController {
         try {
             updatePass = passService.updatePass(passId, passRequest);
         } catch (Exception e) {
-            return new ResponseEntity<>(updatePass, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DataResponse(updatePass, e), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(updatePass, HttpStatus.OK);
+        return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
     @DeleteMapping("/{passId}")
-    public ResponseEntity<HttpStatus> deletePass(@PathVariable("passId") Integer passId) {
+    public ResponseEntity<DataResponse> deletePass(@PathVariable("passId") Integer passId) {
+        Pass pass = null;
         try {
-            passService.deletePass(passId);
+            pass = passService.deletePass(passId);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DataResponse(pass, e), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new DataResponse(pass, "Pass"),HttpStatus.OK);
     }
 }
