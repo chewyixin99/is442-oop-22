@@ -34,5 +34,5 @@ build/
 .DS_Store
 
 
-/backend/oop/src/main/resources/application.properties
-/backend/oop/src/main/resources/application-mail.properties
+application.properties
+application-mail.properties
