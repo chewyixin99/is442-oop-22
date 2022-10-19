@@ -1,11 +1,7 @@
 package com.is442.oop.loan;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-
 
 public class LoanRequest {
 
