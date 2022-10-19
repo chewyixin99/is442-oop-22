@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.is442.oop.data.models.Pass;
-import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 @Service
@@ -16,7 +15,7 @@ public class PassServiceImpl implements PassService {
 
     @Override
     public Pass getPass(Integer passId) throws ResourceNotFoundException {
-        return passRepository.findById(passId).orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
+        return passRepository.findById(passId).orElseThrow(() -> new ResourceNotFoundException("Pass", "Pass ID", passId));
     }
 
     @Override
@@ -25,7 +24,7 @@ public class PassServiceImpl implements PassService {
     }
 
     @Override
-    public MessageResponse createPass(PassRequest passRequest) {
+    public Pass createPass(PassRequest passRequest) {
         Pass pass = new Pass();
         pass.setPoi(passRequest.getPoi());
         pass.setPassDesc(passRequest.getPassDesc());
@@ -35,7 +34,7 @@ public class PassServiceImpl implements PassService {
         pass.setPassStatus(passRequest.getPassStatus());
         pass.setDefunct(passRequest.getDefunct());
         passRepository.save(pass);
-        return new MessageResponse(String.format("Pass created, ID: %d", pass.getPassId()));
+        return pass;
     }
 
     @Override
@@ -43,7 +42,7 @@ public class PassServiceImpl implements PassService {
         Pass pass = null;
         Optional<Pass> queryPass = passRepository.findById(passId);
         if (queryPass.isEmpty()) {
-            throw new ResourceNotFoundException("Resource not found.");
+            throw new ResourceNotFoundException("Pass", "Pass ID", passId);
         }
         pass = queryPass.get();
         pass.setPoi(passRequest.getPoi());
@@ -57,14 +56,15 @@ public class PassServiceImpl implements PassService {
     }
 
     @Override
-    public void deletePass(Integer passId) throws ResourceNotFoundException {
+    public Pass deletePass(Integer passId) throws ResourceNotFoundException {
         Pass pass = null;
         Optional<Pass> queryPass = passRepository.findById(passId);
         if (queryPass.isEmpty()) {
-            throw new ResourceNotFoundException("Resource not found.");
+            throw new ResourceNotFoundException("Pass", "Pass ID", passId);
         }
         pass = queryPass.get();
         pass.setDefunct(true);
         passRepository.save(pass);
+        return pass;
     }
 }

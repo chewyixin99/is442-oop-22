@@ -66,6 +66,7 @@ create table if not exists `loan` (
                                       `gop_id` int,
                                       `pass_id` int not null,
                                       `is_completed` bit not null,
+                                      `defunct` bit not null,
                                       `start_date` varchar(50),
     `end_date` varchar(50),
     primary key (`loan_id`,`user_id`,`pass_id`),
@@ -74,11 +75,11 @@ create table if not exists `loan` (
     foreign key (`pass_id`) references `pass` (`pass_id`)
     ) engine = InnoDB default charset = utf8;
 
-INSERT INTO `loan` (`loan_id`, `user_id`, `gop_id`, `pass_id`, `is_completed`, `start_date`, `end_date`) VALUES
-                                                                                                             (1, 1, 4, 1, 1, '1/10/2022', '2/10/2022'),
-                                                                                                             (2, 2, 4, 2, 1, '3/10/2022', '4/10/2022'),
-                                                                                                             (3, 3, 4, 3, 0, '5/10/2022', '6/10/2022'),
-                                                                                                             (4, 4, 4, 4, 0, '7/10/2022', '8/10/2022');
+INSERT INTO `loan` (`loan_id`, `user_id`, `gop_id`, `pass_id`, `is_completed`, `defunct`, `start_date`, `end_date`) VALUES
+                                                                                                             (1, 1, 4, 1, 1, 0, '1/10/2022', '2/10/2022'),
+                                                                                                             (2, 2, 4, 2, 1, 0, '3/10/2022', '4/10/2022'),
+                                                                                                             (3, 3, 4, 3, 0, 0, '5/10/2022', '6/10/2022'),
+                                                                                                             (4, 4, 4, 4, 0, 1, '7/10/2022', '8/10/2022');
 COMMIT;
 
 

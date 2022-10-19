@@ -1,15 +1,14 @@
 package com.is442.oop.loan;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.is442.oop.data.models.Loan;
+import com.is442.oop.exception.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.is442.oop.data.models.Loan;
-import com.is442.oop.data.payloads.response.MessageResponse;
-import com.is442.oop.exception.ResourceNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LoanServiceImpl implements LoanService{
@@ -22,7 +21,7 @@ public class LoanServiceImpl implements LoanService{
     }
     // Done
     @Override
-    public MessageResponse createLoan(LoanRequest loanRequest) {
+    public Loan createLoan(LoanRequest loanRequest) throws ActionNotExecutedException {
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
         Integer passID = loanRequest.getPassID();
         String startDate = loanRequest.getStartDate();
@@ -30,7 +29,7 @@ public class LoanServiceImpl implements LoanService{
         List<Loan> loans = this.getLoanByPassID(passID);
         for (Loan l: loans){
             if (l.getStartDate().equals(startDate)){
-                return new MessageResponse("This pass is already loaned for the day");
+                throw new ActionNotExecutedException("Loan", "Pass is already loaned for the day");
             }
         }
 
@@ -40,11 +39,10 @@ public class LoanServiceImpl implements LoanService{
 
         newLoan.setStartDate(loanRequest.getStartDate());
         newLoan.setEndDate(loanRequest.getEndDate());
-        newLoan.setCompleted(false); // Defaults to incomplete
         newLoan.setGopId(1);
         loanRepository.save(newLoan);
 
-        return new MessageResponse("New Loan has successfully been created");
+        return newLoan;
     }
 
     // Done
@@ -53,12 +51,11 @@ public class LoanServiceImpl implements LoanService{
         Loan loan = null;
         Optional<Loan> queryLoan = loanRepository.findById(loanID);
         if (queryLoan.isEmpty()){
-            throw new ResourceNotFoundException("Resource not found.");
+            throw new ResourceNotFoundException("Loan", "Loan ID", loanID);
         }
 
         loan = queryLoan.get();
         return loan;
-
     }
 
 
@@ -86,43 +83,45 @@ public class LoanServiceImpl implements LoanService{
             }
         }
         return toReturn;
-
     }
 
     // Done
     @Override
-    public MessageResponse updateLoanToCompleted(UpdateLoantoCompletedRequest updateLoanRequest) throws ResourceNotFoundException {
-        Optional<Loan> queryLoan = loanRepository.findById(updateLoanRequest.getLoanId());
+    public Loan updateLoanToCompleted(UpdateLoantoCompletedRequest updateLoanRequest) throws RuntimeException {
+        Integer queryLoanId = updateLoanRequest.getLoanId();
+        Optional<Loan> queryLoan = loanRepository.findById(queryLoanId);
         if (queryLoan.isEmpty()){
-            throw new ResourceNotFoundException("Loan ID "+updateLoanRequest.getLoanId() + " does not exist");
+            throw new ResourceNotFoundException("Loan", "Loan ID", queryLoanId);
         }
         Loan loan = queryLoan.get();
         if (loan.isCompleted()){
-            return new MessageResponse("Loan ID "+updateLoanRequest.getLoanId() + " is already completed");
+            throw new ActionNotExecutedException("Loan", String.format("Loan ID %d is already completed.", queryLoanId));
         }
         loan.setGopId(updateLoanRequest.getGopId());
         loan.setCompleted(true);
         loanRepository.save(loan);
-        return new MessageResponse("Loan ID "+updateLoanRequest.getLoanId() + " successfully updated to completed");
+        return loan;
     }
 
     // Done
     @Override
-    public MessageResponse deleteLoan(Integer loanID) throws ResourceNotFoundException {
-        Optional<Loan> queryLoan = loanRepository.findById(loanID);
+    public Loan deleteLoan(Integer loanId) throws ResourceNotFoundException {
+        Optional<Loan> queryLoan = loanRepository.findById(loanId);
         if (queryLoan.isEmpty()){
-            throw new ResourceNotFoundException("Loan of ID "+loanID+" does not exist");
+            throw new ResourceNotFoundException("Loan", "Loan ID", loanId);
         }
-
-        loanRepository.deleteById(loanID);
-        return new MessageResponse("Loan of ID "+loanID+" successfully deleted");
+        Loan loan = queryLoan.get();
+        loan.setDefunct(true);
+        loanRepository.save(loan);
+        return loan;
     }
 
     @Override
-    public MessageResponse updateLoan(UpdateLoanRequest updateLoanRequest){
+    public Loan updateLoan(UpdateLoanRequest updateLoanRequest) throws RuntimeException {
+        Integer queryLoanId = updateLoanRequest.getLoanId();
         Optional<Loan> queryLoan = loanRepository.findById(updateLoanRequest.getLoanId());
         if (queryLoan.isEmpty()){
-            return new MessageResponse("Loan of ID "+updateLoanRequest.getLoanId()+" does not exist");
+            throw new ResourceNotFoundException("Loan", "Loan ID", queryLoanId);
         }
         try{
             Loan loan = queryLoan.get();
@@ -133,9 +132,9 @@ public class LoanServiceImpl implements LoanService{
             loan.setCompleted(updateLoanRequest.getIsCompleted());
             loan.setGopId(updateLoanRequest.getGopId());
             loanRepository.save(loan);
-            return new MessageResponse("Loan of ID "+updateLoanRequest.getLoanId()+" successfully updated");
+            return loan;
         } catch (Exception e){
-            return new MessageResponse("Loan of ID "+updateLoanRequest.getLoanId()+" failed to update. Please check the database to see if all inputs exist. Namely gopId, userId and passId.");
+            throw e;
         }
         
     }

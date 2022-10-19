@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.is442.oop.data.models.Template;
-import com.is442.oop.data.payloads.response.MessageResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 @Service
@@ -16,7 +15,7 @@ public class TemplateServiceImpl implements TemplateService {
     
     @Override
     public Template getTemplate(Integer templateId) throws ResourceNotFoundException {
-        return templateRepository.findById(templateId).orElseThrow(() -> new ResourceNotFoundException("Resource not found."));
+        return templateRepository.findById(templateId).orElseThrow(() -> new ResourceNotFoundException("Template", "Template ID", templateId));
     }
 
     @Override
@@ -25,13 +24,13 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public MessageResponse createTemplate(TemplateRequest createTemplateRequest) {
+    public Template createTemplate(TemplateRequest createTemplateRequest) {
         Template template = new Template();
         template.setTemplateName(createTemplateRequest.getTemplateName());
         template.setTemplateData(createTemplateRequest.getTemplateData());
         template.setDefunct(createTemplateRequest.getDefunct());
         templateRepository.save(template);
-        return new MessageResponse(String.format("Template created, ID: %d.", template.getTemplateId()));
+        return template;
     }
 
     @Override
@@ -39,7 +38,7 @@ public class TemplateServiceImpl implements TemplateService {
         Template template = null;
         Optional<Template> queryTemplate = templateRepository.findById(templateId);
         if (queryTemplate.isEmpty()) {
-            throw new ResourceNotFoundException("Resource not found.");
+            throw new ResourceNotFoundException("Template", "Template ID", templateId);
         }
 
         template = queryTemplate.get();
@@ -50,14 +49,15 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public void deleteTemplate(Integer templateId) throws ResourceNotFoundException {
+    public Template deleteTemplate(Integer templateId) throws ResourceNotFoundException {
         Template template = null;
         Optional<Template> queryTemplate = templateRepository.findById(templateId);
         if (queryTemplate.isEmpty()) {
-            throw new ResourceNotFoundException("Resource not found.");
+            throw new ResourceNotFoundException("Template", "Template ID", templateId);
         }
         template = queryTemplate.get();
         template.setDefunct(true);
         templateRepository.save(template);
+        return template;
     }
 }

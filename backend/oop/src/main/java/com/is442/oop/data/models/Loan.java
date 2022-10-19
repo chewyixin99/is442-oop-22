@@ -44,5 +44,9 @@ public class Loan {
     @Column(name = "is_completed", nullable = false)
     @Value("false") // Default value
     private boolean isCompleted;
+
+    @Column(name = "defunct", nullable = false)
+    @Value("false") // Default value
+    private boolean defunct;
 }
 
