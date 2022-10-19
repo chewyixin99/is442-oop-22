@@ -35,3 +35,4 @@ build/
 
 
 /backend/oop/src/main/resources/application.properties
+/backend/oop/src/main/resources/application-mail.properties
