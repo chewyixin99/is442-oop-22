@@ -14,6 +14,11 @@ public class ActionNotExecutedException extends RuntimeException {
         this.reason = reason;
     };
 
+    public ActionNotExecutedException(String resourceName, Exception e){
+        super(String.format("Unsuccessful action - Resource: %s. Exception: %s.", resourceName, e.getMessage()));
+        this.resourceName = resourceName;
+    };
+
     public String getResourceName() {
         return resourceName;
     };

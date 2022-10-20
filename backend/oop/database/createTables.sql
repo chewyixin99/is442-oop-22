@@ -7,16 +7,17 @@ use `oop`;
 create table if not exists `template` (
                                                 `template_id` int auto_increment not null,
                                                 `template_name` varchar(25),
+                                                `template_subject` varchar(100),
                                                 `template_data` varchar(8000) not null,
     `defunct` bit not null, -- 1 for True and 0 for False
     primary key (`template_id`)
     ) engine = InnoDB default charset = utf8;
 
-INSERT INTO `template` (`template_id`, `template_name`, `template_data`, `defunct`) VALUES
-                                                                             (1, 'template1', 'template_data1', 0),
-                                                                             (2, 'template2', 'template_data2', 0),
-                                                                             (3, 'template3', 'template_data3', 1),
-                                                                             (4, 'template4', 'template_data4', 0);
+INSERT INTO `template` (`template_id`, `template_name`, `template_subject`, `template_data`, `defunct`) VALUES
+                                                                             (1, 'template1', 'template_subject1', 'template_data1', 0),
+                                                                             (2, 'template2', 'template_subject2', 'template_data2', 0),
+                                                                             (3, 'template3', 'template_subject3', 'template_data3', 1),
+                                                                             (4, 'template4', 'template_subject4', 'template_data4', 0);
 COMMIT;
 
 create table if not exists `user` (

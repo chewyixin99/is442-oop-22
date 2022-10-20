@@ -27,8 +27,8 @@ public class TemplateServiceImpl implements TemplateService {
     public Template createTemplate(TemplateRequest createTemplateRequest) {
         Template template = new Template();
         template.setTemplateName(createTemplateRequest.getTemplateName());
+        template.setTemplateSubject(createTemplateRequest.getTemplateSubject());
         template.setTemplateData(createTemplateRequest.getTemplateData());
-        template.setDefunct(createTemplateRequest.getDefunct());
         templateRepository.save(template);
         return template;
     }
@@ -43,6 +43,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         template = queryTemplate.get();
         template.setTemplateName(createTemplateRequest.getTemplateName());
+        template.setTemplateSubject(createTemplateRequest.getTemplateSubject());
         template.setTemplateData(createTemplateRequest.getTemplateData());
         templateRepository.save(template);
         return template;
