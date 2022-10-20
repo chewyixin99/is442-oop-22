@@ -9,29 +9,42 @@ public class UpdateLoanRequest {
     @NotNull
     private Integer loanId;
 
-    @NotBlank
-    @NotNull
+    // @NotBlank
+    // @NotNull
     private Integer gopId;
 
-    @NotBlank
-    @NotNull
+    // @NotBlank
+    // @NotNull
     private Integer userId;
 
-    @NotBlank
-    @NotNull
+    // @NotBlank
+    // @NotNull
     private Integer passId;
 
-    @NotBlank
-    @NotNull
+    // @NotBlank
+    // @NotNull
     private boolean isCompleted;
 
-    @NotBlank
-    @NotNull
+    // @NotBlank
+    // @NotNull
     private String startDate;
 
-    @NotBlank
-    @NotNull
+    // @NotBlank
+    // @NotNull
     private String endDate;
+
+    @Override
+    public String toString() {
+        return "{" +
+            " loanId='" + getLoanId() + "'" +
+            ", gopId='" + getGopId() + "'" +
+            ", userId='" + getUserId() + "'" +
+            ", passId='" + getPassId() + "'" +
+            ", isCompleted='" + isIsCompleted() + "'" +
+            ", startDate='" + getStartDate() + "'" +
+            ", endDate='" + getEndDate() + "'" +
+            "}";
+    }
 
     public Integer getLoanId() {
         return this.loanId;
@@ -50,6 +63,7 @@ public class UpdateLoanRequest {
     }
 
     public Integer getUserId() {
+        System.out.println(this.userId);
         return this.userId;
     }
 

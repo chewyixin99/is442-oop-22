@@ -124,13 +124,26 @@ public class LoanServiceImpl implements LoanService{
             throw new ResourceNotFoundException("Loan", "Loan ID", queryLoanId);
         }
         try{
+
             Loan loan = queryLoan.get();
-            loan.setUserId(updateLoanRequest.getUserId());
-            loan.setPassId(updateLoanRequest.getPassId());
-            loan.setStartDate(updateLoanRequest.getStartDate());
-            loan.setEndDate(updateLoanRequest.getEndDate());
-            loan.setCompleted(updateLoanRequest.getIsCompleted());
-            loan.setGopId(updateLoanRequest.getGopId());
+
+            // Making sure the values obtained are inputted during post
+            Integer uid = (updateLoanRequest.getUserId() == null) ? loan.getUserId() : updateLoanRequest.getUserId();
+
+            Integer pid = (updateLoanRequest.getPassId() == null) ? loan.getPassId() : updateLoanRequest.getPassId();
+
+            String startDate = (updateLoanRequest.getStartDate() == null) ? loan.getStartDate() : updateLoanRequest.getStartDate();
+
+            String endDate = (updateLoanRequest.getEndDate() == null) ? loan.getEndDate() : updateLoanRequest.getEndDate();
+
+            Integer gopId = (updateLoanRequest.getGopId() == null) ? loan.getGopId() : updateLoanRequest.getGopId();
+
+            // update the loan
+            loan.setUserId(uid);
+            loan.setPassId(pid);
+            loan.setStartDate(startDate);
+            loan.setEndDate(endDate);
+            loan.setGopId(gopId);
             loanRepository.save(loan);
             return loan;
         } catch (Exception e){
