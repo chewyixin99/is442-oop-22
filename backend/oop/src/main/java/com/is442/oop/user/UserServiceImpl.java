@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.is442.oop.data.models.PasswordResetToken;
 import com.is442.oop.data.models.User;
 import com.is442.oop.data.models.VerificationToken;
 import com.is442.oop.exception.ResourceNotFoundException;
@@ -81,61 +82,99 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(UserRequest userRequest) {
-        // TODO Auto-generated method stub
-        return null;
+        User user = new User();
+        user.setEmail(userRequest.getEmail());
+        user.setUsername(userRequest.getUsername());
+        user.setUserType(userRequest.getUserType()); // can be dynamic later
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setContactNumber(userRequest.getContactNumber());
+
+        userRepository.save(user);
+        return user;
     }
 
     @Override
     public void saveVerificationTokenForUser(String token, User user) {
-        // TODO Auto-generated method stub
+        VerificationToken verificationToken = new VerificationToken(user, token);
         
+        // send email
+
+        // save verification to database
+        verificationTokenRepository.save(verificationToken);
     }
 
     @Override
     public String validateVerificationToken(String token) {
-        // TODO Auto-generated method stub
-        return null;
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+
+        if (verificationToken == null) {
+            return "invalid";
+        }
+        
+        User user = verificationToken.getUser();
+        Calendar cal = Calendar.getInstance();
+
+        if ((verificationToken.getExpirationTime().getTime() - cal.getTime().getTime()) <= 0) {
+            verificationTokenRepository.delete(verificationToken);
+            return "expired";
+        }
+
+        user.setEnabled(true);
+        userRepository.save(user);
+
+        return "valid";
     }
 
     @Override
     public VerificationToken generateNewVerificationToken(String oldToken) {
-        // TODO Auto-generated method stub
-        return null;
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(oldToken);
+        verificationToken.setToken(UUID.randomUUID().toString());
+        verificationTokenRepository.save(verificationToken);
+        return verificationToken;
     }
 
     @Override
     public User findUserByEmail(String email) {
-        // TODO Auto-generated method stub
-        return null;
+        return userRepository.findByEmail(email);
     }
 
     @Override
     public void createPasswordResetTokenForUser(User user, String token) {
-        // TODO Auto-generated method stub
-        
+        PasswordResetToken passwordResetToken = new PasswordResetToken(user, token);
+        passwordResetTokenRepository.save(passwordResetToken);
     }
 
     @Override
     public String validatePasswordResetToken(String token) {
-        // TODO Auto-generated method stub
-        return null;
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+
+        if (passwordResetToken == null) {
+            return "invalid";
+        }
+        
+        Calendar cal = Calendar.getInstance();
+
+        if ((passwordResetToken.getExpirationTime().getTime() - cal.getTime().getTime()) <= 0) {
+            passwordResetTokenRepository.delete(passwordResetToken);
+            return "expired";
+        }
+
+        return "valid";
     }
 
     @Override
     public Optional<User> getUserByPasswordResetToken(String token) {
-        // TODO Auto-generated method stub
-        return Optional.empty();
+        return Optional.ofNullable(passwordResetTokenRepository.findByToken(token).getUser());
     }
 
     @Override
     public void changePassword(User user, String newPassword) {
-        // TODO Auto-generated method stub
-        
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
     @Override
     public boolean checkIfValidOldPassword(User user, String oldPassword) {
-        // TODO Auto-generated method stub
-        return false;
+        return passwordEncoder.matches(oldPassword, user.getPassword());
     }
 }
