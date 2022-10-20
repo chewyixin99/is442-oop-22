@@ -35,16 +35,16 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<DataResponse> createUser(@RequestBody CreateUserRequest createUserRequest) {
-        User user = userService.createUser(createUserRequest);
+    public ResponseEntity<DataResponse> createUser(@RequestBody UserRequest userRequest) {
+        User user = userService.createUser(userRequest);
         return new ResponseEntity<>(new DataResponse(user, "User"), HttpStatus.CREATED);
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<DataResponse> updateUser(@PathVariable("userId") Integer userId, @RequestBody UpdateUserRequest updateUserRequest) {
+    public ResponseEntity<DataResponse> updateUser(@PathVariable("userId") Integer userId, @RequestBody UserRequest userRequest) {
         User updateUser = null;
         try {
-            updateUser = userService.updateUser(userId, updateUserRequest);
+            updateUser = userService.updateUser(userId, userRequest);
         } catch (Exception e) {
             return new ResponseEntity<>(new DataResponse(updateUser, e), HttpStatus.NOT_FOUND);
         }
