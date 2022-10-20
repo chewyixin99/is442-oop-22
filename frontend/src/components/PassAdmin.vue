@@ -15,7 +15,7 @@
 
             <div class="row row-cols-auto g-5 my-2">
                 <!-- Passes 'Card' -->
-                <template v-for="EachPass in PassAdminPasses" :key="EachPass.id" >
+                <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId" >
                 <div v-if="EachPass.defunct=='0'">
 
                     <div class="card border-secondary h-100" style="width: 25rem;">
@@ -31,7 +31,7 @@
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-5 border"><b>ID</b></div>
-                                        <div class="col-7 border">{{EachPass.id}}</div>
+                                        <div class="col-7 border">{{EachPass.passId}}</div>
                                         <div class="col-5 border"><b>Guests Numbers</b></div>
                                         <div class="col-7 border">{{EachPass.numGuests}}</div>
                                         <div class="col-5 border"><b>Replacement Fee</b></div>
@@ -48,7 +48,7 @@
                             
                             <div class="card-footer btn-group-vertical">
                                 <!-- View button prompt Passes update modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#viewUM`+EachPass.id">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#viewUM`+EachPass.passId">
                                     View
                                 </button> 
                                 
@@ -56,7 +56,7 @@
                     </div>
                     <!-- Pass update modal -->
                     <!-- <div class="modal fade" id="viewUM" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
-                    <div class="modal fade" :id="`viewUM`+EachPass.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" :id="`viewUM`+EachPass.passId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -67,7 +67,7 @@
                                 <div class="modal-body text-start">
                                     <form>
                                         <div class="mb-3">
-                                            <label class="col-form-label"><b>ID: {{EachPass.id}}</b></label><br>
+                                            <label class="col-form-label"><b>ID: {{EachPass.passId}}</b></label><br>
 
                                             <label class="col-form-label">Description:</label> 
                                             <input class="form-control" v-model ="EachPass.passDesc" required >
@@ -114,8 +114,8 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.id)">Update Now</button>
-                                    <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.id)" data-bs-dismiss="modal">Delete</button> 
+                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)">Update Now</button>
+                                    <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button> 
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
@@ -300,8 +300,11 @@ export default ({
             deletePassMethod(passID){
                 this.deleteExistingPass(passID)
             },
-
+            // updatePassMethod(passID){
+            //     console.log(passID)
+            // },
             async updatePassMethod(passID){
+                
                 try{
                     await axios.put(this.passURL+"/"+passID, this.PassAdminPasses[passID-1])
                     .then(response => {
