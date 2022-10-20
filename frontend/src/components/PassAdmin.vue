@@ -275,7 +275,6 @@ export default ({
                     console.error(err);
                 }
             },
-
             async deleteExistingPass(passID){
                 try{
                     await axios.delete(this.passURL+"/"+passID)
