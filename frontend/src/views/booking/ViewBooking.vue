@@ -215,7 +215,7 @@ export default {
         server: {
           url: "http://localhost:8081/loan",
           then: (data) =>
-            data
+            data.data
               .map((data) => [
                 data.loanId,
                 data.passId,
@@ -290,10 +290,10 @@ export default {
         server: {
           url: "http://localhost:8081/loan",
           then: (data) =>
-            data
+            data.data
               .map((data) => [
                 data.loanId,
-                data.passId,
+                data.poi,
                 data.startDate,
                 data.endDate,
               ])
@@ -366,18 +366,24 @@ export default {
         .get("http://localhost:8081/loan")
         .then((response) => {
           let resList = [];
-          console.log(response.data);
+          console.log(response.data.data);
           console.log(this.selectedPass);
-          resList = response.data.filter((pass) => pass.userId == this.userId);
+          resList = response.data.data.filter((pass) => pass.userId == this.userId);
 
           // loop through resList
           for (let i = 0; i < resList.length; i++) {
             let passTitle = resList[i].passId;
-            let id = resList[i].id;
+            let id = resList[i].loanId;
             let startDate = resList[i].startDate;
             let endDate = resList[i].endDate;
             let previous = "N.A.";
             let following = "N.A.";
+            console.log(             id,
+              passTitle,
+              startDate,
+              endDate,
+              previous,
+              following);
             this.currentBookingsGrid.data.push([
               id,
               passTitle,
