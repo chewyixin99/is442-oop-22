@@ -30,17 +30,18 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     PassService passService;
 
+    String senderEmail = "sport.singapore.helpdesk@gmail.com";
     /**
      * All emails should use a template, thus, should be able to be sent via sendGenericEmail().
      */
     @Override
-    public void sendGenericEmail(String senderEmail, String recipientEmail, Integer templateId) throws ActionNotExecutedException {
+    public void sendGenericEmail(String recipientEmail, Integer templateId) throws ActionNotExecutedException {
         Template template = templateService.getTemplate(templateId);        
         SimpleMailMessage message = new SimpleMailMessage();
 
         try {
-            message.setFrom(recipientEmail);
-            message.setTo(senderEmail);
+            message.setFrom(this.senderEmail);
+            message.setTo(recipientEmail);
             message.setSubject(template.getTemplateSubject());
             message.setText(template.getTemplateData());
         } catch(Exception e) {
@@ -54,7 +55,8 @@ public class EmailServiceImpl implements EmailService {
     /**
      * Email to be sent when pass is confirmed.
      */
-    public void sendPassEmail(String senderEmail, String recipientEmail, Integer templateId, Integer loanId) throws ActionNotExecutedException {
+    @Override
+    public void sendAttachmentEmail(String senderEmail, String recipientEmail, Integer templateId, Integer loanId) throws ActionNotExecutedException {
         Template template = templateService.getTemplate(templateId);
         Loan loan = loanService.getLoanByLoanID(loanId);
         Pass pass = passService.getPass(loan.getPassId());
