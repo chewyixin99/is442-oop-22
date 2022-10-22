@@ -362,7 +362,7 @@ console.log(date)
       axios
         .get("http://localhost:8081/passes")
         .then((response) => {
-          this.availablePasses = response.data;
+          this.availablePasses = response.data.data;
         })
         .catch((error) => {
           console.log(error);
