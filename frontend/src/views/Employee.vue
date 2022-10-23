@@ -110,7 +110,7 @@
                 var employees = await EmployeeService.getAllEmployees();
                 this.gridJsTableData = [];
                 for (let e of employees){
-                    let gridJsEmployeeObject = { "id": e.id, "name": e.username, "email": e.email, "contactNumber": e.contactNumber, "role": e.userType };
+                    let gridJsEmployeeObject = { "id": e.userId, "name": e.username, "email": e.email, "contactNumber": e.contactNumber, "role": e.userType };
                     if (!e.defunct) { this.gridJsTableData.push(gridJsEmployeeObject); }
                 }  
             },

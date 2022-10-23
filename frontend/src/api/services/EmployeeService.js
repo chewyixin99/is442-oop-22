@@ -25,7 +25,7 @@ class EmployeeService extends BaseApiService {
     async getAllEmployees() {
         try {
             let employees = await axiosClient.get("/users");
-            return employees.data
+            return employees.data.data
 
         } catch (error) {
             return this.handleError(error);

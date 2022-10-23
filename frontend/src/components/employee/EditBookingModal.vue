@@ -11,7 +11,7 @@
           <h5 class="modal-title" id="exampleModalLabel">Edit Booking</h5>
           <i
             class="bi bi-x fs-1"
-            id="create-close-btn"
+            id="edit-close-btn"
             style="cursor: pointer"
             data-bs-dismiss="modal"
             aria-label="Close"
@@ -44,6 +44,7 @@
                 @selectedData="selectedData"
                 :selectedPass="selectedPass"
                 :selectedLoan="rowData"
+                :isEdit="true"
                 class="mt-4"
               />
               </div>
@@ -222,8 +223,8 @@ export default {
     },
     selectedData($event) {
       this.retrievedData = {
-        passID: $event.passID,
-        userID: $event.userID,
+        passID: $event.passID.toString(),
+        userID: $event.userID.toString(),
         startDate: $event.startDate,
         endDate: $event.endDate,
       };
@@ -246,43 +247,42 @@ export default {
     },
     async submitBooking() {
 
-      this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
-      this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
-
-
+      this.retrievedLoanData.startDate = this.processDate2(this.retrievedData.startDate)
+      this.retrievedLoanData.endDate = this.processDate2(this.retrievedData.endDate)
       this.isLoading = true;
-      console.log(this.retrievedData)
-      // axios
-      //   .post("http://localhost:8081/loan", this.retrievedData)
-      //   .then((response) => {
-      //     if (response.status != 500) {
-      //       this.isLoading = false;
-      //       document.getElementById("create-close-btn").click();
-      //       this.$emit("bookingSubmitted", this.retrievedData);
-      //       this.$emit("toastrMsg", {
-      //         status: "Success",
-      //         msg: "Booking is successful!",
-      //       });
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      console.log(this.retrievedLoanData)
+      console.log(this.rowData);
+      axios
+        .put("http://localhost:8081/loan/update", this.retrievedLoanData)
+        .then((response) => {
+          if (response.status != 500) {
+            this.isLoading = false;
+            document.getElementById("edit-close-btn").click();
+            this.$emit("bookingSubmitted", this.retrievedData);
+            this.$emit("toastrMsg", {
+              status: "Success",
+              msg: "Edit is successful!",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     getData() {
       axios
         .get("http://localhost:8081/loan/" + this.rowData.id)
         .then((response1) => {
-          this.retrievedLoanData = response1.data
-          
+          this.retrievedLoanData = response1.data.data
           axios
-            .get("http://localhost:8081/passes/" + response1.data.passId)
+            .get("http://localhost:8081/passes/" + response1.data.data.passId)
             .then((response2) => {
               console.log('response2', response2.data);
               setTimeout(() => {
-              this.retrievedPassData = response2.data
-              this.selectedPass = response2.data
+              this.retrievedPassData = response2.data.data
+              
+              this.selectedPass = response2.data.data
               console.log("specific pass data updated ------------------")
             }, 1000);
             })

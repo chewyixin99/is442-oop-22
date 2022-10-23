@@ -48,5 +48,8 @@ public class Loan {
     @Column(name = "defunct", nullable = false)
     @Value("false") // Default value
     private boolean defunct;
+
+    @Column(name = "poi", nullable = false)
+    private String poi;
 }
 

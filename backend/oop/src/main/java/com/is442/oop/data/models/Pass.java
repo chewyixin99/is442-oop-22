@@ -29,6 +29,9 @@ public class Pass {
     @Column(name = "poi", nullable = false)
     private String poi;
 
+    @Column(name = "poi_url", nullable = true)
+    private String poiUrl;
+
     @Column(name = "num_guests", nullable = false)
     private Integer numGuests;
 
@@ -41,6 +44,13 @@ public class Pass {
     @Column(name = "pass_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private PassStatus passStatus;
+
+    @Column(name = "pass_attachment_name", nullable = true)
+    private String passAttachmentName;
+
+    @Lob
+    @Column(name = "pass_attachment", nullable = true)
+    private byte[] passAttachment;
 
     @Column(name = "defunct", nullable = false)
     @Value("false")

@@ -1,7 +1,18 @@
 package com.is442.oop.template;
 
 import javax.validation.constraints.*;
-
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+@Getter // provide default getters
+@Setter // provide default setters
+@ToString // provide default toString()
+@EqualsAndHashCode // provide default equals() and hashCode()
+@NoArgsConstructor // no args constructor 
+@AllArgsConstructor // all args constructor
 public class TemplateRequest {
     @NotBlank
     @NotNull
@@ -11,26 +22,5 @@ public class TemplateRequest {
     private String templateData;
     @NotBlank
     @NotNull
-    private boolean defunct;
-    
-    public String getTemplateName() {
-        return templateName;
-    }
-    public void setTemplateName(String templateName) {
-        this.templateName = templateName;
-    }
-
-    public String getTemplateData() {
-        return templateData;
-    }
-    public void setTemplateData(String templateData) {
-        this.templateData = templateData;
-    }
-
-    public boolean getDefunct() {
-        return defunct;
-    }
-    public void setDefunct(boolean defunct) {
-        this.defunct = defunct;
-    }    
+    private String templateSubject;
 }

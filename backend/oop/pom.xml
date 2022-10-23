@@ -52,6 +52,12 @@
 			<artifactId>validation-api</artifactId>
 		</dependency>
 
+		<!-- Spring Boot Starter Mail - for emailing (wrapper for JavaMail) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<!-- Io springfox - SwaggerUI documentation -->
 		<dependency>
 			<groupId>org.springdoc</groupId>

@@ -150,8 +150,9 @@ export default {
             width: "15%",
           },
           {
-            id: "action",
+            id: "edit",
             sort: false,
+            name: "Edit",
             formatter: (cell, row) => {
               return h(
                "i",
@@ -181,8 +182,9 @@ export default {
             width: "5%",
           },
           {
-            id: "action",
+            id: "delete",
             sort: false,
+            name: "Delete",
             formatter: (cell, row) => {
               return h(
                 "i",
@@ -209,21 +211,22 @@ export default {
                 ""
               );
             },
-            width: "10%",
+            width: "5%",
           },
         ],
         server: {
           url: "http://localhost:8081/loan",
           then: (data) =>
-            data
+            data.data
               .map((data) => [
                 data.loanId,
                 data.passId,
                 data.startDate,
                 data.endDate,
+                data.defunct
               ])
               .filter(
-                (data) => this.processDate(data[2]) >= new Date().toISOString().replace(/T.*$/, "") 
+                (data) => (this.processDate(data[2]) >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
               ),
         },
         search: true,
@@ -264,7 +267,7 @@ export default {
           {
             id: "passTitle",
             name: "Pass Title",
-            width: "20%",
+            width: "30%",
           },
           {
             id: "startDate",
@@ -275,22 +278,27 @@ export default {
             id: "endDate",
             name: "End",
             width: "10%",
-          },
+          }, 
           {
             id: "previous",
             name: "Previous",
-            width: "15%",
+            width: "20%",
           },
           {
             id: "following",
-            name: "Next",
-            width: "15%",
+            name: "following",
+            width: "20%",
           },
+          {
+            sort: false,
+            width: "5%"
+          }
+                   
         ],
         server: {
           url: "http://localhost:8081/loan",
           then: (data) =>
-            data
+            data.data
               .map((data) => [
                 data.loanId,
                 data.passId,
@@ -366,18 +374,24 @@ export default {
         .get("http://localhost:8081/loan")
         .then((response) => {
           let resList = [];
-          console.log(response.data);
+          console.log(response.data.data);
           console.log(this.selectedPass);
-          resList = response.data.filter((pass) => pass.userId == this.userId);
+          resList = response.data.data.filter((pass) => pass.userId == this.userId);
 
           // loop through resList
           for (let i = 0; i < resList.length; i++) {
             let passTitle = resList[i].passId;
-            let id = resList[i].id;
+            let id = resList[i].loanId;
             let startDate = resList[i].startDate;
             let endDate = resList[i].endDate;
             let previous = "N.A.";
             let following = "N.A.";
+            console.log(             id,
+              passTitle,
+              startDate,
+              endDate,
+              previous,
+              following);
             this.currentBookingsGrid.data.push([
               id,
               passTitle,

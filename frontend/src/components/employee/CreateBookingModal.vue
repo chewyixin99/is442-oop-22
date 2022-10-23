@@ -300,8 +300,8 @@ export default {
     },
     selectedData($event) {
       this.retrievedData = {
-        passID: $event.passID,
-        userID: $event.userID,
+        passID: $event.passID.toString(),
+        userID: $event.userID.toString(),
         startDate: $event.startDate,
         endDate: $event.endDate,
       };
@@ -362,7 +362,7 @@ console.log(date)
       axios
         .get("http://localhost:8081/passes")
         .then((response) => {
-          this.availablePasses = response.data;
+          this.availablePasses = response.data.data;
         })
         .catch((error) => {
           console.log(error);
