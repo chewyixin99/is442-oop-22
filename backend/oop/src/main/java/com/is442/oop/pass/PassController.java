@@ -34,15 +34,20 @@ public class PassController {
     }
 
     @PostMapping("")
-    public ResponseEntity<DataResponse> createPass(@RequestBody PassRequest passRequest) {
-        Pass newPass = passService.createPass(passRequest);
+    public ResponseEntity<DataResponse> createPass(@ModelAttribute PassRequest passRequest) {
+        Pass newPass = null;
+        try {
+            newPass = passService.createPass(passRequest);
+        } catch (Exception e) {
+            return new ResponseEntity<DataResponse>(new DataResponse(newPass, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(new DataResponse(newPass, "Pass"), HttpStatus.CREATED);
     }
 
     @PutMapping("/{passId}")
     public ResponseEntity<DataResponse> updatePass(
         @PathVariable("passId") Integer passId, 
-        @RequestBody PassRequest passRequest
+        @ModelAttribute PassRequest passRequest
     ) {
         Pass updatePass = null;
         try {

@@ -35,7 +35,7 @@ create table if not exists `user` (
 INSERT INTO `user` (`user_id`, `username`, `password`, `email`, `contact_number`, `user_type`, `defunct`) VALUES
                                                                                                               (1, 'PLACEHOLDER WHEN GOP UNASSIGNED', 'gop', 'gop@mail.com', '1', 'GOP', 0),
                                                                                                               (2, 'yixin', 'yixinpw', 'yixin@mail.com', '91234567', 'BORROWER', 0),
-                                                                                                              (3, 'kokwee', 'kokweepw', 'kokwee@mail.com', '91234567', 'ADMIN', 0),
+                                                                                                              (3, 'kokwee', 'kokweepw', 'lohkokwee@gmail.com', '91234567', 'ADMIN', 0),
                                                                                                               (4, 'shaan', 'shaanpw', 'shaan@mail.com', '91234567', 'BORROWER', 1),
                                                                                                               (5, 'jianlin', 'jianlinpw', 'jianlin@mail.com', '91234567', 'GOP', 0);
 COMMIT;
@@ -47,18 +47,21 @@ create table if not exists `pass` (
                                       `num_guests` int not null,
                                       `replacement_fee` double(10,2) not null,
     `poi` varchar(50),
+    `poi_url` varchar(150),
     `is_physical` bit not null,
     `defunct` bit not null, -- 1 for True and 0 for False
     `pass_status` varchar(50) not null,
     `pass_desc` varchar(255) not null,
+    `pass_attachment_name` varchar(50) null,
+    `pass_attachment` mediumblob null,
     primary key (`pass_id`)
     ) engine=InnoDB default charset=utf8;
 
-INSERT INTO `pass` (`pass_id`, `num_guests`, `replacement_fee`, `poi`, `is_physical`, `defunct`, `pass_status`, `pass_desc`) VALUES
-                                                                                                                                 (1, 2, 20.00, 'Gardens By The Bay', 1, 0, 'ONLOAN', 'Pass 1 description'),
-                                                                                                                                 (2, 2, 20.00, 'Singapore Zoo', 1, 1, 'AVAILABLE', 'Pass 2 description'),
-                                                                                                                                 (3, 2, 20.00, 'Sea Aquarium', 0, 0, 'AVAILABLE', 'Pass 3 description'),
-                                                                                                                                 (4, 2, 20.00, 'Sea Aquarium', 0, 0, 'ONLOAN', 'Pass 4 description');
+INSERT INTO `pass` (`pass_id`, `num_guests`, `replacement_fee`, `poi`, `poi_url`, `is_physical`, `defunct`, `pass_status`, `pass_desc`) VALUES
+                                                                                                                                 (1, 2, 20.00, 'Gardens By The Bay', 'https://www.gardensbythebay.com.sg/', 1, 0, 'ONLOAN', 'Pass 1 description'),
+                                                                                                                                 (2, 2, 20.00, 'Singapore Zoo','https://www.mandai.com/en/singapore-zoo.html' , 1, 1, 'AVAILABLE', 'Pass 2 description'),
+                                                                                                                                 (3, 2, 20.00, 'Sea Aquarium','https://www.rwsentosa.com/en/attractions/sea-aquarium', 0, 0, 'AVAILABLE', 'Pass 3 description'),
+                                                                                                                                 (4, 2, 20.00, 'Sea Aquarium','https://www.rwsentosa.com/en/attractions/sea-aquarium', 0, 0, 'ONLOAN', 'Pass 4 description');
 COMMIT;
 
 create table if not exists `loan` (
