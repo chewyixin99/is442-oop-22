@@ -5,7 +5,7 @@ class PassService extends BaseApiService {
     async getAllPasses() {
         try {
             let passes = await axiosClient.get("/passes");
-            // console.log(passes);
+            console.log(passes.data);
             return passes.data
 
         } catch (error) {

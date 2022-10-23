@@ -11,7 +11,7 @@
           <h5 class="modal-title" id="exampleModalLabel">Edit Booking</h5>
           <i
             class="bi bi-x fs-1"
-            id="create-close-btn"
+            id="edit-close-btn"
             style="cursor: pointer"
             data-bs-dismiss="modal"
             aria-label="Close"
@@ -249,19 +249,19 @@ export default {
       this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
       this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
 
-
       this.isLoading = true;
       console.log(this.retrievedData)
+      console.log(this.rowData);
       // axios
-      //   .post("http://localhost:8081/loan", this.retrievedData)
+      //   .put("http://localhost:8081/loan/update", this.retrievedData)
       //   .then((response) => {
       //     if (response.status != 500) {
       //       this.isLoading = false;
-      //       document.getElementById("create-close-btn").click();
+      //       document.getElementById("edit-close-btn").click();
       //       this.$emit("bookingSubmitted", this.retrievedData);
       //       this.$emit("toastrMsg", {
       //         status: "Success",
-      //         msg: "Booking is successful!",
+      //         msg: "Edit is successful!",
       //       });
       //     }
       //   })

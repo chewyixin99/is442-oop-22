@@ -30,7 +30,7 @@
         </div>
         <div class="row">
             <!-- <PassAdmin :PassAdmin_PassesCategory="PassesCategory"/> -->
-            <PassAdmin :PassAdminPasses="passes" @getPassData="getAllPasses"/>
+            <PassAdmin :PassAdminPasses="passes.data" @getPassData="getAllPasses"/>
 
         </div>
 
@@ -108,6 +108,8 @@ export default {
     methods:{
         async getAllPasses(){
             this.passes = await PassService.getAllPasses();
+            console.log(this.passes.data)
+            console.log(this.passes.message)
         }
     }
 }
