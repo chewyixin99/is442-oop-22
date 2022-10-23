@@ -25,6 +25,9 @@ public class Template {
 
     @Column(name = "template_name", nullable = false)
     private String templateName;
+
+    @Column(name = "template_subject", nullable = false)
+    private String templateSubject;
     
     @Column(name = "template_data", nullable = true)
     private String templateData;

@@ -1,11 +1,13 @@
 package com.is442.oop.pass;
 
+import java.io.IOException;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.is442.oop.data.models.Pass;
+import com.is442.oop.exception.ActionNotExecutedException;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 @Service
@@ -24,33 +26,51 @@ public class PassServiceImpl implements PassService {
     }
 
     @Override
-    public Pass createPass(PassRequest passRequest) {
+    public Pass createPass(PassRequest passRequest) throws ActionNotExecutedException {
         Pass pass = new Pass();
-        pass.setPoi(passRequest.getPoi());
-        pass.setPassDesc(passRequest.getPassDesc());
-        pass.setNumGuests(passRequest.getNumGuests());
-        pass.setReplacementFee(passRequest.getReplacementFee());
-        pass.setPhysical(passRequest.getPhysical());
-        pass.setPassStatus(passRequest.getPassStatus());
-        pass.setDefunct(passRequest.getDefunct());
+        try {
+            pass.setPoi(passRequest.getPoi());
+            pass.setPoiUrl(passRequest.getPoiUrl());
+            pass.setPassDesc(passRequest.getPassDesc());
+            pass.setNumGuests(passRequest.getNumGuests());
+            pass.setReplacementFee(passRequest.getReplacementFee());
+            pass.setPhysical(passRequest.isPhysical());
+            pass.setPassStatus(passRequest.getPassStatus());
+            pass.setPassAttachmentName(passRequest.getPassAttachmentName());
+            pass.setPassAttachment(passRequest.getPassAttachment().getBytes());
+        } catch (IOException e) {
+            throw new ActionNotExecutedException("Pass", e);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("Pass", e);
+        }
         passRepository.save(pass);
         return pass;
     }
 
     @Override
-    public Pass updatePass(Integer passId, PassRequest passRequest) throws ResourceNotFoundException {
+    public Pass updatePass(Integer passId, PassRequest passRequest) throws ResourceNotFoundException, ActionNotExecutedException {
         Pass pass = null;
         Optional<Pass> queryPass = passRepository.findById(passId);
         if (queryPass.isEmpty()) {
             throw new ResourceNotFoundException("Pass", "Pass ID", passId);
         }
-        pass = queryPass.get();
-        pass.setPoi(passRequest.getPoi());
-        pass.setPassDesc(passRequest.getPassDesc());
-        pass.setNumGuests(passRequest.getNumGuests());
-        pass.setReplacementFee(passRequest.getReplacementFee());
-        pass.setPhysical(passRequest.getPhysical());
-        pass.setPassStatus(passRequest.getPassStatus());
+
+        try {
+            pass = queryPass.get();
+            pass.setPoi(passRequest.getPoi());
+            pass.setPoiUrl(passRequest.getPoiUrl());
+            pass.setPassDesc(passRequest.getPassDesc());
+            pass.setNumGuests(passRequest.getNumGuests());
+            pass.setReplacementFee(passRequest.getReplacementFee());
+            pass.setPhysical(passRequest.isPhysical());
+            pass.setPassStatus(passRequest.getPassStatus());
+            pass.setPassAttachmentName(passRequest.getPassAttachmentName());
+            pass.setPassAttachment(passRequest.getPassAttachment().getBytes());
+        } catch (IOException e) {
+            throw new ActionNotExecutedException("Pass", e);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("Pass", e);
+        }
         passRepository.save(pass);
         return pass;
     }
