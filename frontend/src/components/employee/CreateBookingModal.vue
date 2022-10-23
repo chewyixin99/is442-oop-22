@@ -300,8 +300,8 @@ export default {
     },
     selectedData($event) {
       this.retrievedData = {
-        passID: $event.passID,
-        userID: $event.userID,
+        passID: $event.passID.toString(),
+        userID: $event.userID.toString(),
         startDate: $event.startDate,
         endDate: $event.endDate,
       };

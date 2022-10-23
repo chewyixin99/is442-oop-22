@@ -150,8 +150,9 @@ export default {
             width: "15%",
           },
           {
-            id: "action",
+            id: "edit",
             sort: false,
+            name: "Edit",
             formatter: (cell, row) => {
               return h(
                "i",
@@ -181,8 +182,9 @@ export default {
             width: "5%",
           },
           {
-            id: "action",
+            id: "delete",
             sort: false,
+            name: "Delete",
             formatter: (cell, row) => {
               return h(
                 "i",
@@ -209,7 +211,7 @@ export default {
                 ""
               );
             },
-            width: "10%",
+            width: "5%",
           },
         ],
         server: {
@@ -221,9 +223,10 @@ export default {
                 data.passId,
                 data.startDate,
                 data.endDate,
+                data.defunct
               ])
               .filter(
-                (data) => this.processDate(data[2]) >= new Date().toISOString().replace(/T.*$/, "") 
+                (data) => (this.processDate(data[2]) >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
               ),
         },
         search: true,
@@ -264,7 +267,7 @@ export default {
           {
             id: "passTitle",
             name: "Pass Title",
-            width: "20%",
+            width: "30%",
           },
           {
             id: "startDate",
@@ -275,17 +278,22 @@ export default {
             id: "endDate",
             name: "End",
             width: "10%",
-          },
+          }, 
           {
             id: "previous",
             name: "Previous",
-            width: "15%",
+            width: "20%",
           },
           {
             id: "following",
-            name: "Next",
-            width: "15%",
+            name: "following",
+            width: "20%",
           },
+          {
+            sort: false,
+            width: "5%"
+          }
+                   
         ],
         server: {
           url: "http://localhost:8081/loan",
@@ -293,7 +301,7 @@ export default {
             data.data
               .map((data) => [
                 data.loanId,
-                data.poi,
+                data.passId,
                 data.startDate,
                 data.endDate,
               ])

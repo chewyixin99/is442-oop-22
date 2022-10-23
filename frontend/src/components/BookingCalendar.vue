@@ -16,7 +16,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import axios from "axios";
 
 export default {
-  props: ["selectedPass","selectedLoan"],
+  props: ["selectedPass","selectedLoan","isEdit"],
   components: {
     FullCalendar,
   },
@@ -67,7 +67,8 @@ export default {
       console.log(info);
     },
     handleDateClick: function (arg) {
-      if (this.isEditing){
+      if (this.isEdit){
+        console.log("edit mode");
         return;
       }
       if (arg.dateStr < new Date().toISOString().replace(/T.*$/, "")) {
@@ -124,11 +125,11 @@ export default {
       axios
         .get("http://localhost:8081/loan")
         .then((response) => {
-          console.log(response.data);
-          console.log(this.selectedPass);
-          this.selectedPassLoans = response.data.filter(
-            (pass) => pass.passId == this.selectedPass.passId
+          this.selectedPassLoans = response.data.data.filter(
+            (pass) => pass.passId == this.selectedPass.passId && pass.defunct == false
           );
+
+          console.log(this.selectedPassLoans);
 
           this.processData();
         })
@@ -186,24 +187,25 @@ export default {
 
   },
 
+  // this is for creation of new booking as selectedPass is based on user input
   watch: {
     selectedPass: function (newVal, oldVal) {
       console.log(newVal);
       console.log(oldVal);
       console.log("selectedPass updated ------------------");
+      console.log(this.selectedPass);
       this.selectedData.passID = this.selectedPass.passId
       this.selectedData.userID = this.userId
       this.getData();
       
     },
   },
-
+  // this is for editing of exisiing booking as selectedPass is based on rowData
   mounted() {
-    if (this.selectedPass){
+    if (this.isEdit){
       this.getData();
       this.selectedData.passID = this.selectedPass.passId
       this.selectedData.userID = this.userId
-      this.isEditing = true;
     }
   },
 };

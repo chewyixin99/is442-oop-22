@@ -231,6 +231,7 @@ export default {
       axios
         .delete("http://localhost:8081/loan/" + this.rowData.id)
         .then((response) => {
+          console.log(response);
           if (response.status != 500) {
             this.isLoading = false;
             document.getElementById("cancel-close-btn").click();
