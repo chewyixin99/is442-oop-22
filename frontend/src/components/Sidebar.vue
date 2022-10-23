@@ -87,6 +87,14 @@
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link link-dark px-0 align-middle">
+                <router-link to="/passUser" class="text-decoration-none">
+                  <i class="fs-4 bi bi-pass"></i>
+                  <span class="ms-1 d-none d-sm-inline ms-3">PassUser</span>
+                </router-link>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link link-dark px-0 align-middle">
                 <router-link to="/email" class="text-decoration-none">
                   <i class="fs-4 bi bi-envelope"></i>
                   <span class="ms-1 d-none d-sm-inline ms-3">Email</span>

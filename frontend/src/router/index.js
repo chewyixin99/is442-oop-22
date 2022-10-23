@@ -7,6 +7,7 @@ import ManageBooking from '../views/booking/ManageBooking.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Employee from '../views/Employee.vue'
 import Pass from '../views/Pass.vue'
+import PassUser from '../views/PassUser.vue'
 import Email from '../views/Email.vue'
 
 const routes = [
@@ -50,6 +51,12 @@ const routes = [
       path: '/pass',
       name: 'Pass',
       component: Pass,
+    //   meta: { requiresAuth: true }
+    },
+    {
+      path: '/passUser',
+      name: 'PassUser',
+      component: PassUser,
     //   meta: { requiresAuth: true }
     },
     {
