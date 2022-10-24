@@ -17,6 +17,30 @@ spring:
             max-request-size: 2MB
     config:
         import: application-mail.yml
+    # security configs
+    security:
+        oauth2:
+            client:
+                registration:
+                    api-client-oidc:
+                        provider: spring
+                        client-id: api-client
+                        client-secret: secret
+                        authorization-grant-type: authorization_code
+                        redirect-uri: "http://127.0.0.1:8081/login/oauth2/code/{registrationId}"
+                        scope: openid
+                        client-name: api-client-oidc
+                    api-client-authorization-code:
+                        provider: spring
+                        client-id: api-client
+                        client-secret: secret
+                        authorization-grant-type: authorization_code
+                        redirect-uri: "http://127.0.0.1:8081/authorized"
+                        scope: api.read
+                        client-name: api-client-authorization-code
+                provider:
+                    spring:
+                        issuer-uri: http://auth-server:9000 
 springdoc:
     swagger-ui:
         path: /
