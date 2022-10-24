@@ -159,6 +159,8 @@
                                             <input class="form-control" required v-model="NewPassObject.passDesc">
                                             <label class="col-form-label">Point of Interests:</label>
                                             <input class="form-control" required v-model="NewPassObject.poi">
+                                            <label class="col-form-label">Point of Interests Website:</label>
+                                            <input class="form-control" required v-model="NewPassObject.poiUrl">
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
@@ -185,15 +187,6 @@
                                             </div>
                                         </div>
                                         <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Deactivated?(defunct)</b></label>
-                                            <div class="col-7">
-                                                <select class="form-select" disabled v-model="NewPassObject.defunct">
-                                                    <option value="true">true</option>
-                                                    <option value="false" selected>false</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
                                                 <select class="form-select" v-model="NewPassObject.physical">
@@ -202,10 +195,55 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <hr>
+                                        <div class="mb-3">
+                                            <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
+                                            <h3>Atttachment information</h3>
+                                            <label class="col-form-label">Attachment Name</label> 
+                                            <input class="form-control" required v-model="NewPassObject.passAttachmentName">
+                                            <label class="col-form-label">Upload attachment here</label>
+                                                <div>
+                                                    <div v-if="currentFile" class="progress">
+                                                    <div
+                                                        class="progress-bar progress-bar-info progress-bar-striped"
+                                                        role="progressbar"
+                                                        :aria-valuenow="progress"
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="100"
+                                                        :style="{ width: progress + '%' }"
+                                                    >
+                                                        {{ progress }}%
+                                                    </div>
+                                                    </div>
+
+                                                    <label class="btn btn-default">
+                                                    <input type="file" ref="file" @change="selectFile" />
+                                                    </label>
+
+                                                    <button class="btn btn-success" :disabled="!selectedFiles" @click="upload">
+                                                    Upload
+                                                    </button>
+
+                                                    <div class="alert alert-light" role="alert">{{ message }}</div>
+
+                                                    <div class="card">
+                                                    <div class="card-header">List of Files</div>
+                                                    <ul class="list-group list-group-flush">
+                                                        <li
+                                                        class="list-group-item"
+                                                        v-for="(file, index) in fileInfos"
+                                                        :key="index"
+                                                        >
+                                                        <a :href="file.url">{{ file.name }}</a>
+                                                        </li>
+                                                    </ul>
+                                                    </div>
+                                                </div>
+                                        </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" @click="addNewPass()" data-bs-dismiss="modal">Create Pass</button>
+                                <button type="button" class="btn btn-primary" @click="addNewPass()">Create Pass</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
@@ -224,7 +262,11 @@
 
 <script>
 import axios from 'axios'
-export default ({
+import UploadService from "../services/UploadFilesService";
+
+
+export default({
+
     name: 'PassAdmin',
         props: {
             PassAdminPasses: Array,
@@ -238,13 +280,20 @@ export default ({
                 passURL: "http://localhost:8081/passes",
                 passIDtoDelete: null,
 
+                selectedFiles: undefined,
+                progress: 0,
+                message: "",
+            
+
                 NewPassObject: {
-                    passDesc: "",
-                    poi: "",
+                    passDesc: null,
+                    poi: null,
+                    poiUrl: null,
                     numGuests: 1,
                     replacementFee: 0,
                     passStatus: "AVAILABLE",
-                    defunct: false,
+                    passAttachmentName: null,
+                    passAttachment: null,
                     physical: true
                 },
 
@@ -260,7 +309,37 @@ export default ({
             
             }
         },
+        mounted(){
+            UploadService.getFiles().then(response => {
+            this.fileInfos = response.data;
+            });
+        },
         methods: {
+            selectFile(){
+                this.selectedFiles = this.$refs.file.files;
+            },
+            upload() {
+                this.progress = 0;
+
+                this.NewPassObject.passAttachment = this.selectedFiles.item(0);
+                UploadService.upload(this.NewPassObject.passAttachment, event => {
+                    this.progress = Math.round((100 * event.loaded) / event.total);
+                })
+                    .then(response => {
+                    this.message = response.data.message;
+                    return UploadService.getFiles();
+                    })
+                    .then(files => {
+                    this.fileInfos = files.data;
+                    })
+                    .catch(() => {
+                    this.progress = 0;
+                    this.message = "Could not upload the file!";
+                    this.NewPassObject.passAttachment = undefined;
+                    });
+
+                this.selectedFiles = undefined;
+                },
             GetImageUrl(pic){
                 return require('../assets/'+pic)
             },
