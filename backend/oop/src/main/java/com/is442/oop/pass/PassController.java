@@ -68,4 +68,15 @@ public class PassController {
         }
         return new ResponseEntity<>(new DataResponse(pass, "Pass"),HttpStatus.OK);
     }
+
+    @GetMapping("/byLoanId/{loanId}")
+    public ResponseEntity<DataResponse> getPassByLoanId(@PathVariable("loanId") Integer loanId) {
+        Pass pass = null;
+        try {
+            pass = passService.getPassByLoanId(loanId);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(pass, e), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(new DataResponse(pass, "Pass"),HttpStatus.OK);
+    }
 }

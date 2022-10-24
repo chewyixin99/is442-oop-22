@@ -23,12 +23,13 @@ public class LoanServiceImpl implements LoanService{
     @Override
     public Loan createLoan(LoanRequest loanRequest) throws ActionNotExecutedException {
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
+
         Integer passID = loanRequest.getPassID();
         String startDate = loanRequest.getStartDate();
 
         List<Loan> loans = this.getLoanByPassID(passID);
         for (Loan l: loans){
-            if (l.getStartDate().equals(startDate)){
+            if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
                 throw new ActionNotExecutedException("Loan", "Pass is already loaned for the day");
             }
         }
@@ -78,7 +79,7 @@ public class LoanServiceImpl implements LoanService{
         List<Loan> loans = this.getAllLoan();
         List<Loan> toReturn = new ArrayList<>();
         for (Loan l: loans){
-            if (l.getUserId() == passID){
+            if (l.getPassId() == passID){
                 toReturn.add(l);
             }
         }

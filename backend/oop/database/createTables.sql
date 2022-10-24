@@ -73,19 +73,15 @@ create table if not exists `loan` (
 `defunct` bit not null,
 `start_date` varchar(50),
 `end_date` varchar(50),
-`poi` varchar(50),
 primary key (`loan_id`,`user_id`,`pass_id`),
 foreign key (`user_id`) references `user` (`user_id`),
 foreign key (`gop_id`) references `user` (`user_id`),
 foreign key (`pass_id`) references `pass` (`pass_id`)
 ) engine = InnoDB default charset = utf8;
 
-INSERT INTO `loan` (`loan_id`, `user_id`, `gop_id`, `pass_id`, `is_completed`, `defunct`, `start_date`, `end_date`, `poi`) VALUES
-(1, 1, 4, 1, 1, 0, '1/10/2022', '2/10/2022', 'Gardens By The Bay'),
-(2, 2, 4, 2, 1, 0, '3/10/2022', '4/10/2022', 'Singapore Zoo'),
-(3, 3, 4, 3, 0, 0, '5/10/2022', '6/10/2022', 'Sea Aquarium'),
-(4, 4, 4, 4, 0, 1, '7/10/2022', '8/10/2022', 'Sea Aquarium');
+INSERT INTO `loan` (`loan_id`, `user_id`, `gop_id`, `pass_id`, `is_completed`, `defunct`, `start_date`, `end_date`) VALUES
+(1, 1, 4, 1, 1, 0, '1/10/2022', '2/10/2022'),
+(2, 2, 4, 2, 1, 0, '3/10/2022', '4/10/2022'),
+(3, 3, 4, 3, 0, 0, '5/10/2022', '6/10/2022'),
+(4, 4, 4, 4, 0, 1, '7/10/2022', '8/10/2022');
 COMMIT;
-
-
-
