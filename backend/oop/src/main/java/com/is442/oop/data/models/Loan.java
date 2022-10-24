@@ -19,7 +19,7 @@ import lombok.ToString;
 @Entity
 public class Loan {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loan_id", nullable = false)
     private int loanId;
     // @ManyToOne
@@ -48,8 +48,5 @@ public class Loan {
     @Column(name = "defunct", nullable = false)
     @Value("false") // Default value
     private boolean defunct;
-
-    @Column(name = "poi", nullable = false)
-    private String poi;
 }
 

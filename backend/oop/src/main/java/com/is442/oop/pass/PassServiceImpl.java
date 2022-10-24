@@ -6,14 +6,19 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.models.Pass;
 import com.is442.oop.exception.ActionNotExecutedException;
 import com.is442.oop.exception.ResourceNotFoundException;
+import com.is442.oop.loan.LoanService;
 
 @Service
 public class PassServiceImpl implements PassService {
     @Autowired
     PassRepository passRepository;
+
+    @Autowired
+    LoanService loanService;
 
     @Override
     public Pass getPass(Integer passId) throws ResourceNotFoundException {
@@ -85,6 +90,23 @@ public class PassServiceImpl implements PassService {
         pass = queryPass.get();
         pass.setDefunct(true);
         passRepository.save(pass);
+        return pass;
+    }
+
+    @Override
+    public Pass getPassByLoanId(Integer loanId) throws RuntimeException {
+        Pass pass = null;
+        Loan loan = null;
+        try {
+            loan = loanService.getLoanByLoanID(loanId);
+        } catch (Exception e) {
+            throw e;
+        }
+        try {
+            pass = this.getPass(loan.getPassId());            
+        } catch (Exception e) {
+            throw e;
+        }
         return pass;
     }
 }

@@ -19,8 +19,6 @@ public interface LoanService {
     List<Loan> getLoanByUserID(int userID);
     List<Loan> getLoanByPassID(int passID);
     Loan deleteLoan(Integer loanID)throws ResourceNotFoundException;
-
     Loan updateLoanToCompleted(UpdateLoantoCompletedRequest updateLoanRequest) throws RuntimeException;
-
     Loan updateLoan(UpdateLoanRequest updateLoanRequest) throws RuntimeException;
 }
