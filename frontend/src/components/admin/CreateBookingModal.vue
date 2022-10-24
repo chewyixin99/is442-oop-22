@@ -32,9 +32,9 @@
                   <option
                     v-for="availablePass in availablePasses"
                     :key="availablePass"
-                    :value="availablePass.id"
+                    :value="availablePass.passId"
                   >
-                    {{ availablePass.title }}
+                    {{ availablePass.poi }}
                   </option>
                 </select>
               </div>
@@ -42,16 +42,16 @@
             <div class="p-4">
               <BookingCalendar
                 :key="componentKey"
-                :selectedPassLoans="selectedPassLoans"
                 @selectedData="selectedData"
                 :selectedPass="selectedPass"
+                :selectedLoan="selectedLoan"
                 class="mt-4"
               />
             </div>
 
             <div class="mt-4" v-if="selectedPass">
               <div class="form-group">
-                <h4>My Details</h4>
+                <h4>Booking Details</h4>
                 <div class="row my-4">
                   <div class="col">
                     <label for="exampleFormControlInput1">Email address</label>
@@ -89,6 +89,7 @@
 
               <!-- Booking Details Form start --------------------------------------------------- -->
 
+              <!-- DO NOT DELETE IN CASE IT IS A BUSINESS REQUIREMENT  -->
               <!-- <div class="form-group">
                 <div class="d-flex justify-content-between align-items-top">
                   <h4>Guest Details</h4>
@@ -99,7 +100,7 @@
                   ></i>
                 </div>
 
-                 <label for="exampleFormControlSelect1">Number of Guest</label>
+                <label for="exampleFormControlSelect1">Number of Guest</label>
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
@@ -158,8 +159,9 @@
                 >
                   No guest selected.
                 </div>
-                <br /> -->
-              <!-- </div> -->
+                <br />
+              </div>
+              <hr /> -->
 
               <!-- Booking Details Form end --------------------------------------------------- -->
 
@@ -172,7 +174,7 @@
                       type="email"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      :value="selectedPass.title"
+                      :value="selectedPass.poi"
                       disabled
                     />
                   </div>
@@ -184,7 +186,7 @@
                       type="date"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      :value="retrievedData.start"
+                      :value="retrievedData.startDate"
                       disabled
                     />
                   </div>
@@ -194,7 +196,7 @@
                       type="date"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      :value="retrievedData.end"
+                      :value="retrievedData.endDate"
                       disabled
                     />
                   </div>
@@ -248,6 +250,7 @@
 
 <script>
 import BookingCalendar from "@/components/BookingCalendar.vue";
+import axios from "axios";
 export default {
   name: "CreateBookingModal",
   props: {
@@ -258,6 +261,7 @@ export default {
   },
   data() {
     return {
+      selectedLoan: {id:null}, // this to prevent a type error as edit booking modal is using this
       bookingGuestDetails: [
         {
           name: "",
@@ -273,41 +277,10 @@ export default {
       isLoading: false,
       numPass: 2,
       componentKey: 0,
-      availablePasses: [
-        {
-          id: "1",
-          title: "Zoo 1",
-          selected: false,
-        },
-        {
-          id: "2",
-          title: "Zoo 2",
-          selected: false,
-        },
-        {
-          id: "3",
-          title: "Zoo 3",
-          selected: false,
-        },
-        {
-          id: "4",
-          title: "Safari 1",
-          selected: false,
-        },
-        {
-          id: "5",
-          title: "Safari 2",
-          selected: false,
-        },
-        {
-          id: "6",
-          title: "Gardens By The Bay",
-          selected: false,
-        },
-      ],
+      availablePasses: [],
       retrievedData: {
-        passId: null,
-        passTitle: "",
+        passID: null,
+        userID: 0,
         start: "",
         end: "",
       },
@@ -327,99 +300,78 @@ export default {
     },
     selectedData($event) {
       this.retrievedData = {
-        passID: $event.passID,
-        userID: 0,
-        start: $event.startDate,
-        end: $event.endDate,
+        passID: $event.passID.toString(),
+        userID: $event.userID.toString(),
+        startDate: $event.startDate,
+        endDate: $event.endDate,
       };
       console.log(this.retrievedData);
     },
     selectPass(event) {
+      console.log(event.target.value);
+      console.log(this.availablePasses);
+      this.selectedPassId = event.target.value;
       this.selectedPass = this.availablePasses.find(
-        (pass) => pass.id === event.target.value
+        (pass) => pass.passId == this.selectedPassId
       );
 
-      console.log(this.selectedPass)
+      console.log(this.selectedPass);
     },
     forceRerender() {
       this.componentKey += 1;
     },
-
-    // fixed events
-    passFn(id) {
-      if (id == "1") {
-        return {
-          title: "Zoo 1",
-          id: "1",
-          events: [
-            {
-              id: 1,
-              title: "Team 1",
-              start: new Date(2022, 8, 29).toISOString().replace(/T.*$/, ""),
-            },
-            {
-              id: 2,
-              title: "Team 3",
-              start: new Date(2022, 8, 30).toISOString().replace(/T.*$/, ""),
-            },
-          ],
-        };
-      } else if (id == "2") {
-        return {
-          title: "Zoo 2",
-          id: "2",
-          events: [
-            {
-              id: 1,
-              title: "Finance Dept",
-              start: new Date(2022, 8, 24).toISOString().replace(/T.*$/, ""),
-            },
-            {
-              id: 2,
-              title: "Teaching Dept",
-              start: new Date(2022, 8, 26).toISOString().replace(/T.*$/, ""),
-            },
-          ],
-        };
-      } else if (id == "5") {
-        return {
-          title: "Safari 2",
-          id: "5",
-        };
-      } else if (id == "6") {
-        return {
-          title: "Gardens By The Bay",
-          id: "6",
-        };
+    
+    processDate2(date){
+      
+      let split = date.split("-").reverse()
+      for (let i = 0; i < split.length; i++) {
+        if (split[i].length == 1) {
+          split[i] = "0" + split[i];
+        }
       }
+console.log(date)
+      return split.join("/");
     },
     async submitBooking() {
-      console.log(this.bookingGuestDetails);
+
+      this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
+      this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
+
 
       this.isLoading = true;
-      setTimeout(() => {
-        document.getElementById("create-close-btn").click();
-        this.bookingDetails = {
-          passData: {
-            passId: this.retrievedData.passId,
-            passTitle: this.retrievedData.passTitle,
-          },
-          duration: {
-            start: this.retrievedData.start,
-            end: this.retrievedData.end,
-          },
-          remarks: this.bookingRemarks,
-          guestData: this.bookingGuestDetails,
-          timeStamp: new Date().toISOString(),
-        };
-        this.$emit("bookingSubmitted", this.bookingDetails);
-
-        this.$emit("toastrMsg", {
-          status: "Success",
-          msg: "Booking is successful!",
+      console.log(this.retrievedData)
+      axios
+        .post("http://localhost:8081/loan", this.retrievedData)
+        .then((response) => {
+          if (response.status != 500) {
+            this.isLoading = false;
+            document.getElementById("create-close-btn").click();
+            this.$emit("bookingSubmitted", this.retrievedData);
+            this.$emit("toastrMsg", {
+              status: "Success",
+              msg: "Booking is successful!",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      }, 1000);
     },
+
+    getData() {
+      axios
+        .get("http://localhost:8081/passes")
+        .then((response) => {
+          this.availablePasses = response.data.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+  mounted() {
+    // fetch data from api
+    this.getData();
   },
 };
 </script>

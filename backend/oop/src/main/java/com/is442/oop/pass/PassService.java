@@ -15,4 +15,5 @@ public interface PassService {
     Pass createPass(PassRequest passRequest) throws ActionNotExecutedException;
     Pass updatePass(Integer passId, PassRequest passRequest) throws ResourceNotFoundException, ActionNotExecutedException;
     Pass deletePass(Integer passId) throws ResourceNotFoundException;
+    Pass getPassByLoanId(Integer loanId) throws RuntimeException;
 }

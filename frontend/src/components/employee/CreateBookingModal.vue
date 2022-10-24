@@ -343,7 +343,7 @@ console.log(date)
       axios
         .post("http://localhost:8081/loan", this.retrievedData)
         .then((response) => {
-          if (response.status != 500) {
+          if (response.status == 200) {
             this.isLoading = false;
             document.getElementById("create-close-btn").click();
             this.$emit("bookingSubmitted", this.retrievedData);
