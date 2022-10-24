@@ -156,16 +156,16 @@
                                     <div class="mb-3">
                                             <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
                                             <label class="col-form-label">Description:</label> 
-                                            <input class="form-control" required v-model="NewPassObject.passDesc">
+                                            <input class="form-control" required v-model="passDesc">
                                             <label class="col-form-label">Point of Interests:</label>
-                                            <input class="form-control" required v-model="NewPassObject.poi">
+                                            <input class="form-control" required v-model="poi">
                                             <label class="col-form-label">Point of Interests Website:</label>
-                                            <input class="form-control" required v-model="NewPassObject.poiUrl">
+                                            <input class="form-control" required v-model="poiUrl">
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
                                             <div class="col-7">
-                                                <input type="number" class="form-control" required v-model="NewPassObject.numGuests" min="1">
+                                                <input type="number" class="form-control" required v-model="numGuests" min="1">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -173,14 +173,14 @@
                                             <div class="col-7">
                                                 <div class="input-group">
                                                     <div class="input-group-text">$</div>
-                                                    <input type="number" class="form-control" required v-model="NewPassObject.replacementFee" min="0">
+                                                    <input type="number" class="form-control" required v-model="replacementFee" min="0">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Status</b></label>
                                             <div class="col-7">
-                                                <select class="form-select" v-model="NewPassObject.passStatus">
+                                                <select class="form-select" v-model="passStatus">
                                                     <option value="AVAILABLE">Available</option>
                                                     <option value="ONLOAN">On Loan</option>
                                                 </select>
@@ -189,7 +189,7 @@
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
-                                                <select class="form-select" v-model="NewPassObject.physical">
+                                                <select class="form-select" v-model="physical">
                                                     <option value="true">true</option>
                                                     <option value="false">false</option>
                                                 </select>
@@ -200,50 +200,14 @@
                                             <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
                                             <h3>Atttachment information</h3>
                                             <label class="col-form-label">Attachment Name</label> 
-                                            <input class="form-control" required v-model="NewPassObject.passAttachmentName">
-                                            <label class="col-form-label">Upload attachment here</label>
-                                                <div>
-                                                    <div v-if="currentFile" class="progress">
-                                                    <div
-                                                        class="progress-bar progress-bar-info progress-bar-striped"
-                                                        role="progressbar"
-                                                        :aria-valuenow="progress"
-                                                        aria-valuemin="0"
-                                                        aria-valuemax="100"
-                                                        :style="{ width: progress + '%' }"
-                                                    >
-                                                        {{ progress }}%
-                                                    </div>
-                                                    </div>
-
-                                                    <label class="btn btn-default">
-                                                    <input type="file" ref="file" @change="selectFile" />
-                                                    </label>
-
-                                                    <button class="btn btn-success" :disabled="!selectedFiles" @click="upload">
-                                                    Upload
-                                                    </button>
-
-                                                    <div class="alert alert-light" role="alert">{{ message }}</div>
-
-                                                    <div class="card">
-                                                    <div class="card-header">List of Files</div>
-                                                    <ul class="list-group list-group-flush">
-                                                        <li
-                                                        class="list-group-item"
-                                                        v-for="(file, index) in fileInfos"
-                                                        :key="index"
-                                                        >
-                                                        <a :href="file.url">{{ file.name }}</a>
-                                                        </li>
-                                                    </ul>
-                                                    </div>
-                                                </div>
+                                            <input class="form-control" required v-model="passAttachmentName">
+                                            <label class="col-form-label">Upload attachment here</label> <br>
+                                            <input type="file" @change="onFileSelected">
                                         </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" @click="addNewPass()">Create Pass</button>
+                                <button type="button" class="btn btn-primary" @click="onUpload()">Create Pass</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
@@ -262,7 +226,6 @@
 
 <script>
 import axios from 'axios'
-import UploadService from "../services/UploadFilesService";
 
 
 export default({
@@ -280,22 +243,29 @@ export default({
                 passURL: "http://localhost:8081/passes",
                 passIDtoDelete: null,
 
-                selectedFiles: undefined,
-                progress: 0,
-                message: "",
-            
+                selectedFile: null,
 
-                NewPassObject: {
-                    passDesc: null,
-                    poi: null,
-                    poiUrl: null,
-                    numGuests: 1,
-                    replacementFee: 0,
-                    passStatus: "AVAILABLE",
-                    passAttachmentName: null,
-                    passAttachment: null,
-                    physical: true
-                },
+                passDesc: null,
+                poi: null,
+                poiUrl: null,
+                numGuests: 1,
+                replacementFee: 0,
+                passStatus: "AVAILABLE",
+                passAttachmentName: null,
+                passAttachment: null,
+                physical: true,
+
+                // NewPassObject: {
+                //     passDesc: null,
+                //     poi: null,
+                //     poiUrl: null,
+                //     numGuests: 1,
+                //     replacementFee: 0,
+                //     passStatus: "AVAILABLE",
+                //     passAttachmentName: null,
+                //     passAttachment: null,
+                //     physical: true
+                // },
 
                 UpdatePassObject:{
                     passDesc: "",
@@ -310,50 +280,45 @@ export default({
             }
         },
         mounted(){
-            UploadService.getFiles().then(response => {
-            this.fileInfos = response.data;
-            });
+
         },
         methods: {
-            selectFile(){
-                this.selectedFiles = this.$refs.file.files;
+            onFileSelected(event){
+                this.selectedFile = event.target.files[0]
+                console.log(this.selectedFile)
             },
-            upload() {
-                this.progress = 0;
-
-                this.NewPassObject.passAttachment = this.selectedFiles.item(0);
-                UploadService.upload(this.NewPassObject.passAttachment, event => {
-                    this.progress = Math.round((100 * event.loaded) / event.total);
+            onUpload(){
+                const fd = new FormData()
+                fd.append("passDesc", this.passDesc)
+                fd.append("poi", this.poi)
+                fd.append("poiUrl", this.poiUrl)
+                fd.append("numGuests", this.numGuests)
+                fd.append("replacementFee", this.replacementFee)
+                fd.append("passStatus", this.passStatus)
+                fd.append("passAttachmentName", this.passAttachmentName)
+                fd.append("passAttachment", this.selectedFile)
+                fd.append("physical", this.physical)
+                console.log(fd)
+                axios.post("http://localhost:8081/passes", fd)
+                .then(res=>{
+                    console.log(res)
+                    this.$emit('getPassData')
                 })
-                    .then(response => {
-                    this.message = response.data.message;
-                    return UploadService.getFiles();
-                    })
-                    .then(files => {
-                    this.fileInfos = files.data;
-                    })
-                    .catch(() => {
-                    this.progress = 0;
-                    this.message = "Could not upload the file!";
-                    this.NewPassObject.passAttachment = undefined;
-                    });
-
-                this.selectedFiles = undefined;
-                },
+            },
             GetImageUrl(pic){
                 return require('../assets/'+pic)
             },
-            async addNewPass(){
-                try{
-                    await axios.post(this.passURL, this.NewPassObject)
-                    .then(response => {
-                        this.$emit('getPassData')
-                        console.log(response);
-                    });
-                } catch(err){
-                    console.error(err);
-                }
-            },
+            // async addNewPass(){
+            //     try{
+            //         await axios.post(this.passURL, this.NewPassObject)
+            //         .then(response => {
+            //             this.$emit('getPassData')
+            //             console.log(response);
+            //         });
+            //     } catch(err){
+            //         console.error(err);
+            //     }
+            // },
             async deleteExistingPass(passID){
                 try{
                     await axios.delete(this.passURL+"/"+passID)
