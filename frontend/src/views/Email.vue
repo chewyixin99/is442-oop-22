@@ -27,17 +27,20 @@
       <div class="row row-cols-1 g-5">
         <!-- change here start -->
         <template
-          v-for="(template, index) in emailTemplates"
+          v-for="(template) in emailTemplates"
           :key="template.templateId"
         >
           <div v-if="!template.defunct">
             <!-- change here end -->
             <div class="card mb-3 border-secondary">
               <div class="card-header text-dark bg-light">
-                Template {{ index + 1 }}
+                Template ID: {{template.templateId }}
               </div>
               <div class="card-header text-white bg-dark">
-                <h2>{{ template.templateName }}</h2>
+                <h2>Template Name: {{ template.templateName }}</h2>
+              </div>
+              <div class="card-header text-white bg-secondary">
+                <h2>Template Subject: {{ template.templateSubject }}</h2>
               </div>
               <div class="card-body border-secondary">
                 <p class="text-start" v-html="template.templateData"></p>
@@ -84,6 +87,12 @@
                         class="form-control"
                         required
                         v-model="template.templateName"
+                      />
+                      <label class="col-form-label">Template Subject:</label>
+                      <input
+                        class="form-control"
+                        required
+                        v-model="template.templateSubject"
                       />
                       <label class="col-form-label">Template Data:</label>
                       <QuillEditor
@@ -159,6 +168,12 @@
                   class="form-control"
                   required
                   v-model="newTemplateName"
+                />
+                <label class="col-form-label">Template Subject:</label>
+                <input
+                  class="form-control"
+                  required
+                  v-model="newTemplateSubject"
                 />
                 <label class="col-form-label">Template Data:</label>
                 <QuillEditor
@@ -269,14 +284,15 @@ export default {
       templateURL: "http://localhost:8081/templates",
       emailTemplates: [],
       newTemplateName: ``,
+      newTemplateSubject: ``,
       newTemplateData: ``,
       EmailTemplates: [],
       vueContent: ``,
       backupContentData: ``,
       templateDataToUpdate: {
         templateName: "test1",
+        templateSubject: "test1",
         templateData: "test1",
-        defunct: true,
       },
     };
   },
@@ -323,8 +339,8 @@ export default {
         if (this.emailTemplates[i]["templateId"] == templateID) {
           temp = {
             templateName: this.emailTemplates[i].templateName,
+            templateSubject: this.emailTemplates[i].templateSubject,
             templateData: this.emailTemplates[i].templateData,
-            defunct: this.emailTemplates[i].defunct,
           };
         }
       }
@@ -347,7 +363,8 @@ export default {
       var temp = {
         templateName: this.newTemplateName,
         templateData: this.newTemplateData,
-        defunct: false,
+        templateSubject: this.newTemplateSubject,
+
       };
       this.newTemplateName = ``;
       this.newTemplateData = ``;
@@ -380,6 +397,7 @@ export default {
           this.emailTemplates[i]["templateData"] = this.backupContentData;
         }
       }
+      this.getEmailDatas();
     },
   },
 };

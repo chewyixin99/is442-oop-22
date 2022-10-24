@@ -39,7 +39,6 @@
 </template>
 
 <script>
-// import PassStaff from '../components/PassStaff.vue'
 import PassAdmin from '../components/PassAdmin.vue'
 import PassService from "@/api/services/PassService";  
 
@@ -53,7 +52,6 @@ export default {
         return {
             // Capital for testing, small capital for database data
             // Passes: [],
-            
             passes: [],
 
         }
@@ -108,7 +106,7 @@ export default {
     methods:{
         async getAllPasses(){
             this.passes = await PassService.getAllPasses();
-            console.log(this.passes.data)
+            // console.log(this.passes.data)
             console.log(this.passes.message)
         }
     }
