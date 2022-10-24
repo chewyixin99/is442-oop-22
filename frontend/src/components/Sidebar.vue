@@ -167,6 +167,7 @@ export default {
   // },
   methods: {
     logout() {
+      localStorage.removeItem("userType")
       this.$router.replace('/login')
     }
   }

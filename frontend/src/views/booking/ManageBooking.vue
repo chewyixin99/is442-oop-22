@@ -89,7 +89,6 @@ export default {
         endStr: "null",
       },
       bookingData: [],
-      toastrMsg: {},
       currentCompletion: false,
       recordsToDelete: [],
       dataOfSelectedRow: [{}],
@@ -188,7 +187,7 @@ export default {
         search: true,
         sort: true,
         pagination: {
-          limit: 10,
+          limit: 5,
         },
         language: {
           search: {
@@ -367,12 +366,10 @@ export default {
           gopId : 1
         })
         .then((response) => {
+          console.log(response);
           if (response.status == 200) {
             this.currentGrid.forceRender();
-            this.toastrMsg = {
-              type: "success",
-              message: "Status updated successfully",
-            }
+            this.updateToastrMsg({status: "Success", msg: "Status Updated"});
             var bsAlert = new Toast(document.getElementById("theToastr"));
             bsAlert.show();
           }
@@ -395,6 +392,8 @@ export default {
       this.forceRerender()
       this.currentGrid.forceRender();
       this.pastGrid.forceRender();
+      this.dataOfSelectedRow = [];
+      this.recordsToDelete = [];
       var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
@@ -402,9 +401,14 @@ export default {
       this.toastrResponse = res;
     },
     bookingSubmitted() {
-      this.forceRerender();
-      var bsAlert = new Toast(document.getElementById("theToastr"));
-      bsAlert.show();
+      // this.forceRerender();
+
+        this.currentGrid.forceRender();
+        this.pastGrid.forceRender();
+        var bsAlert = new Toast(document.getElementById("theToastr"));
+        bsAlert.show();
+
+
     },
     forceRerender() {
       this.componentKey += 1;

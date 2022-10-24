@@ -13,8 +13,8 @@ import PassUser from '../views/PassUser.vue'
 import Email from '../views/Email.vue'
 import Login from '../views/Login.vue'
 import NotFound from '../views/NotFound.vue'
-import SidebarAdmin from '../components/SidebarAdmin.vue'
 
+import SidebarAdmin from '../components/SidebarAdmin.vue'
 import Sidebar from '../components/Sidebar.vue'
 // import AdminOutlet from '../components/AdminOutlet.vue'
 
