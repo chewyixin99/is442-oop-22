@@ -5,6 +5,7 @@ import javax.persistence.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.ToString;
 @NoArgsConstructor // no args constructor 
 @AllArgsConstructor // all args constructor
 @Entity
+@Data
 @Table(name="user")
 public class User {
     @Id
@@ -27,7 +29,7 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
     
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 60)
     private String password;
 
     @Column(name = "email", nullable = false)
@@ -43,4 +45,5 @@ public class User {
     @Column(name = "defunct", nullable = false)
     @Value("false") // Default value
     private boolean defunct;
+    private boolean enabled = false;
 }
