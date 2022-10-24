@@ -30,7 +30,7 @@
                 <span>Pass Name:</span>
               </div>
               <div class="col text-start">
-                <span>{{ data[0] }}</span>
+                <span>{{ data.passId }}</span>
               </div>
             </div>
             <div class="row gap-5">
@@ -38,7 +38,7 @@
                 <span>Staff Email:</span>
               </div>
               <div class="col text-start">
-                <span>{{ data[1] }}</span>
+                <span>{{ data.userId }}</span>
               </div>
             </div>
             <div class="row gap-5">
@@ -46,7 +46,7 @@
                 <span>Start Date:</span>
               </div>
               <div class="col text-start">
-                {{ data[2] }}
+                {{ data.startDate }}
               </div>
             </div>
             <div class="row gap-5">
@@ -54,7 +54,7 @@
                 <span>End Date:</span>
               </div>
               <div class="col text-start">
-                {{ data[3] }}
+                {{ data.endDate }}
               </div>
             </div>
             <hr />
@@ -86,6 +86,7 @@
   </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
   name: "CancelBookingModal",
   props: {
@@ -101,8 +102,23 @@ export default {
   },
   methods: {
     cancelSubmitted() {
+      let isAllDeleted = true
       this.isLoading = true;
-      setTimeout(() => {
+      this.dataOfSelectedRow.map((data) => {
+        axios
+          .delete(
+            `http://localhost:8081/loan/${data.loanId}`
+          )
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            isAllDeleted = false
+            console.log(err);
+          });
+      });
+
+      if (isAllDeleted) {
         document.getElementById("cancel-close-btn").click();
         this.$emit("cancelSubmitted", true);
 
@@ -110,7 +126,14 @@ export default {
           status: "Success",
           msg: "Cancellation is successful!",
         });
-      }, 1000);
+      }
+      else {
+        this.$emit("toastrMsg", {
+          status: "Error",
+          msg: "Cancellation is unsuccessful!",
+        });
+      }
+
     },
     clickedCancel(){
         document.getElementById("cancel-close-btn").click();
