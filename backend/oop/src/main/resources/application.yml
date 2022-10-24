@@ -1,0 +1,23 @@
+server:
+    port: 8081
+spring:
+    datasource:
+        url: jdbc:mysql://localhost:3306/oop
+        username: root
+        password: root
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+            # dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    servlet:
+        multipart:
+            max-file-size: 2MB
+            max-request-size: 2MB
+    config:
+        import: application-mail.yml
+springdoc:
+    swagger-ui:
+        path: /
+
