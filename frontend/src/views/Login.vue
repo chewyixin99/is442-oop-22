@@ -71,8 +71,8 @@
             </div>
           </div>
         <!-- forgot password-->
-        <div class="col-lg-6 px-lg-4">
-          <div class="card" v-if="userforgotpassword">
+        <div class="col-lg-6 px-lg-4" v-if="userforgotpassword">
+          <div class="card">
             <div class="card-header px-lg-5">
               <div class="card-heading text-dark"><h2>Reset Password</h2></div>
             </div>
@@ -85,7 +85,7 @@
                   <label for="floatingInput">Email address</label>
                 </div>
                 <div class="form-group">
-                  <button v-if="!isResetButtonEmailClicked" class="btn btn-primary" id="reset" type="button" name="resetSubmit" @click="reset_password" :disabled="resetemail && (!resetemail.includes('@') || !resetemail.includes('.'))">Reset</button>
+                  <button v-if="!isResetButtonEmailClicked" class="btn btn-primary" id="reset" type="button" name="resetSubmit" @click="reset_password()" :disabled="resetemail && (!resetemail.includes('@') || !resetemail.includes('.'))">Reset</button>
                   <button v-else class="btn btn-primary" id="reset" type="button" name="resetSubmit" @click="user_login()">Back to Login</button>
                 </div>
               </form>
@@ -95,6 +95,7 @@
                 <div class="text-sm text-muted">Don't have an account? <a @click="user_register()">Register</a>.</div>
               </div>
           </div>
+          <TheToastr :toastrResponse="toastrResponse"></TheToastr>
         </div>
          <div class="col-lg-6 col-xl-5 ms-xl-auto px-lg-4 text-center text-primary"><img class="img-fluid mb-4" width="300" src="../assets/SSS_logo.png" alt="">
             <h1 class="mb-4">Corporate Pass Booking System </h1>
@@ -106,11 +107,15 @@
 </template>
 
 <script>
-
+import { Toast } from "bootstrap";
+import TheToastr from "@/components/TheToastr.vue";
 // https://therichpost.com/vue-3-bootstrap-5-user-login-registration-forms-show-hide-on-button-click/
 
 export default {
     name: "Login",
+    components: {
+      TheToastr,
+    },
     data() {
         return {
             username: "",
@@ -121,6 +126,7 @@ export default {
             userregister : false,
             userforgotpassword: false,
             isResetButtonEmailClicked: false,
+            toastrResponse: ""
         }
     },
     methods: {
@@ -157,11 +163,19 @@ export default {
         },
         reset_password(){
           this.isResetButtonEmailClicked = true;
+          this.toastrResponse = {status: "Success", msg: "An email has been sent to your email!"};
+          var bsAlert = new Toast(document.getElementById('theToastr'));         
+          bsAlert.show();
         }
     },
 
     mounted() {
-        localStorage.getItem("userType") == "ADMIN" ? this.$router.replace('/admin') : null
+      if (localStorage.getItem("userType") == "ADMIN") {
+        this.$router.replace('/admin');
+      }
+      else if (localStorage.getItem("userType") == "BORROWER") {
+        this.$router.replace('/booking/view');
+      }
     }
 }
 </script>

@@ -142,6 +142,7 @@ export default {
             width: "15%",
           },
           {
+            id: "status",
             name: "Status",
             // formatter: (cell, row) => {
             //     return h('button', {
@@ -154,14 +155,14 @@ export default {
               return h(
                 "select",
                 {
-                  className: "form-select",
+                  className: `form-select ${row.cells[6].data ? "text-success" : "text-danger"} `,
                   onChange: () => {
-                    this.updateStatusCurrent(row.cells[1].data);
+                    this.updatestatus(row.cells[1].data);
                   },
                 },
                 [
-                  h("option", { value: "Completed", selected: row.cells[6].data, disabled: row.cells[6].data }, "Completed" ),
-                  h("option", { value: "Incomplete", selected: !row.cells[6].data, disabled: row.cells[6].data }, "Not Completed"),
+  h("option", { value: true, selected: row.cells[6].data, disabled: row.cells[6].data, className: `${ row.cells[6].data ? "" : "text-dark"}`}, "Completed" ),
+                  h("option", { value: false, selected: !row.cells[6].data, disabled: row.cells[6].data, className: `${ row.cells[6].data ? "" : "text-dark"}` }, "Not Completed"),
                 ]
               )
             },
@@ -255,6 +256,7 @@ export default {
             width: "15%",
           },
           {
+            id: "status",
             name: "Status",
             // formatter: (cell, row) => {
             //     return h('button', {
@@ -263,14 +265,21 @@ export default {
             //     }, 'Edit');
             // }
 
-            // formatter: () =>
-            //   html(
-            //     `<select class="form-select" aria-label="Default select example">
-            //       <option selected value="Approved">Approved</option>
-            //       <option value="Rejected">Rejected</option>
-            //       <option value="Cancelled">Cancelled</option>
-            //     `
-            //   ),
+            formatter: (cell,row) => {
+              return h(
+                "select",
+                {
+                  className: `form-select ${row.cells[6].data ? "text-success" : "text-danger"} `,
+                  onChange: () => {
+                    this.updatestatus(row.cells[1].data);
+                  },
+                },
+                [
+                  h("option", { value: true, selected: row.cells[6].data, disabled: row.cells[6].data, className: `${ row.cells[6].data ? "" : "text-dark"}`}, "Completed" ),
+                  h("option", { value: false, selected: !row.cells[6].data, disabled: row.cells[6].data, className: `${ row.cells[6].data ? "" : "text-dark"}` }, "Not Completed"),
+                ]
+              )
+            },
             sort: false,
           },
         ],
@@ -283,7 +292,8 @@ export default {
                 data.passId,
                 data.startDate,
                 data.endDate,
-                data.defunct
+                data.defunct,
+                data.completed
               ])
               .filter(
                 (data) => (this.processDate(data[2]) < new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
@@ -357,7 +367,7 @@ export default {
 
   },
   methods: {
-    updateStatusCurrent(rowData){
+    updatestatus(rowData){
       console.log(rowData);
 
       axios
@@ -402,7 +412,6 @@ export default {
     },
     bookingSubmitted() {
       // this.forceRerender();
-
         this.currentGrid.forceRender();
         this.pastGrid.forceRender();
         var bsAlert = new Toast(document.getElementById("theToastr"));

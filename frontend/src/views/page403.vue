@@ -1,16 +1,29 @@
 <template>
   <div id="unauthorized">
-    <img src="../assets/images/403.svg" alt="">
+    <img class="img-fluid" src="../assets/403.svg" alt="">
   </div>
 </template>
 <style>
 #unauthorized img {
-  width: 100%;
+    width: 100%;  
 }
 
-@media only screen and (min-width: 767px){
+@media only screen and (min-width: 800px){
   #unauthorized img {
-    width: 50%;
+    width: 80%;
+  }
+}
+
+ @media only screen and (min-width: 1080px){
+  #unauthorized img {
+    width: 60%;
+  }
+}
+
+
+@media only screen and (min-width: 1400px){
+  #unauthorized img {
+    width: 45%;
   }
 }
 </style>

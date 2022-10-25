@@ -1,6 +1,6 @@
 <template>
   <div id="notfound">
-    <img src="../assets/404.svg" alt="">
+    <img class="img-fluid" src="../assets/404.svg" alt="">
     <div>
       <button class="btn btn-outline-primary" @click="$router.push('/login')">
             Back To Login Page
@@ -13,9 +13,22 @@
     width: 100%;
 }
 
-@media only screen and (min-width: 767px){
+@media only screen and (min-width: 800px){
   #notfound img {
-    width: 50%;
+    width: 80%;
+  }
+}
+
+ @media only screen and (min-width: 1080px){
+  #notfound img {
+    width: 60%;
+  }
+}
+
+
+@media only screen and (min-width: 1400px){
+  #notfound img {
+    width: 45%;
   }
 }
 
