@@ -371,24 +371,17 @@ export default({
                     console.error(err);
                 }
             },
-            // downloadData(passID){
-            //     const data = this.PassAdminPasses[passID-1].passAttachment
-            //     // console.log(data)
-            //     const blob = new Blob([data], {type:"pdf"})
-            //     // console.log(blob)
-            //     let fileUrl = window.URL.createObjectURL(blob)
-            //     // console.log(window.URL)
-            //     fileUrl = fileUrl + "/download"
-            //     // fileUrl.append("/download")
+            downloadData(passID){
+                const data = this.PassAdminPasses[passID-1].passAttachment
+                console.log(data)
 
-            //     console.log(fileUrl)
-            //     var fileLink = document.createElement('a')
-            //     // console.log(fileLink)
-            //     fileLink.href = fileUrl
-            //     fileLink.setAttribute('download', this.PassAdminPasses[passID-1].passAttachmentName) //set downloaded file name
-            //     document.body.appendChild(fileLink)
-            //     fileLink.click
-            // },
+                const linkSource = `data:application/pdf;base64,${data}`;
+                const downloadLink = document.createElement("a");
+                const fileName = "abc.pdf";
+                downloadLink.href = linkSource;
+                downloadLink.download = fileName;
+                downloadLink.click();
+            },
             GetImageUrl(pic){
                 return require('../assets/'+pic)
             },
