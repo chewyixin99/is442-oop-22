@@ -16,6 +16,18 @@ Download the [Chrome Extension for Live Reload](https://chrome.google.com/websto
 
     (DATABASE) Make sure to run `createTables.sql` located in `backend/oop/database` before testing 
 
+    - To edit host files to enable connection to 'auth-server'
+
+        - https://phoenixnap.com/kb/how-to-edit-hosts-file-in-windows-mac-or-linux#ftoc-heading-8
+        - add `127.0.0.1 auth-server` under localhost
+    
+    - Make sure that application-mail.yml is configured properly
+
+    - For auth to work properly, we have to start the auth-server first
+        
+        - `cd oauth-authorization-server` followed by `mvn spring-boot:run`
+        - `cd oop` followed by `mvn spring-boot:run`
+
 - Frontend (Vue)
     
     Install NodeJS(https://nodejs.org/en/)
