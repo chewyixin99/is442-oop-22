@@ -8,6 +8,7 @@ import com.is442.oop.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -95,6 +96,3 @@ public class Analytics {
             return new ResponseEntity<>(new DataResponse(null, String.format("Months should be a string. Please manually remove the month that does not follow the DD/MM/YYYY format in the db. This is a quick fix, and will be handled in later releases",month)), HttpStatus.NOT_FOUND);
         }
     }
-}
-
-
