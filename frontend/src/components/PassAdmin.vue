@@ -73,7 +73,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Update pass information</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeButtonMethod"></button>
                                 </div>
                                 <div class="modal-body text-start">
                                     <form>
@@ -135,10 +135,19 @@
                                                 <div class="col-7">
                                                     <input type="text" class="form-control" :placeholder="EachPass.passAttachmentName" disabled>
                                                 </div>
+                                                <label class="col-5 col-form-label"><b>New Attachment Name(PDF):</b></label>
+                                                <div class="col-7 mt-1">
+                                                    {{selectedFileName}}
+                                                </div>
                                                 <label class="col-5 col-form-label"><b>New Attachment(PDF):</b></label>
                                                 <div class="col-7">
                                                     <input class="mt-1" type="file" @change="onFileSelected">
+                                                    <div v-if="warningMessage==true" class="alert alert-danger alert-dismissible fade show mt-1" role="alert">
+                                                        <strong class="text-justify">Please select a PDF file before proceeding!</strong>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="closeButtonMethod"></button>
+                                                    </div>
                                                 </div>
+                                                
                                                     
 
                                             </div>
@@ -146,9 +155,9 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)">Update Now</button>
+                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)" :disabled="warningMessage==true">Update Now</button>
                                     <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button> 
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeButtonMethod">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -164,15 +173,6 @@
 
 
                 <!-- ====================================Loop ends============================= -->
-                <!-- Add new passes section -->
-                <!-- Add new pass icon/button -->
-
-                <!-- <div class="card border-light h-100 ms-4" style="width: 25rem;">
-                    <img src="../assets/plus-square-fill.svg" class="card-img-top">
-                    <div class="card-body">
-                        <button type="button"  class="btn stretched-link" data-bs-toggle="modal" data-bs-target="#addNewPass"><b>Add new passes</b></button>
-                    </div>
-                </div>  -->
 
                 <!-- Add New Pass Form Modal-->
                 <div class="modal fade" id="addNewPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -180,13 +180,12 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Create new pass</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeButtonMethod"></button>
                             </div>
 
                             <div class="modal-body text-start">
                                 <form>
                                     <div class="mb-3">
-                                            <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
                                             <label class="col-form-label">Description:</label> 
                                             <input class="form-control" required v-model="NEWpassDesc">
                                             <label class="col-form-label">Point of Interests:</label>
@@ -229,17 +228,24 @@
                                         </div>
                                         <hr>
                                         <div class="mb-3">
-                                            <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
+                
                                             <h3>Atttachment information</h3>
-                                            <!-- <label class="col-form-label">Attachment Name</label>  -->
-                                            <!-- <input class="form-control" required v-model="passAttachmentName"> -->
-                                            <label class="col-form-label">Upload attachment(PDF):</label> <br>
-                                            <input type="file" @change="onFileSelected">
+                                            <label class="col-6 col-form-label"><b>New Attachment Name(PDF):</b></label>
+                                            <div class="col-6 mt-1">
+                                                {{selectedFileName}}
+                                            </div>
+                                            <label class="col-6 col-form-label"><b>New Attachment(PDF):</b></label>
+
+                                            <input class="col-6" type="file" @change="onFileSelected">
+                                            <div v-if="warningMessage==true" class="alert alert-danger alert-dismissible fade show mt-1" role="alert">
+                                                <strong class="text-justify">Please select a PDF file before proceeding!</strong>
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="closeButtonMethod"></button>
+                                            </div>
                                         </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" @click="onUpload()">Create Pass</button>
+                                <button type="button" class="btn btn-primary" @click="onUpload()" :disabled="warningMessage==true">Create Pass</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
@@ -271,21 +277,19 @@ export default({
         },
         data() {
         return {
-                // Capital for testing, small capital for database data
                 passURL: "http://localhost:8081/passes",
                 passIDtoDelete: null,
-
                 selectedFile: null,
-
+                selectedFileName: null,
                 NEWpassDesc: null,
                 NEWpoi: null,
                 NEWpoiUrl: null,
                 NEWnumGuests: 1,
                 NEWreplacementFee: 0,
                 NEWpassStatus: "AVAILABLE",
-                // NEWpassAttachmentName: null,
-                // NEWpassAttachment: null,
                 NEWphysical: true,
+
+                warningMessage: false,
             
             }
         },
@@ -295,6 +299,19 @@ export default({
         methods: {
             onFileSelected(event){
                 this.selectedFile = event.target.files[0]
+                this.selectedFileName = this.selectedFile.name
+                // const allowedFileTypes = ["application/pdf"]
+                if(this.selectedFile.length === 0){
+                    this.warningMessage = true
+                    this.selectedFile = null
+                    return
+                }
+                if(this.selectedFile['type']!=='application/pdf'){
+                    this.warningMessage = true
+                    console.log("not ok")
+                    return
+                }
+                this.warningMessage = false
                 console.log(this.selectedFile)
             },
             onUpload(){
@@ -354,47 +371,31 @@ export default({
                     console.error(err);
                 }
             },
-            downloadData(passID){
-                const data = this.PassAdminPasses[passID-1].passAttachment
-                // console.log(data)
-                const blob = new Blob([data], {type:"pdf"})
-                // console.log(blob)
-                const fileUrl = window.URL.createObjectURL(blob)
-                console.log(fileUrl)
-                var fileLink = document.createElement('a')
-                // console.log(fileLink)
-                fileLink.href = fileUrl
-                fileLink.setAttribute('download', this.PassAdminPasses[passID-1].passAttachmentName) //set downloaded file name
-                document.body.appendChild(fileLink)
-                fileLink.click
-            },
+            // downloadData(passID){
+            //     const data = this.PassAdminPasses[passID-1].passAttachment
+            //     // console.log(data)
+            //     const blob = new Blob([data], {type:"pdf"})
+            //     // console.log(blob)
+            //     let fileUrl = window.URL.createObjectURL(blob)
+            //     // console.log(window.URL)
+            //     fileUrl = fileUrl + "/download"
+            //     // fileUrl.append("/download")
+
+            //     console.log(fileUrl)
+            //     var fileLink = document.createElement('a')
+            //     // console.log(fileLink)
+            //     fileLink.href = fileUrl
+            //     fileLink.setAttribute('download', this.PassAdminPasses[passID-1].passAttachmentName) //set downloaded file name
+            //     document.body.appendChild(fileLink)
+            //     fileLink.click
+            // },
             GetImageUrl(pic){
                 return require('../assets/'+pic)
             },
-            // async addNewPass(){
-            //     try{
-            //         await axios.post(this.passURL, this.NewPassObject)
-            //         .then(response => {
-            //             this.$emit('getPassData')
-            //             console.log(response);
-            //         });
-            //     } catch(err){
-            //         console.error(err);
-            //     }
-            // },
             async deleteExistingPass(passID){
                 try{
                     await axios.delete(this.passURL+"/"+passID)
                     .then(response => {
-                        this.NewPassObject={
-                                passDesc: "",
-                                poi: "",
-                                numGuests: 1,
-                                replacementFee: 0,
-                                passStatus: "AVAILABLE",
-                                defunct: false,
-                                physical: true
-                            }
                         this.$emit('getPassData')
                         console.log(response);
                     });
@@ -406,6 +407,10 @@ export default({
             deletePassMethod(passID){
                 this.deleteExistingPass(passID)
             },
+            closeButtonMethod(){
+                this.selectedFile = null,
+                this.selectedFileName = null
+            }
         },
 
 })
