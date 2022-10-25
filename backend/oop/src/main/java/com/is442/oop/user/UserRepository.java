@@ -8,4 +8,5 @@ import com.is442.oop.data.models.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer>{
     // Inherits save, findAll, findById methods
+    User findByEmail(String email);
 }

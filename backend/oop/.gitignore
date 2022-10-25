@@ -34,5 +34,4 @@ build/
 .DS_Store
 
 
-application.properties
-application-mail.properties
+application-mail.yml

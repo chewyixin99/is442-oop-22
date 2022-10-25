@@ -311,6 +311,10 @@ export default {
     #selectHolder{
       width: 250px;
     }
+
+    .chart-container {
+      height: auto;
+    }
   }
 
 </style>

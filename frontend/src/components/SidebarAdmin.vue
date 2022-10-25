@@ -44,26 +44,26 @@
                   <span class="ms-1 d-none d-sm-inline ms-3">Home</span>
                 </router-link>
               </a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a href="#" class="nav-link link-dark px-0 align-middle">
-                <router-link to="/dashboard" class="text-decoration-none">
+                <router-link to="/admin" class="text-decoration-none">
                   <i class="fs-4 bi bi-graph-up"></i>
                   <span class="d-none d-sm-inline ms-3">Dashboard</span>
                 </router-link>
               </a>
-            </li> -->
+            </li>
             <li class="nav-item">
               <a href="#" class="nav-link link-dark px-0 align-middle">
-                <router-link to="/booking/view" class="text-decoration-none">
+                <router-link to="/admin/booking/view" class="text-decoration-none">
                   <i class="fs-4 bi-calendar-week me-1"></i>
                   <span class="d-none d-sm-inline ms-3">Booking</span>
                 </router-link>
               </a>
             </li>
-            <!-- <li class="nav-item">
+            <li class="nav-item">
               <a href="#" class="nav-link link-dark px-0 align-middle">
-                <router-link to="/booking/manage" class="text-decoration-none">
+                <router-link to="/admin/booking/manage" class="text-decoration-none">
                   <i class="fs-4 bi-calendar-check me-1"></i>
                   <span class="d-none d-sm-inline ms-3">Manage</span>
                 </router-link>
@@ -71,7 +71,7 @@
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link link-dark px-0 align-middle">
-                <router-link to="/employee" class="text-decoration-none">
+                <router-link to="/admin/employee" class="text-decoration-none">
                   <i class="fs-4 bi bi-book"></i>
                   <span class="ms-1 d-none d-sm-inline ms-3">Employee</span>
                 </router-link>
@@ -79,28 +79,20 @@
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link link-dark px-0 align-middle">
-                <router-link to="/pass" class="text-decoration-none">
+                <router-link to="/admin/pass" class="text-decoration-none">
                   <i class="fs-4 bi bi-pass"></i>
                   <span class="ms-1 d-none d-sm-inline ms-3">Pass</span>
                 </router-link>
               </a>
-            </li> -->
+            </li>
             <li class="nav-item">
               <a href="#" class="nav-link link-dark px-0 align-middle">
-                <router-link to="/passUser" class="text-decoration-none">
-                  <i class="fs-4 bi bi-pass"></i>
-                  <span class="ms-1 d-none d-sm-inline ms-3">PassUser</span>
-                </router-link>
-              </a>
-            </li>
-            <!-- <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
-                <router-link to="/email" class="text-decoration-none">
+                <router-link to="/admin/email" class="text-decoration-none">
                   <i class="fs-4 bi bi-envelope"></i>
                   <span class="ms-1 d-none d-sm-inline ms-3">Email</span>
                 </router-link>
               </a>
-            </li> -->
+            </li>
           </ul>
           <hr />
           <div class="dropdown pb-4">
@@ -155,10 +147,9 @@
 </template>
 
 <script>
-// import { router } from 'vue-router'
 
 export default {
-  name: "Sidebar",
+  name: "SidebarAdmin",
   // computed: {
   //   userLoggedIn() {
   //     alert("yes")
@@ -175,8 +166,8 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.removeItem("userType")
-      this.$router.replace('/login')
+      localStorage.removeItem("userType");
+      this.$router.replace('/login');
     }
   }
 

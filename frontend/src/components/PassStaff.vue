@@ -1,4 +1,5 @@
 <template>
+    <div>
     <div class="container">
         <h2 class="header">Select your pass type</h2>
     </div>
@@ -50,6 +51,7 @@
             </div>
             
         </div>
+    </div>
     </div>
 
     <!-- Modal
@@ -107,11 +109,9 @@
 </script>
 
 <style scoped>
-
 .header {
-    text-align: center;
-    padding: 20px;
-    font-size:30px;
+  text-align: center;
+  padding: 20px;
+  font-size: 30px;
 }
-
 </style>
