@@ -129,7 +129,10 @@ const routes = [
     path: '/:catchAll(.*)',
     name: 'page404',
     component: page404,
-    meta: { requiredAuthorization: false }
+    meta: { 
+      requiredAuthorization: true,
+      roles: ['GOP', 'BORROWER', 'NULL'] 
+    }
   }
 
 
@@ -145,7 +148,7 @@ router.beforeEach((to, from, next) => { // This way, you don't need to write hoo
   // get where user being stored ex:
   // const user = store.getter('user') // assume user have a role with `user.role`
   // const user = {role: 'ADMIN'}
-  const user = localStorage.getItem('userType')
+  const user = localStorage.getItem('userType') ? localStorage.getItem('userType') : 'NULL' 
   if (to.meta.requiredAuthorization) {
     if (to.meta?.roles?.includes(user)) {
       next()

@@ -232,7 +232,7 @@ export default {
         search: true,
         sort: true,
         pagination: {
-          limit: 10,
+          limit: 5,
         },
         language: {
           search: {
@@ -313,7 +313,7 @@ export default {
         search: true,
         sort: true,
         pagination: {
-          limit: 10,
+          limit: 5,
         },
         language: {
           search: {
@@ -409,7 +409,7 @@ export default {
         });
     },
     bookingSubmitted(data) {
-      alert(JSON.stringify(data));
+      console.log(data);
       this.currentBookingsGrid.forceRender();
       this.forceRerender();
       var bsAlert = new Toast(document.getElementById("theToastr"));
