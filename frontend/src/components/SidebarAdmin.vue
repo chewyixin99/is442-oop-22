@@ -115,7 +115,7 @@
                 height="30"
                 class="rounded-circle"
               />
-              <span class="d-none d-sm-inline mx-1">Aloysius</span>
+              <span class="d-none d-sm-inline mx-1">{{ user }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
               <li><a class="dropdown-item" href="#">New project...</a></li>
@@ -124,9 +124,9 @@
               <li>
                 <hr class="dropdown-divider" />
               </li>
-              <li>
+              <li @click="logout">
                 <a class="dropdown-item" href="#">
-                  <router-link to="/login" @click="logout" class="text-decoration-none">
+                  <router-link to="/login" class="text-decoration-none">
                     Sign out
                   </router-link>
                 </a>
@@ -156,10 +156,18 @@ export default {
   //     return localStorage.getItem("userLoggedIn")
   // }
   // },
+  data(){
+    return {
+      user: ""
+    }
+  },
+  mounted(){
+    this.user = localStorage.getItem("userType");
+  },
   methods: {
     logout() {
-      localStorage.removeItem("userType")
-      this.$router.replace('/login')
+      localStorage.removeItem("userType");
+      this.$router.replace('/login');
     }
   }
 

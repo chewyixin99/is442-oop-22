@@ -15,15 +15,18 @@
                     <input class="form-control" id="floatingInput" type="email" v-model="email" placeholder="name@example.com" required>
                     <label for="floatingInput">Email address</label>
                   </div>
-                  <div class="form-floating mb-3">
+                  <div class="form-floating mb-2">
                     <input class="form-control" id="floatingPassword" type="password" v-model="password" placeholder="Password" required>
                     <label for="floatingPassword">Password</label>
+                  </div>
+                  <div class="text-sm text-end">
+                    <a @click="user_forgotpassword()">Forgot password?</a>
                   </div>
                   <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" name="remember" id="remember">
                     <label class="form-check-label d-flex ms-1" for="remember">Remember me</label>
                   </div>
-                  <button class="btn btn-primary" type="button" @click="login">Submit</button>
+                  <button class="btn btn-primary" type="button" @click="login" :disabled="!email || !password">Submit</button>
                 </form>
               </div>
               <div class="card-footer px-lg-5 py-lg-4">
@@ -42,7 +45,7 @@
                 <p class="text-muted text-sm mb-5">After registering, you will receive your account credentials if your email is registered in our system!</p>
                 <form action="index.html">
                   <div class="form-floating mb-3">
-                    <input class="form-control" id="username" type="email" placeholder="name@example.com" required>
+                    <input class="form-control" id="username" type="email" v-model="username" placeholder="name@example.com" required>
                     <label for="username">Username</label>
                   </div>
                   <div class="form-floating mb-3">
@@ -55,10 +58,10 @@
                   </div>
                   <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" name="agree" id="agree">
-                    <label class="form-check-label d-flex ms-1" for="agree">I agree with the <a href="#" class="ms-1">Terms & Conditions</a>.</label>
+                    <label class="form-check-label d-flex ms-1" for="agree">I agree with the <a target="_blank" href="https://www.youtube.com/watch?v=xvFZjo5PgG0" class="ms-1">Terms & Conditions</a>.</label>
                   </div>
                   <div class="form-group">
-                    <button class="btn btn-primary" id="register" type="button" name="registerSubmit">Register</button>
+                    <button class="btn btn-primary" id="register" type="button" name="registerSubmit" :disabled="!username || !email || !password">Register</button>
                   </div>
                 </form>
               </div>
@@ -67,6 +70,32 @@
               </div>
             </div>
           </div>
+        <!-- forgot password-->
+        <div class="col-lg-6 px-lg-4">
+          <div class="card" v-if="userforgotpassword">
+            <div class="card-header px-lg-5">
+              <div class="card-heading text-dark"><h2>Reset Password</h2></div>
+            </div>
+            <div class="card-body p-lg-5">
+              <h3 class="mb-4">Lost your password? Don't panic!</h3>
+              <p class="text-muted text-sm mb-5">It's happens to the best of us.. Just enter your email below and we'll send you an email to reset your password! Remember to check your spam if you don't receive it after a few minutes~</p>
+              <form id="loginForm" action="index.html">
+                <div class="form-floating mb-3">
+                  <input class="form-control" id="floatingInput" v-model="resetemail" type="email" placeholder="name@example.com" required>
+                  <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-group">
+                  <button v-if="!isResetButtonEmailClicked" class="btn btn-primary" id="reset" type="button" name="resetSubmit" @click="reset_password" :disabled="resetemail && (!resetemail.includes('@') || !resetemail.includes('.'))">Reset</button>
+                  <button v-else class="btn btn-primary" id="reset" type="button" name="resetSubmit" @click="user_login()">Back to Login</button>
+                </div>
+              </form>
+            </div>
+            <div class="card-footer px-lg-5 py-lg-4">
+                <div class="text-sm text-muted">Already have an account? <a @click="user_login()">Login</a>.</div>
+                <div class="text-sm text-muted">Don't have an account? <a @click="user_register()">Register</a>.</div>
+              </div>
+          </div>
+        </div>
          <div class="col-lg-6 col-xl-5 ms-xl-auto px-lg-4 text-center text-primary"><img class="img-fluid mb-4" width="300" src="../assets/SSS_logo.png" alt="">
             <h1 class="mb-4">Corporate Pass Booking System </h1>
             <p class="lead text-muted"><i>Time to book some fun!</i></p>
@@ -84,10 +113,14 @@ export default {
     name: "Login",
     data() {
         return {
+            username: "",
             email: "admin@gmail.com",
+            resetemail: "",
             password: "abc123",
             userlogin : true,
-            userregister : false
+            userregister : false,
+            userforgotpassword: false,
+            isResetButtonEmailClicked: false,
         }
     },
     methods: {
@@ -108,14 +141,23 @@ export default {
             }
         },
         user_register(){
-            this.userlogin = false,
-            this.userregister = true
+            this.userlogin = false;
+            this.userregister = true;
+            this.userforgotpassword = false;
         },
-        user_login()
-        {
-            this.userlogin = true,
-            this.userregister = false
+        user_login(){
+            this.userlogin = true;
+            this.userregister = false;
+            this.userforgotpassword = false;
+            this.isResetButtonEmailClicked = false;
         },
+        user_forgotpassword(){
+            this.userlogin = false
+            this.userforgotpassword = true;
+        },
+        reset_password(){
+          this.isResetButtonEmailClicked = true;
+        }
     },
 
     mounted() {

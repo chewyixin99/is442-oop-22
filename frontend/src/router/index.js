@@ -12,7 +12,8 @@ import Pass from '../views/Pass.vue'
 import PassUser from '../views/PassUser.vue'
 import Email from '../views/Email.vue'
 import Login from '../views/Login.vue'
-import NotFound from '../views/NotFound.vue'
+// import NotFound from '../views/NotFound.vue'
+import page404 from '../views/page404.vue'
 
 import SidebarAdmin from '../components/SidebarAdmin.vue'
 import Sidebar from '../components/Sidebar.vue'
@@ -126,8 +127,8 @@ const routes = [
   },
   {
     path: '/:catchAll(.*)',
-    name: 'NotFound',
-    component: NotFound,
+    name: 'page404',
+    component: page404,
     meta: { requiredAuthorization: false }
   }
 
