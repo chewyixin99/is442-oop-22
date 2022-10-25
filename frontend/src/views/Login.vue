@@ -161,7 +161,12 @@ export default {
     },
 
     mounted() {
-        localStorage.getItem("userType") == "ADMIN" ? this.$router.replace('/admin') : null
+      if (localStorage.getItem("userType") == "ADMIN") {
+        this.$router.replace('/admin');
+      }
+      else if (localStorage.getItem("userType") == "BORROWER") {
+        this.$router.replace('/booking/view');
+      }
     }
 }
 </script>

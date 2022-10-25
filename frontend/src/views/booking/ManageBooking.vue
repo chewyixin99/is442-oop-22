@@ -142,6 +142,7 @@ export default {
             width: "15%",
           },
           {
+            id: "status",
             name: "Status",
             // formatter: (cell, row) => {
             //     return h('button', {
@@ -255,6 +256,7 @@ export default {
             width: "15%",
           },
           {
+            id: "status",
             name: "Status",
             // formatter: (cell, row) => {
             //     return h('button', {

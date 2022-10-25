@@ -290,6 +290,7 @@ export default {
             width: "20%",
           },
           {
+            id: "filler",
             sort: false,
             width: "5%"
           }
@@ -341,7 +342,7 @@ export default {
   mounted() {
     this.currentBookingsGrid.render(document.getElementById("table1"));
     this.pastBookingsGrid.render(document.getElementById("table2"));
-    this.getData();
+    // this.getData();
   },
   methods: {
     processDate(date){

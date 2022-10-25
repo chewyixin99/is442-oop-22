@@ -290,6 +290,7 @@ export default {
             width: "20%",
           },
           {
+            id: "filler",
             sort: false,
             width: "5%"
           }
