@@ -24,8 +24,16 @@
                                 <b class="card-title">{{EachPass.passDesc}}</b>
                             </div>
                             <ul class="list-group list-group-flush">
-                                <span><b>Point of Interests </b><br>
-                                {{EachPass.poi}}</span>
+                                <span><b>Point of Interests </b></span>
+                                <div class="text-wrap w-90 justify-content-center">
+                                    <span>{{EachPass.poi}}</span>
+                                </div>
+                            </ul>
+                            <ul class="list-group list-group-flush">
+                                <span><b>Point of Interests URL</b></span>
+                                <div class="text-wrap w-90 justify-content-center">
+                                    <span>{{EachPass.poiUrl}}</span>
+                                </div>
                             </ul>
                             <ul class="list-group list-group-flush">
                                 <div class="container">
@@ -38,10 +46,13 @@
                                         <div class="col-7 border">${{EachPass.replacementFee}}</div>
                                         <div class="col-5 border"><b>Status</b></div>
                                         <div class="col-7 border">{{EachPass.passStatus}}</div>
-                                        <div class="col-5 border"><b>Defunct?</b></div>
-                                        <div class="col-7 border">{{EachPass.defunct}}</div>
+                                        <!-- <div class="col-5 border"><b>Defunct?</b></div>
+                                        <div class="col-7 border">{{EachPass.defunct}}</div> -->
                                         <div class="col-5 border"><b>Physical?</b></div>
                                         <div class="col-7 border">{{EachPass.physical}}</div>
+                                        <div class="col-12"><b>Attachment(PDF)</b></div>
+                                        <div class="col-12"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
+
                                     </div>
                                 </div>
                             </ul>
@@ -73,6 +84,9 @@
                                             <input class="form-control" v-model ="EachPass.passDesc" required >
                                             <label class="col-form-label">Point of Interests:</label>
                                             <input class="form-control" v-model ="EachPass.poi" required >
+                                            <label class="col-form-label">Point of Interests URL:</label>
+                                            <input class="form-control" v-model ="EachPass.poiUrl" required >
+                                            
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
@@ -98,19 +112,37 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <!-- <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Deactivated?(Defunct)</b></label>
                                             <div class="col-7">
                                                 <input type="text" v-model="EachPass.defunct" class="form-control" disabled>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
-                                                <input type="text" v-model="EachPass.physical" class="form-control">
+                                                <select class="form-select" v-model="EachPass.physical">
+                                                    <option value="true">true</option>
+                                                    <option value="false">false</option>
+                                                </select>
                                             </div>
                                         </div>
-                                            
+                                        <hr>
+                                        <div class="mb-3">
+                                            <h3>Atttachment information</h3>
+                                            <div class="row mb-3">
+                                                <label class="col-5 col-form-label"><b>Current Attachment(PDF):</b></label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control" :placeholder="EachPass.passAttachmentName" disabled>
+                                                </div>
+                                                <label class="col-5 col-form-label"><b>New Attachment(PDF):</b></label>
+                                                <div class="col-7">
+                                                    <input class="mt-1" type="file" @change="onFileSelected">
+                                                </div>
+                                                    
+
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
                                 <div class="modal-footer">
@@ -156,16 +188,16 @@
                                     <div class="mb-3">
                                             <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
                                             <label class="col-form-label">Description:</label> 
-                                            <input class="form-control" required v-model="passDesc">
+                                            <input class="form-control" required v-model="NEWpassDesc">
                                             <label class="col-form-label">Point of Interests:</label>
-                                            <input class="form-control" required v-model="poi">
+                                            <input class="form-control" required v-model="NEWpoi">
                                             <label class="col-form-label">Point of Interests Website:</label>
-                                            <input class="form-control" required v-model="poiUrl">
+                                            <input class="form-control" required v-model="NEWpoiUrl">
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
                                             <div class="col-7">
-                                                <input type="number" class="form-control" required v-model="numGuests" min="1">
+                                                <input type="number" class="form-control" required v-model="NEWnumGuests" min="1">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -173,14 +205,14 @@
                                             <div class="col-7">
                                                 <div class="input-group">
                                                     <div class="input-group-text">$</div>
-                                                    <input type="number" class="form-control" required v-model="replacementFee" min="0">
+                                                    <input type="number" class="form-control" required v-model="NEWreplacementFee" min="0">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Status</b></label>
                                             <div class="col-7">
-                                                <select class="form-select" v-model="passStatus">
+                                                <select class="form-select" v-model="NEWpassStatus">
                                                     <option value="AVAILABLE">Available</option>
                                                     <option value="ONLOAN">On Loan</option>
                                                 </select>
@@ -189,7 +221,7 @@
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
-                                                <select class="form-select" v-model="physical">
+                                                <select class="form-select" v-model="NEWphysical">
                                                     <option value="true">true</option>
                                                     <option value="false">false</option>
                                                 </select>
@@ -199,9 +231,9 @@
                                         <div class="mb-3">
                                             <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
                                             <h3>Atttachment information</h3>
-                                            <label class="col-form-label">Attachment Name</label> 
-                                            <input class="form-control" required v-model="passAttachmentName">
-                                            <label class="col-form-label">Upload attachment here</label> <br>
+                                            <!-- <label class="col-form-label">Attachment Name</label>  -->
+                                            <!-- <input class="form-control" required v-model="passAttachmentName"> -->
+                                            <label class="col-form-label">Upload attachment(PDF):</label> <br>
                                             <input type="file" @change="onFileSelected">
                                         </div>
                                 </form>
@@ -245,37 +277,15 @@ export default({
 
                 selectedFile: null,
 
-                passDesc: null,
-                poi: null,
-                poiUrl: null,
-                numGuests: 1,
-                replacementFee: 0,
-                passStatus: "AVAILABLE",
-                passAttachmentName: null,
-                passAttachment: null,
-                physical: true,
-
-                // NewPassObject: {
-                //     passDesc: null,
-                //     poi: null,
-                //     poiUrl: null,
-                //     numGuests: 1,
-                //     replacementFee: 0,
-                //     passStatus: "AVAILABLE",
-                //     passAttachmentName: null,
-                //     passAttachment: null,
-                //     physical: true
-                // },
-
-                UpdatePassObject:{
-                    passDesc: "",
-                    poi: "",
-                    numGuests: 1,
-                    replacementFee: 0,
-                    passStatus: "AVAILABLE",
-                    defunct: false,
-                    physical: true
-                }
+                NEWpassDesc: null,
+                NEWpoi: null,
+                NEWpoiUrl: null,
+                NEWnumGuests: 1,
+                NEWreplacementFee: 0,
+                NEWpassStatus: "AVAILABLE",
+                // NEWpassAttachmentName: null,
+                // NEWpassAttachment: null,
+                NEWphysical: true,
             
             }
         },
@@ -289,21 +299,74 @@ export default({
             },
             onUpload(){
                 const fd = new FormData()
-                fd.append("passDesc", this.passDesc)
-                fd.append("poi", this.poi)
-                fd.append("poiUrl", this.poiUrl)
-                fd.append("numGuests", this.numGuests)
-                fd.append("replacementFee", this.replacementFee)
-                fd.append("passStatus", this.passStatus)
-                fd.append("passAttachmentName", this.passAttachmentName)
+                fd.append("passDesc", this.NEWpassDesc)
+                fd.append("poi", this.NEWpoi)
+                fd.append("poiUrl", this.NEWpoiUrl)
+                fd.append("numGuests", this.NEWnumGuests)
+                fd.append("replacementFee", this.NEWreplacementFee)
+                fd.append("passStatus", this.NEWpassStatus)
+                fd.append("passAttachmentName", this.selectedFile.name)
                 fd.append("passAttachment", this.selectedFile)
-                fd.append("physical", this.physical)
+                fd.append("physical", this.NEWphysical)
                 console.log(fd)
                 axios.post("http://localhost:8081/passes", fd)
                 .then(res=>{
                     console.log(res)
+                    this.selectedFile = null
                     this.$emit('getPassData')
                 })
+            },
+            async updatePassMethod(passID){
+                console.log(this.PassAdminPasses[passID-1].passDesc)
+                console.log(this.PassAdminPasses[passID-1].poiUrl)
+                
+                const UPDATEfd = new FormData()
+                if(this.selectedFile != null){
+                    UPDATEfd.append("passDesc", this.PassAdminPasses[passID-1].passDesc)
+                    UPDATEfd.append("poi", this.PassAdminPasses[passID-1].poi)
+                    UPDATEfd.append("poiUrl", this.PassAdminPasses[passID-1].poiUrl)
+                    UPDATEfd.append("numGuests", this.PassAdminPasses[passID-1].numGuests)
+                    UPDATEfd.append("replacementFee", this.PassAdminPasses[passID-1].replacementFee)
+                    UPDATEfd.append("passStatus", this.PassAdminPasses[passID-1].passStatus)
+                    UPDATEfd.append("passAttachmentName", this.selectedFile.name)
+                    UPDATEfd.append("passAttachment", this.selectedFile)
+                    UPDATEfd.append("physical", this.PassAdminPasses[passID-1].physical)
+                }else{
+                    UPDATEfd.append("passDesc", this.PassAdminPasses[passID-1].passDesc)
+                    UPDATEfd.append("poi", this.PassAdminPasses[passID-1].poi)
+                    UPDATEfd.append("poiUrl", this.PassAdminPasses[passID-1].poiUrl)
+                    UPDATEfd.append("numGuests", this.PassAdminPasses[passID-1].numGuests)
+                    UPDATEfd.append("replacementFee", this.PassAdminPasses[passID-1].replacementFee)
+                    UPDATEfd.append("passStatus", this.PassAdminPasses[passID-1].passStatus)
+                    UPDATEfd.append("passAttachmentName", this.PassAdminPasses[passID-1].passAttachmentName)
+                    UPDATEfd.append("passAttachment", this.PassAdminPasses[passID-1].passAttachment)
+                    UPDATEfd.append("physical", this.PassAdminPasses[passID-1].physical)
+                }
+                console.log(UPDATEfd)
+                try{
+                    await axios.put(this.passURL+"/"+passID, UPDATEfd)
+                    .then(response => {
+                        this.selectedFile = null
+                        this.$emit('getPassData')
+                        console.log(response);
+                    });
+                } catch(err){
+                    console.error(err);
+                }
+            },
+            downloadData(passID){
+                const data = this.PassAdminPasses[passID-1].passAttachment
+                // console.log(data)
+                const blob = new Blob([data], {type:"pdf"})
+                // console.log(blob)
+                const fileUrl = window.URL.createObjectURL(blob)
+                console.log(fileUrl)
+                var fileLink = document.createElement('a')
+                // console.log(fileLink)
+                fileLink.href = fileUrl
+                fileLink.setAttribute('download', this.PassAdminPasses[passID-1].passAttachmentName) //set downloaded file name
+                document.body.appendChild(fileLink)
+                fileLink.click
             },
             GetImageUrl(pic){
                 return require('../assets/'+pic)
@@ -343,21 +406,6 @@ export default({
             deletePassMethod(passID){
                 this.deleteExistingPass(passID)
             },
-            // updatePassMethod(passID){
-            //     console.log(passID)
-            // },
-            async updatePassMethod(passID){
-                
-                try{
-                    await axios.put(this.passURL+"/"+passID, this.PassAdminPasses[passID-1])
-                    .then(response => {
-                        this.$emit('getPassData')
-                        console.log(response);
-                    });
-                } catch(err){
-                    console.error(err);
-                }
-            }
         },
 
 })
