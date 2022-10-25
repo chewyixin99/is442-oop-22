@@ -374,10 +374,9 @@ export default({
             downloadData(passID){
                 const data = this.PassAdminPasses[passID-1].passAttachment
                 console.log(data)
-
                 const linkSource = `data:application/pdf;base64,${data}`;
                 const downloadLink = document.createElement("a");
-                const fileName = "abc.pdf";
+                const fileName = this.PassAdminPasses[passID-1].passAttachmentName;
                 downloadLink.href = linkSource;
                 downloadLink.download = fileName;
                 downloadLink.click();
