@@ -96,3 +96,4 @@ public class Analytics {
             return new ResponseEntity<>(new DataResponse(null, String.format("Months should be a string. Please manually remove the month that does not follow the DD/MM/YYYY format in the db. This is a quick fix, and will be handled in later releases",month)), HttpStatus.NOT_FOUND);
         }
     }
+}
