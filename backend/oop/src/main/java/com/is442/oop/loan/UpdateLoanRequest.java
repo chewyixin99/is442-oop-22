@@ -1,5 +1,7 @@
 package com.is442.oop.loan;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -27,11 +29,11 @@ public class UpdateLoanRequest {
 
     // @NotBlank
     // @NotNull
-    private String startDate;
+    private LocalDate startDate;
 
     // @NotBlank
     // @NotNull
-    private String endDate;
+    private LocalDate endDate;
 
     @Override
     public String toString() {
@@ -91,19 +93,19 @@ public class UpdateLoanRequest {
         this.isCompleted = isCompleted;
     }
 
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return this.startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public LocalDate getEndDate() {
         return this.endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

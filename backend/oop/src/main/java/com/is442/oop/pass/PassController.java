@@ -87,6 +87,17 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
+    @PutMapping("updatePassStatus/{passId}")
+    public ResponseEntity<DataResponse> updatePassStatus(@PathVariable("passId") Integer passId, @RequestBody PassStatus passStatus) {
+        Pass updatePass = null;
+        try {
+            updatePass = passService.updatePassStatus(passId, passStatus);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(updatePass, e), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
+    }
+
     @PutMapping(value = "/deletePassAttachment/{passId}")
     public ResponseEntity<DataResponse> deletePassAttachment(@PathVariable("passId") Integer passId) {
         Pass updatePass = null;

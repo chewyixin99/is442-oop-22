@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.models.Pass;
+import com.is442.oop.data.models.PassStatus;
 import com.is442.oop.exception.ActionNotExecutedException;
 import com.is442.oop.exception.ResourceNotFoundException;
 import com.is442.oop.loan.LoanService;
@@ -135,6 +136,24 @@ public class PassServiceImpl implements PassService {
     }
 
     @Override
+    public Pass updatePassStatus(Integer passId, PassStatus passStatus) throws ActionNotExecutedException {
+        Pass pass = null;
+        Optional<Pass> queryPass = passRepository.findById(passId);
+        if (queryPass.isEmpty()) {
+            throw new ResourceNotFoundException("Pass", "Pass ID", passId);
+        }
+
+        try {
+            pass = queryPass.get();
+            pass.setPassStatus(passStatus);
+            passRepository.save(pass);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("Pass", e);
+        }
+        return pass;
+    };
+
+    @Override
     public Pass deletePass(Integer passId) throws ResourceNotFoundException {
         Pass pass = null;
         Optional<Pass> queryPass = passRepository.findById(passId);
@@ -163,4 +182,8 @@ public class PassServiceImpl implements PassService {
         }
         return pass;
     }
+    
+    public List<Pass> getUnreturnedPasses() throws ActionNotExecutedException {
+        return null;
+    };
 }
