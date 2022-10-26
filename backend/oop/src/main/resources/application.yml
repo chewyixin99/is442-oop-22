@@ -17,6 +17,9 @@ spring:
             max-request-size: 2MB
     config:
         import: application-mail.yml
+rsa:
+    private-key: classpath:certs/private.pem
+    public-key: classpath:certs/public.pem
 springdoc:
     swagger-ui:
         path: /
