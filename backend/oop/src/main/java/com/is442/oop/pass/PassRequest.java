@@ -32,15 +32,15 @@ public class PassRequest {
     
     @NotBlank
     @NotNull
-    private int numGuests;
+    private Integer numGuests;
     
     @NotBlank
     @NotNull
-    private double replacementFee;
+    private Double replacementFee;
     
     @NotBlank
     @NotNull
-    private boolean isPhysical;
+    private Boolean isPhysical;
     
     @NotBlank
     @NotNull
@@ -50,5 +50,7 @@ public class PassRequest {
     private String passAttachmentName;
     
     private MultipartFile passAttachment;
+
+    private MultipartFile passImage;
     
 }

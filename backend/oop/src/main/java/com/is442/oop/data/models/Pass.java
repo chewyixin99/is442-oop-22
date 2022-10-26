@@ -36,10 +36,10 @@ public class Pass {
     private Integer numGuests;
 
     @Column(name = "replacement_fee", nullable = false)
-    private double replacementFee;
+    private Double replacementFee;
 
     @Column(name = "is_physical", nullable = false)
-    private boolean isPhysical;
+    private Boolean isPhysical;
 
     @Column(name = "pass_status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -51,6 +51,10 @@ public class Pass {
     @Lob
     @Column(name = "pass_attachment", nullable = true)
     private byte[] passAttachment;
+
+    @Lob
+    @Column(name = "pass_image", nullable = true)
+    private byte[] passImage;
 
     @Column(name = "defunct", nullable = false)
     @Value("false")

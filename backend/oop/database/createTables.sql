@@ -54,6 +54,7 @@ create table if not exists `pass` (
     `pass_desc` varchar(255) not null,
     `pass_attachment_name` varchar(50) null,
     `pass_attachment` mediumblob null,
+    `pass_image` mediumblob null,
     primary key (`pass_id`)
     ) engine=InnoDB default charset=utf8;
 
