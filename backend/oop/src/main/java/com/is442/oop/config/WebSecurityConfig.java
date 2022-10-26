@@ -30,12 +30,12 @@ public class WebSecurityConfig {
 
     private final RsaKeyProperties rsaKeys;
 
-    // private static final String[] WHITE_LIST_URLS = {
-    //     "/token",
-    //     "/register",
-    //     "/verifyRegistration*",
-    //     "/resendVerificationToken*"
-    // };
+    private static final String[] WHITE_LIST_URLS = {
+        "/token",
+        "/register",
+        "/verifyRegistration*",
+        "/resendVerificationToken*"
+    };
 
     public WebSecurityConfig(RsaKeyProperties rsaKeys) {
         this.rsaKeys = rsaKeys;
@@ -77,7 +77,8 @@ public class WebSecurityConfig {
             .and()
             .csrf()
             .disable()
-            .authorizeRequests(auth -> auth.anyRequest().authenticated())
+            // .authorizeRequests(auth -> auth.anyRequest().authenticated())
+            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .httpBasic(Customizer.withDefaults());
