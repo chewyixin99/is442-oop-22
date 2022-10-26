@@ -6,6 +6,7 @@ import com.is442.oop.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class LoanServiceImpl implements LoanService{
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
 
         Integer passID = loanRequest.getPassID();
-        String startDate = loanRequest.getStartDate();
+        LocalDate startDate = loanRequest.getStartDate();
 
         List<Loan> loans = this.getLoanByPassID(passID);
         for (Loan l: loans){
@@ -133,9 +134,9 @@ public class LoanServiceImpl implements LoanService{
 
             Integer pid = (updateLoanRequest.getPassId() == null) ? loan.getPassId() : updateLoanRequest.getPassId();
 
-            String startDate = (updateLoanRequest.getStartDate() == null) ? loan.getStartDate() : updateLoanRequest.getStartDate();
+            LocalDate startDate = (updateLoanRequest.getStartDate() == null) ? loan.getStartDate() : updateLoanRequest.getStartDate();
 
-            String endDate = (updateLoanRequest.getEndDate() == null) ? loan.getEndDate() : updateLoanRequest.getEndDate();
+            LocalDate endDate = (updateLoanRequest.getEndDate() == null) ? loan.getEndDate() : updateLoanRequest.getEndDate();
 
             Integer gopId = (updateLoanRequest.getGopId() == null) ? loan.getGopId() : updateLoanRequest.getGopId();
 

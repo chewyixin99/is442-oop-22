@@ -1,8 +1,12 @@
 package com.is442.oop.data.models;
 
+import java.time.LocalDate;
+
 import javax.persistence.*;
 
 import org.springframework.beans.factory.annotation.Value;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -35,11 +39,13 @@ public class Loan {
     @Column(name = "pass_id", nullable = false)
     private int passId;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "start_date", nullable = false)
-    private String startDate;
+    private LocalDate startDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "end_date", nullable = false)
-    private String endDate;
+    private LocalDate endDate;
 
     @Column(name = "is_completed", nullable = false)
     @Value("false") // Default value

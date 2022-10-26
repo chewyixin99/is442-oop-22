@@ -1,14 +1,11 @@
 package com.is442.oop.loan;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.exception.*;
-
-import io.github.classgraph.Resource;
 
 @Component
 public interface LoanService {
