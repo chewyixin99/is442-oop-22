@@ -21,13 +21,17 @@ public class AuthorizationController {
 
     @PostMapping("/token")
     public String token(Authentication authentication) {
+
         LOG.debug("Token requested for user: '{}", authentication.getName());
         System.out.printf("Token requested for user: %s", authentication.getName());
         System.out.println();
+
         String token = jwtTokenService.generateToken(authentication);
+        
         LOG.debug("Token granted {}", token);
         System.out.printf("Token granted: %s", token);
         System.out.println();
+
         return token;
     }
 

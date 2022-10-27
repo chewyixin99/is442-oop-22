@@ -28,7 +28,7 @@ public class JwtTokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuer("self") // self signing JWTs
             .issuedAt(now)
-            .expiresAt(now.plus(1, ChronoUnit.HOURS)) // expires in an hour
+            .expiresAt(now.plus(3, ChronoUnit.HOURS)) // expires in an hour
             .subject(authentication.getName()) // princiapl / subject
             .claim("scope", scope) // scope defined above
             .build();

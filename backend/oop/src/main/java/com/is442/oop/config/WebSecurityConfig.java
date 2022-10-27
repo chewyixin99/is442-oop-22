@@ -31,6 +31,7 @@ public class WebSecurityConfig {
     private final RsaKeyProperties rsaKeys;
 
     private static final String[] WHITE_LIST_URLS = {
+        // "/**",
         "/token",
         "/register",
         "/verifyRegistration*",
@@ -78,7 +79,13 @@ public class WebSecurityConfig {
             .csrf()
             .disable()
             // .authorizeRequests(auth -> auth.anyRequest().authenticated())
-            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+            .authorizeHttpRequests(
+                auth -> 
+                    auth.antMatchers(WHITE_LIST_URLS)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+            )
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .httpBasic(Customizer.withDefaults());
