@@ -143,6 +143,11 @@ public class RegistrationController {
         // System.out.println("Authentication: ");
         // System.out.println(authentication.getClass());
         // System.out.println(authentication.toString());
+        // System.out.println(authentication.getCredentials());
+        // System.out.println(authentication.getDetails());
+        // System.out.println(authentication.getName());
+        // System.out.println(authentication.getPrincipal());
+        // System.out.println(authentication.getAuthorities());
         // System.out.println();
 
         // String jwtToken = authService.getToken(authentication, user);

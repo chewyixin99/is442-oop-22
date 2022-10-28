@@ -67,12 +67,12 @@ public class AuthService {
         // System.out.println();
         // System.out.println("newAuthentication: ");
         // System.out.println(newAuthentication.getClass());
+        // System.out.println(newAuthentication.toString());
         // System.out.println(newAuthentication.getCredentials());
         // System.out.println(newAuthentication.getDetails());
         // System.out.println(newAuthentication.getName());
         // System.out.println(newAuthentication.getPrincipal());
         // System.out.println(newAuthentication.getAuthorities());
-        // System.out.println(newAuthentication.toString());
 
         // System.out.printf("Token requested for user: %s", newAuthentication.getName());
         // System.out.println();
