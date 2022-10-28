@@ -9,15 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.is442.oop.auth.AuthService;
 import com.is442.oop.data.models.User;
 import com.is442.oop.data.models.VerificationToken;
 import com.is442.oop.data.payloads.response.DataResponse;
+import com.is442.oop.jwttoken.JwtTokenService;
 import com.is442.oop.password.PasswordRequest;
 import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserService;
@@ -34,6 +37,9 @@ public class RegistrationController {
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowired 
+    private AuthService authService ;
+
     @PostMapping("/register")
     public ResponseEntity<DataResponse> registerUser(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
         User user = userService.registerUser(userRequest);
@@ -47,7 +53,7 @@ public class RegistrationController {
         if (result.equalsIgnoreCase("valid")) {
             return new ResponseEntity<>(new DataResponse(result, "User verification success"), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new DataResponse(result, "User verification failed, bad user, token is " + result), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new DataResponse(result, "User verification failed, bad user, token is " + result), HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/resendVerificationToken")
@@ -91,7 +97,7 @@ public class RegistrationController {
     ) {
         String result = userService.validatePasswordResetToken(token);
         if (!result.equalsIgnoreCase("valid")) {
-            return new ResponseEntity<>(new DataResponse(result, "Save password failed, token is " + result), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DataResponse(result, "Save password failed, token is " + result), HttpStatus.UNAUTHORIZED);
         }
         Optional<User> user = userService.getUserByPasswordResetToken(token);
         if (user.isPresent()) {
@@ -109,11 +115,41 @@ public class RegistrationController {
             return new ResponseEntity<>(new DataResponse(user, "Invalid user email"), HttpStatus.NOT_FOUND);
         }
         if (!userService.checkIfValidOldPassword(user, passwordRequest.getOldPassword())) {
-            return new ResponseEntity<>(new DataResponse(user, "Invalid old password"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DataResponse(user, "Invalid old password"), HttpStatus.UNAUTHORIZED);
         }
         // Save new password
         userService.changePassword(user, passwordRequest.getNewPassword());
         return new ResponseEntity<>(new DataResponse(user, "Password changed successfully"), HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<DataResponse> loginEmail(
+        // Authentication authentication,
+        @RequestBody UserRequest userRequest
+    ) {
+        User user = userService.findUserByEmail(userRequest.getEmail());
+        if (user == null) {
+            return new ResponseEntity<>(new DataResponse(userRequest.getEmail(), "Invalid email. Unable to find user."), HttpStatus.NOT_FOUND);
+        }
+        if (!(user.isEnabled())) {
+            return new ResponseEntity<>(new DataResponse(userRequest.getEmail(), "Invalid user. User has not been activated."), HttpStatus.UNAUTHORIZED);
+        }
+        boolean isPasswordMatch = userService.checkIfValidOldPassword(user, userRequest.getPassword());
+        if (!(isPasswordMatch)) {
+            return new ResponseEntity<>(new DataResponse(user.getEmail(), "Invalid password, please try again"), HttpStatus.UNAUTHORIZED);
+        }
+
+        // System.out.println();
+        // System.out.println("Authentication: ");
+        // System.out.println(authentication.getClass());
+        // System.out.println(authentication.toString());
+        // System.out.println();
+
+        // String jwtToken = authService.getToken(authentication, user);
+
+        String jwtToken = authService.getToken(user);
+
+        return new ResponseEntity<>(new DataResponse(jwtToken, "User logged in"), HttpStatus.OK);
     }
 
     private String passwordResetTokenMail(

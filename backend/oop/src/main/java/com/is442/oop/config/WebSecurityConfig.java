@@ -32,10 +32,10 @@ public class WebSecurityConfig {
 
     private static final String[] WHITE_LIST_URLS = {
         // "/**",
-        "/token",
         "/register",
         "/verifyRegistration*",
-        "/resendVerificationToken*"
+        "/resendVerificationToken*",
+        "/login*"
     };
 
     public WebSecurityConfig(RsaKeyProperties rsaKeys) {
@@ -49,12 +49,13 @@ public class WebSecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager user() {
-        return new InMemoryUserDetailsManager(
-            User.withUsername("admin")
-                .password(passwordEncoder().encode("adminpw"))
-                .authorities("read")
-                .build()
-        );
+        // return new InMemoryUserDetailsManager(
+        //     User.withUsername("admin")
+        //         .password(passwordEncoder().encode("adminpw"))
+        //         .authorities("read")
+        //         .build()
+        // );
+        return new InMemoryUserDetailsManager();
     }
 
     @Bean
