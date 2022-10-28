@@ -46,10 +46,8 @@
                                         <div class="col-7 border">${{EachPass.replacementFee}}</div>
                                         <div class="col-5 border"><b>Status</b></div>
                                         <div class="col-7 border">{{EachPass.passStatus}}</div>
-                                        <!-- <div class="col-5 border"><b>Defunct?</b></div>
-                                        <div class="col-7 border">{{EachPass.defunct}}</div> -->
                                         <div class="col-5 border"><b>Physical?</b></div>
-                                        <div class="col-7 border">{{EachPass.physical}}</div>
+                                        <div class="col-7 border">{{EachPass.isPhysical}}</div>
                                         <div class="col-12"><b>Attachment(PDF)</b></div>
                                         <div class="col-12"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
 
@@ -109,6 +107,8 @@
                                                 <select class="form-select" v-model="EachPass.passStatus">
                                                     <option value="AVAILABLE">Available</option>
                                                     <option value="ONLOAN">On Loan</option>
+                                                    <option value="UNRETURNED">Unreturned</option>
+
                                                 </select>
                                             </div>
                                         </div>
@@ -121,7 +121,7 @@
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
-                                                <select class="form-select" v-model="EachPass.physical">
+                                                <select class="form-select" v-model="EachPass.isPhysical">
                                                     <option value="true">true</option>
                                                     <option value="false">false</option>
                                                 </select>
@@ -131,31 +131,26 @@
                                         <div class="mb-3">
                                             <h3>Atttachment information</h3>
                                             <div class="row mb-3">
-                                                <label class="col-5 col-form-label"><b>Current Attachment(PDF):</b></label>
-                                                <div class="col-7">
-                                                    <input type="text" class="form-control" :placeholder="EachPass.passAttachmentName" disabled>
+
+
+                                                <div class="input-group mb-3">
+                                                    <label class="col-5 col-form-label"><b>Current Attachment(PDF):</b></label>
+                                                    <input type="text" class="col-5 form-control" :placeholder="EachPass.passAttachmentName" ref="updatePassAttachmentText" disabled>
+                                                    <button class="col-2 btn btn-outline-danger" type="button" @click="removeFileFromDB(EachPass.passId)">Remove</button>
                                                 </div>
-                                                <label class="col-5 col-form-label"><b>New Attachment Name(PDF):</b></label>
-                                                <div class="col-7 mt-1">
-                                                    {{selectedFileName}}
-                                                </div>
-                                                <label class="col-5 col-form-label"><b>New Attachment(PDF):</b></label>
-                                                <div class="col-7">
-                                                    <input class="mt-1" type="file" @change="onFileSelected">
-                                                    <div v-if="warningMessage==true" class="alert alert-danger alert-dismissible fade show mt-1" role="alert">
-                                                        <strong class="text-justify">Please select a PDF file before proceeding!</strong>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="closeButtonMethod"></button>
-                                                    </div>
+                                                
+                                                <div class="input-group">
+                                                    <label class="col-5 col-form-label"><b>New Attachment(PDF)</b></label>
+                                                    <input class="col-7 form-control"  type="file" accept=".pdf" @change="onFileSelected">
                                                 </div>
                                                 
                                                     
-
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)" :disabled="warningMessage==true">Update Now</button>
+                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)">Update Now</button>
                                     <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button> 
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeButtonMethod">Close</button>
                                 </div>
@@ -185,7 +180,12 @@
 
                             <div class="modal-body text-start">
                                 <form>
-                                    <div class="mb-3">
+                                        <div class="mb-3">
+                                            <div class="row">
+                                                <label class="col-6 col-form-label"><b>Insert card image here(if any):</b></label>
+                                                <div class="col-6"></div>
+                                            </div>
+                                            <hr>
                                             <label class="col-form-label">Description:</label> 
                                             <input class="form-control" required v-model="NEWpassDesc">
                                             <label class="col-form-label">Point of Interests:</label>
@@ -214,13 +214,14 @@
                                                 <select class="form-select" v-model="NEWpassStatus">
                                                     <option value="AVAILABLE">Available</option>
                                                     <option value="ONLOAN">On Loan</option>
+                                                    <option value="UNRETURNED">Unreturned</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <label class="col-5 col-form-label"><b>Physical?</b></label>
                                             <div class="col-7">
-                                                <select class="form-select" v-model="NEWphysical">
+                                                <select class="form-select" v-model="NEWisPhysical">
                                                     <option value="true">true</option>
                                                     <option value="false">false</option>
                                                 </select>
@@ -228,25 +229,22 @@
                                         </div>
                                         <hr>
                                         <div class="mb-3">
-                
                                             <h3>Atttachment information</h3>
-                                            <label class="col-6 col-form-label"><b>New Attachment Name(PDF):</b></label>
-                                            <div class="col-6 mt-1">
-                                                {{selectedFileName}}
+                                            
+                                            
+                                            <div class="row mb-3">
+                                            <div class="input-group mb-3">
+                                                <label class="col-5 col-form-label"><b>New Attachment(PDF)</b></label>
+                                                <input class="col-5 form-control form-control"  type="file" accept=".pdf" @change="onFileSelected" ref="fileUpload">
+                                                <button class="col-2 btn btn-outline-danger" type="button" @click="removeFileSelect_addNewPass()">Remove</button>
                                             </div>
-                                            <label class="col-6 col-form-label"><b>New Attachment(PDF):</b></label>
-
-                                            <input class="col-6" type="file" @change="onFileSelected">
-                                            <div v-if="warningMessage==true" class="alert alert-danger alert-dismissible fade show mt-1" role="alert">
-                                                <strong class="text-justify">Please select a PDF file before proceeding!</strong>
-                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="closeButtonMethod"></button>
                                             </div>
                                         </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" @click="onUpload()" :disabled="warningMessage==true">Create Pass</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" @click="onUpload()">Create Pass</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState">Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -287,9 +285,8 @@ export default({
                 NEWnumGuests: 1,
                 NEWreplacementFee: 0,
                 NEWpassStatus: "AVAILABLE",
-                NEWphysical: true,
-
-                warningMessage: false,
+                NEWisPhysical: true,
+                // warningMessage: false,
             
             }
         },
@@ -300,18 +297,17 @@ export default({
             onFileSelected(event){
                 this.selectedFile = event.target.files[0]
                 this.selectedFileName = this.selectedFile.name
-                // const allowedFileTypes = ["application/pdf"]
                 if(this.selectedFile.length === 0){
-                    this.warningMessage = true
+                    // this.warningMessage = true
                     this.selectedFile = null
                     return
                 }
-                if(this.selectedFile['type']!=='application/pdf'){
-                    this.warningMessage = true
-                    console.log("not ok")
-                    return
-                }
-                this.warningMessage = false
+                // if(this.selectedFile['type']!=='application/pdf'){
+                //     this.warningMessage = true
+                //     console.log("not ok")
+                //     return
+                // }
+                // this.warningMessage = false
                 console.log(this.selectedFile)
             },
             onUpload(){
@@ -321,44 +317,41 @@ export default({
                 fd.append("poiUrl", this.NEWpoiUrl)
                 fd.append("numGuests", this.NEWnumGuests)
                 fd.append("replacementFee", this.NEWreplacementFee)
+                fd.append("isPhysical", this.NEWisPhysical)
                 fd.append("passStatus", this.NEWpassStatus)
-                fd.append("passAttachmentName", this.selectedFile.name)
-                fd.append("passAttachment", this.selectedFile)
-                fd.append("physical", this.NEWphysical)
+                if(this.selectedFile!==null){
+                    fd.append("passAttachmentName", this.selectedFile.name)
+                    fd.append("passAttachment", this.selectedFile)
+                }
+                fd.append("passImage", "")
+                
                 console.log(fd)
                 axios.post("http://localhost:8081/passes", fd)
                 .then(res=>{
                     console.log(res)
-                    this.selectedFile = null
+                    this.initialState()
                     this.$emit('getPassData')
                 })
             },
+
             async updatePassMethod(passID){
                 console.log(this.PassAdminPasses[passID-1].passDesc)
                 console.log(this.PassAdminPasses[passID-1].poiUrl)
                 
                 const UPDATEfd = new FormData()
-                if(this.selectedFile != null){
-                    UPDATEfd.append("passDesc", this.PassAdminPasses[passID-1].passDesc)
-                    UPDATEfd.append("poi", this.PassAdminPasses[passID-1].poi)
-                    UPDATEfd.append("poiUrl", this.PassAdminPasses[passID-1].poiUrl)
-                    UPDATEfd.append("numGuests", this.PassAdminPasses[passID-1].numGuests)
-                    UPDATEfd.append("replacementFee", this.PassAdminPasses[passID-1].replacementFee)
-                    UPDATEfd.append("passStatus", this.PassAdminPasses[passID-1].passStatus)
+                UPDATEfd.append("passDesc", this.PassAdminPasses[passID-1].passDesc)
+                UPDATEfd.append("poi", this.PassAdminPasses[passID-1].poi)
+                UPDATEfd.append("poiUrl", this.PassAdminPasses[passID-1].poiUrl)
+                UPDATEfd.append("numGuests", this.PassAdminPasses[passID-1].numGuests)
+                UPDATEfd.append("replacementFee", this.PassAdminPasses[passID-1].replacementFee)
+                UPDATEfd.append("isPhysical", this.PassAdminPasses[passID-1].isPhysical)
+                UPDATEfd.append("passStatus", this.PassAdminPasses[passID-1].passStatus)
+                if(this.selectedFile !== null){
                     UPDATEfd.append("passAttachmentName", this.selectedFile.name)
                     UPDATEfd.append("passAttachment", this.selectedFile)
-                    UPDATEfd.append("physical", this.PassAdminPasses[passID-1].physical)
-                }else{
-                    UPDATEfd.append("passDesc", this.PassAdminPasses[passID-1].passDesc)
-                    UPDATEfd.append("poi", this.PassAdminPasses[passID-1].poi)
-                    UPDATEfd.append("poiUrl", this.PassAdminPasses[passID-1].poiUrl)
-                    UPDATEfd.append("numGuests", this.PassAdminPasses[passID-1].numGuests)
-                    UPDATEfd.append("replacementFee", this.PassAdminPasses[passID-1].replacementFee)
-                    UPDATEfd.append("passStatus", this.PassAdminPasses[passID-1].passStatus)
-                    UPDATEfd.append("passAttachmentName", this.PassAdminPasses[passID-1].passAttachmentName)
-                    UPDATEfd.append("passAttachment", this.PassAdminPasses[passID-1].passAttachment)
-                    UPDATEfd.append("physical", this.PassAdminPasses[passID-1].physical)
                 }
+                UPDATEfd.append("passImage", "")
+                
                 console.log(UPDATEfd)
                 try{
                     await axios.put(this.passURL+"/"+passID, UPDATEfd)
@@ -395,13 +388,43 @@ export default({
                     console.error(err);
                 }
             },
-
+            async removeFileFromDB(passID){
+                try{
+                    await axios.put(this.passURL+"/deletePassAttachment/"+passID)
+                    .then(response => {
+                        this.$refs.updatePassAttachmentText.value = null;
+                        this.$emit('getPassData')
+                        console.log(response);
+                    });
+                } catch(err){
+                    console.error(err);
+                }
+            },
             deletePassMethod(passID){
                 this.deleteExistingPass(passID)
             },
             closeButtonMethod(){
-                this.selectedFile = null,
-                this.selectedFileName = null
+                this.initialState()
+            },
+            removeFileSelect_addNewPass(){
+                this.selectedFile= null
+                this.selectedFileName= null
+                this.$refs.fileUpload.value = null;
+
+            },
+            
+            initialState(){
+                this.passIDtoDelete= null,
+                this.selectedFile= null,
+                this.selectedFileName= null,
+                this.NEWpassDesc= null,
+                this.NEWpoi= null,
+                this.NEWpoiUrl= null,
+                this.NEWnumGuests= 1,
+                this.NEWreplacementFee= 0,
+                this.NEWpassStatus= "AVAILABLE",
+                this.NEWisPhysical= true
+                // this.warningMessage= false
             }
         },
 
