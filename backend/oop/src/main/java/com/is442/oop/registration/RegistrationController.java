@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.is442.oop.data.models.User;
 import com.is442.oop.data.models.VerificationToken;
+import com.is442.oop.data.payloads.response.DataResponse;
 import com.is442.oop.password.PasswordRequest;
 import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserService;
@@ -32,75 +35,85 @@ public class RegistrationController {
     private ApplicationEventPublisher publisher;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
+    public ResponseEntity<DataResponse> registerUser(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
         User user = userService.registerUser(userRequest);
         publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(request)));
-        return "Success";
+        return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
     }
 
     @GetMapping("/verifyRegistration")
-    public String verifyRegistration(@RequestParam("token") String token) {
+    public ResponseEntity<DataResponse> verifyRegistration(@RequestParam("token") String token) {
         String result = userService.validateVerificationToken(token);
         if (result.equalsIgnoreCase("valid")) {
-            return "User verified successfully";
+            return new ResponseEntity<>(new DataResponse(result, "User verification success"), HttpStatus.OK);
         }
-        return "Bad user";
+        return new ResponseEntity<>(new DataResponse(result, "User verification failed, bad user, token is " + result), HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/resendVerificationToken")
-    public String resentVerificationToken(
+    public ResponseEntity<DataResponse> resentVerificationToken(
         @RequestParam("token") String oldToken,
         HttpServletRequest request
     ) {
         VerificationToken verificationToken = userService.generateNewVerificationToken(oldToken);
 
+        if (verificationToken == null) {
+            return new ResponseEntity<>(new DataResponse(verificationToken, "Resend verification token failed, old token is invalid"), HttpStatus.NOT_FOUND);
+        }
+
         User user = verificationToken.getUser();
 
         // send email
         resendVerificationTokenMail(user, applicationUrl(request), verificationToken);
-        return "Verification link sent" ;
+
+        // return "Verification link sent";
+        return new ResponseEntity<>(new DataResponse(user, "Resend verification token"), HttpStatus.OK);
     }
 
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestBody PasswordRequest passwordRequest, HttpServletRequest request) {
+    public ResponseEntity<DataResponse> resetPassword(@RequestBody PasswordRequest passwordRequest, HttpServletRequest request) {
         User user = userService.findUserByEmail(passwordRequest.getEmail());
         String url = "";
         if (user != null) {
             String token = UUID.randomUUID().toString();
             userService.createPasswordResetTokenForUser(user, token);
             url = passwordResetTokenMail(user, applicationUrl(request), token);
+            return new ResponseEntity<>(new DataResponse(url, "Password reset successfully"), HttpStatus.OK);
         }
         
-        return url;
+        return new ResponseEntity<>(new DataResponse(passwordRequest.getEmail(), "Password reset failed, email is invalid: " + passwordRequest.getEmail()), HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/savePassword")
-    public String savePassword(
+    public ResponseEntity<DataResponse> savePassword(
         @RequestParam("token") String token,
         @RequestBody PasswordRequest passwordRequest
     ) {
         String result = userService.validatePasswordResetToken(token);
         if (!result.equalsIgnoreCase("valid")) {
-            return "Invalid token";
+            return new ResponseEntity<>(new DataResponse(result, "Save password failed, token is " + result), HttpStatus.NOT_FOUND);
         }
         Optional<User> user = userService.getUserByPasswordResetToken(token);
         if (user.isPresent()) {
             userService.changePassword(user.get(), passwordRequest.getNewPassword());
-            return "Password reset successful";
+            return new ResponseEntity<>(new DataResponse(result, "Password reset successfully"), HttpStatus.OK);
         } else {
-            return "Invalid token";
+            return new ResponseEntity<>(new DataResponse(result, "Save password failed, token is " + result), HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(@RequestBody PasswordRequest passwordRequest) {
+    public ResponseEntity<DataResponse> changePassword(@RequestBody PasswordRequest passwordRequest) {
         User user = userService.findUserByEmail(passwordRequest.getEmail()); // handle exception: null pointer exception if user does not exist
+        if (user == null) {
+            return new ResponseEntity<>(new DataResponse(user, "Invalid user email"), HttpStatus.NOT_FOUND);
+        }
         if (!userService.checkIfValidOldPassword(user, passwordRequest.getOldPassword())) {
-            return "Invalid old password";
+            return new ResponseEntity<>(new DataResponse(user, "Invalid old password"), HttpStatus.NOT_FOUND);
         }
         // Save new password
         userService.changePassword(user, passwordRequest.getNewPassword());
-        return "Password changed successfully";
+        return new ResponseEntity<>(new DataResponse(user, "Password changed successfully"), HttpStatus.OK);
     }
 
     private String passwordResetTokenMail(

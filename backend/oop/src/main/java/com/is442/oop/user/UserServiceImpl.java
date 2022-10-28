@@ -128,6 +128,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public VerificationToken generateNewVerificationToken(String oldToken) {
         VerificationToken verificationToken = verificationTokenRepository.findByToken(oldToken);
+        if (verificationToken == null) return null;
         verificationToken.setToken(UUID.randomUUID().toString());
         verificationTokenRepository.save(verificationToken);
         return verificationToken;
