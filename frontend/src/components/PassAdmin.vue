@@ -19,9 +19,18 @@
                 <div v-if="EachPass.defunct=='0'">
 
                     <div class="card border-secondary h-100" style="width: 25rem;">
-                        <img src="../assets/passPic_test.jpg" class="card-img-top">
+                        <!-- Show Image here -->
+                            
+                            <template v-if="EachPass.passImage">
+                                <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2 border-secondary" height="200" width="375">
+                            </template>
+                            <template v-else>
+                                <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2 border-secondary" height="200" width="375">
+                            </template>
                             <div class="card-body ">
-                                <b class="card-title">{{EachPass.passDesc}}</b>
+                                <b class="card-title">{{EachPass.passDesc}}
+                                </b>
+                                
                             </div>
                             <ul class="list-group list-group-flush">
                                 <span><b>Point of Interests </b></span>
@@ -46,8 +55,13 @@
                                         <div class="col-7 border">${{EachPass.replacementFee}}</div>
                                         <div class="col-5 border"><b>Status</b></div>
                                         <div class="col-7 border">{{EachPass.passStatus}}</div>
-                                        <div class="col-5 border"><b>Physical?</b></div>
-                                        <div class="col-7 border">{{EachPass.isPhysical}}</div>
+                                        <div class="col-5 border"><b>Physical/EPass</b></div>
+                                        <template v-if="EachPass.isPhysical==true">
+                                            <div class="col-7 border">Physical Pass</div>
+                                        </template>
+                                        <template v-else>
+                                            <div class="col-7 border">EPass</div>
+                                        </template>
                                         <div class="col-12"><b>Attachment(PDF)</b></div>
                                         <div class="col-12"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
 
@@ -64,10 +78,9 @@
                             </div>
                     </div>
                     <!-- Pass update modal -->
-                    <!-- <div class="modal fade" id="viewUM" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
                     <div class="modal fade" :id="`viewUM`+EachPass.passId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Update pass information</h5>
@@ -76,13 +89,33 @@
                                 <div class="modal-body text-start">
                                     <form>
                                         <div class="mb-3">
+                                            <div class="row mb-3 d-flex justify-content-center">
+                                                <div>
+                                                    <template v-if="localImageSrc">
+                                                        <img :src="localImageSrc" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                    </template>
+                                                    <template v-else-if="EachPass.passImage">
+                                                        <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                    </template>
+                                                    <template v-else>
+                                                        <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                    </template>
+                                                    
+                                                </div>
+                                                <div class="input-group mb w-75 ">
+                                                    <label class="col-12 col-form-label text-center"><b>Insert card image here(if any)</b></label>
+                                                    <input class="col-8 col-md-5 form-control form-control" type="file" accept="image/*" @change="onImageSelected" :id="`updateImageUploadInput`+EachPass.passId">
+                                                    <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeImageSelect_newAndUpdatePass(EachPass.passId)">X</button>
+                                                </div>
+                                            </div>
+                                            <hr>
                                             <label class="col-form-label"><b>ID: {{EachPass.passId}}</b></label><br>
 
-                                            <label class="col-form-label">Description:</label> 
+                                            <label class="col-form-label"><b>Description:</b></label> 
                                             <input class="form-control" v-model ="EachPass.passDesc" required >
-                                            <label class="col-form-label">Point of Interests:</label>
+                                            <label class="col-form-label"><b>Point of Interests:</b></label>
                                             <input class="form-control" v-model ="EachPass.poi" required >
-                                            <label class="col-form-label">Point of Interests URL:</label>
+                                            <label class="col-form-label"><b>Point of Interests URL:</b></label>
                                             <input class="form-control" v-model ="EachPass.poiUrl" required >
                                             
                                         </div>
@@ -112,18 +145,12 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <!-- <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Deactivated?(Defunct)</b></label>
-                                            <div class="col-7">
-                                                <input type="text" v-model="EachPass.defunct" class="form-control" disabled>
-                                            </div>
-                                        </div> -->
                                         <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Physical?</b></label>
+                                            <label class="col-5 col-form-label"><b>Physical/EPass</b></label>
                                             <div class="col-7">
                                                 <select class="form-select" v-model="EachPass.isPhysical">
-                                                    <option value="true">true</option>
-                                                    <option value="false">false</option>
+                                                    <option value="true">Physical Pass</option>
+                                                    <option value="false">EPass</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -136,7 +163,7 @@
                                                 <div class="input-group mb-3">
                                                     <label class="col-5 col-form-label"><b>Current Attachment(PDF):</b></label>
                                                     <input type="text" class="col-5 form-control" :placeholder="EachPass.passAttachmentName" ref="updatePassAttachmentText" disabled>
-                                                    <button class="col-2 btn btn-outline-danger" type="button" @click="removeFileFromDB(EachPass.passId)">Remove</button>
+                                                    <button class="col-2 btn btn-outline-danger" type="button" @click="removeFileFromDB(EachPass.passId)">X</button>
                                                 </div>
                                                 
                                                 <div class="input-group">
@@ -150,7 +177,7 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)">Update Now</button>
+                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)" data-bs-dismiss="modal">Update Now</button>
                                     <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button> 
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeButtonMethod">Close</button>
                                 </div>
@@ -161,17 +188,11 @@
 
                 </template>
 
-
-
-
-
-
-
                 <!-- ====================================Loop ends============================= -->
 
                 <!-- Add New Pass Form Modal-->
                 <div class="modal fade" id="addNewPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Create new pass</h5>
@@ -181,16 +202,22 @@
                             <div class="modal-body text-start">
                                 <form>
                                         <div class="mb-3">
-                                            <div class="row">
-                                                <label class="col-6 col-form-label"><b>Insert card image here(if any):</b></label>
-                                                <div class="col-6"></div>
+                                            <div class="row mb-3 d-flex justify-content-center">
+                                                <div v-if="localImageSrc">
+                                                    <img :src="localImageSrc" class="mx-auto d-block img-thumbnail" height="200" width="300">
+                                                </div>
+                                                <div class="input-group mb w-75 ">
+                                                    <label class="col-12 col-form-label text-center"><b>Insert card image here(if any)</b></label>
+                                                    <input class="col-8 col-md-5 form-control form-control"  type="file" accept="image/*" @change="onImageSelected" id="newImageUploadInput">
+                                                    <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeImageSelect_newAndUpdatePass()">X</button>
+                                                </div>
                                             </div>
                                             <hr>
-                                            <label class="col-form-label">Description:</label> 
+                                            <label class="col-form-label"><b>Description:</b></label> 
                                             <input class="form-control" required v-model="NEWpassDesc">
-                                            <label class="col-form-label">Point of Interests:</label>
+                                            <label class="col-form-label"><b>Point of Interests:</b></label>
                                             <input class="form-control" required v-model="NEWpoi">
-                                            <label class="col-form-label">Point of Interests Website:</label>
+                                            <label class="col-form-label"><b>Point of Interests Website:</b></label>
                                             <input class="form-control" required v-model="NEWpoiUrl">
                                         </div>
                                         <div class="row mb-3">
@@ -233,17 +260,17 @@
                                             
                                             
                                             <div class="row mb-3">
-                                            <div class="input-group mb-3">
-                                                <label class="col-5 col-form-label"><b>New Attachment(PDF)</b></label>
-                                                <input class="col-5 form-control form-control"  type="file" accept=".pdf" @change="onFileSelected" ref="fileUpload">
-                                                <button class="col-2 btn btn-outline-danger" type="button" @click="removeFileSelect_addNewPass()">Remove</button>
-                                            </div>
+                                                <div class="input-group mb-3">
+                                                    <label class="col-12 col-md-5 col-form-label"><b>New Attachment(PDF)</b></label>
+                                                    <input class="col-8 col-md-5 form-control form-control"  type="file" accept=".pdf" @change="onFileSelected" ref="newFileUpload">
+                                                    <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeFileSelect_addNewPass()">X</button>
+                                                </div>
                                             </div>
                                         </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" @click="onUpload()">Create Pass</button>
+                                <button type="button" class="btn btn-primary" @click="onUpload()" data-bs-dismiss="modal">Create Pass</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState">Cancel</button>
                             </div>
                         </div>
@@ -286,7 +313,8 @@ export default({
                 NEWreplacementFee: 0,
                 NEWpassStatus: "AVAILABLE",
                 NEWisPhysical: true,
-                // warningMessage: false,
+                selectedImage: null,
+                localImageSrc: null
             
             }
         },
@@ -298,19 +326,19 @@ export default({
                 this.selectedFile = event.target.files[0]
                 this.selectedFileName = this.selectedFile.name
                 if(this.selectedFile.length === 0){
-                    // this.warningMessage = true
                     this.selectedFile = null
                     return
                 }
-                // if(this.selectedFile['type']!=='application/pdf'){
-                //     this.warningMessage = true
-                //     console.log("not ok")
-                //     return
-                // }
-                // this.warningMessage = false
                 console.log(this.selectedFile)
             },
-            onUpload(){
+            onImageSelected(event){
+                this.selectedImage = event.target.files[0]
+                this.localImageSrc = URL.createObjectURL(this.selectedImage) // for local preview image 
+                console.log(this.selectedImage)
+                console.log(this.localImageSrc)
+                
+            },
+            onUpload(){ //This function POST new data information into DB
                 const fd = new FormData()
                 fd.append("passDesc", this.NEWpassDesc)
                 fd.append("poi", this.NEWpoi)
@@ -323,9 +351,9 @@ export default({
                     fd.append("passAttachmentName", this.selectedFile.name)
                     fd.append("passAttachment", this.selectedFile)
                 }
-                fd.append("passImage", "")
-                
-                console.log(fd)
+                if(this.selectedImage!==null){
+                    fd.append("passImage", this.selectedImage)
+                }
                 axios.post("http://localhost:8081/passes", fd)
                 .then(res=>{
                     console.log(res)
@@ -333,7 +361,6 @@ export default({
                     this.$emit('getPassData')
                 })
             },
-
             async updatePassMethod(passID){
                 console.log(this.PassAdminPasses[passID-1].passDesc)
                 console.log(this.PassAdminPasses[passID-1].poiUrl)
@@ -350,7 +377,9 @@ export default({
                     UPDATEfd.append("passAttachmentName", this.selectedFile.name)
                     UPDATEfd.append("passAttachment", this.selectedFile)
                 }
-                UPDATEfd.append("passImage", "")
+                if(this.selectedImage!==null){
+                    UPDATEfd.append("passImage", this.selectedImage)
+                }
                 
                 console.log(UPDATEfd)
                 try{
@@ -373,9 +402,6 @@ export default({
                 downloadLink.href = linkSource;
                 downloadLink.download = fileName;
                 downloadLink.click();
-            },
-            GetImageUrl(pic){
-                return require('../assets/'+pic)
             },
             async deleteExistingPass(passID){
                 try{
@@ -409,14 +435,31 @@ export default({
             removeFileSelect_addNewPass(){
                 this.selectedFile= null
                 this.selectedFileName= null
-                this.$refs.fileUpload.value = null;
-
+                this.$refs.newFileUpload.value = null;
             },
-            
+            removeImageSelect_newAndUpdatePass(passId){
+                var temp = "updateImageUploadInput"+passId
+                if(document.getElementById("newImageUploadInput").value !== null){
+                    document.getElementById("newImageUploadInput").value = null
+                }
+                if(document.getElementById(temp).value !== null){
+                    document.getElementById(temp).value = null
+                }
+                this.selectedImage= null
+                this.localImageSrc = null;
+            },
+            // removeImageSelect_updatePass(){
+            //     this.selectedImage= null
+            //     this.$refs.updateImageUpload.value = null;
+            //     console.log(this.$refs.updateImageUpload.value)
+            //     this.localImageSrc = null;
+            // },
             initialState(){
                 this.passIDtoDelete= null,
+                
                 this.selectedFile= null,
                 this.selectedFileName= null,
+
                 this.NEWpassDesc= null,
                 this.NEWpoi= null,
                 this.NEWpoiUrl= null,
@@ -424,7 +467,10 @@ export default({
                 this.NEWreplacementFee= 0,
                 this.NEWpassStatus= "AVAILABLE",
                 this.NEWisPhysical= true
-                // this.warningMessage= false
+
+                this.selectedImage= null
+                this.localImageSrc = null;
+                document.getElementById("newImageUploadInput").value = null;
             }
         },
 
