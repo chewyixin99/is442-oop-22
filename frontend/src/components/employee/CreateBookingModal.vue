@@ -218,7 +218,7 @@
                   id="exampleCheck1"
                   v-model="isChecked"
                 />
-                <span>I accept the <a href="#">terms and conditions</a> </span>
+                <span>I accept the <a target="_blank" href="https://www.youtube.com/watch?v=xvFZjo5PgG0">terms and conditions</a> </span>
               </div>
               <button
                 type="button"
