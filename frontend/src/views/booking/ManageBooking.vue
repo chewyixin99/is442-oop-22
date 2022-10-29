@@ -182,7 +182,7 @@ export default {
                 data.completed
               ])
               .filter(
-                (data) => (this.processDate(data[2]) >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
+                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
               ),
         },
         search: true,
@@ -296,7 +296,7 @@ export default {
                 data.completed
               ])
               .filter(
-                (data) => (this.processDate(data[2]) < new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
+                (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
               ),
         },
         search: true,
