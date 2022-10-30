@@ -226,7 +226,7 @@ export default {
                 data.defunct
               ])
               .filter(
-                (data) => (this.processDate(data[2]) >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
+                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
               ),
         },
         search: true,
@@ -307,7 +307,7 @@ export default {
                 data.endDate,
               ])
               .filter(
-                (data) => this.processDate(data[2]) < new Date().toISOString().replace(/T.*$/, "")
+                (data) => data[2] < new Date().toISOString().replace(/T.*$/, "")
               ),
         },
         search: true,
@@ -409,7 +409,7 @@ export default {
         });
     },
     bookingSubmitted(data) {
-      alert(JSON.stringify(data));
+      console.log(data);      
       this.currentBookingsGrid.forceRender();
       this.forceRerender();
       var bsAlert = new Toast(document.getElementById("theToastr"));

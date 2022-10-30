@@ -247,18 +247,18 @@ export default {
     },
     async submitBooking() {
 
-      this.retrievedLoanData.startDate = this.processDate2(this.retrievedData.startDate)
-      this.retrievedLoanData.endDate = this.processDate2(this.retrievedData.endDate)
+  
       this.isLoading = true;
-      console.log(this.retrievedLoanData)
-      console.log(this.rowData);
+      this.retrievedLoanData.startDate = this.retrievedData.startDate
+      this.retrievedLoanData.endDate = this.retrievedData.endDate
+      console.log(this.retrievedLoanData);
       axios
         .put("http://localhost:8081/loan/update", this.retrievedLoanData)
         .then((response) => {
           if (response.status != 500) {
             this.isLoading = false;
             document.getElementById("edit-close-btn").click();
-            this.$emit("bookingSubmitted", this.retrievedData);
+            this.$emit("bookingSubmitted", this.retrievedLoanData);
             this.$emit("toastrMsg", {
               status: "Success",
               msg: "Edit is successful!",

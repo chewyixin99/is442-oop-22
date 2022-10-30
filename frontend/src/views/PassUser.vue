@@ -13,13 +13,24 @@
                 <template v-for="EachPass in userPasses" :key="EachPass.passId" >
                         <div v-if="EachPass.defunct=='0'">
                             <div class="card border-secondary h-100" style="width: 25rem;">
-                                <img src="../assets/passPic_test.jpg" class="card-img-top">
+                                <template v-if="EachPass.passImage">
+                                    <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2 border-secondary" height="200" width="375">
+                                </template>
+                                <template v-else>
+                                    <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2 border-secondary" height="200" width="375">
+                                </template>
                                     <div class="card-body ">
                                         <b class="card-title">{{EachPass.passDesc}}</b>
                                     </div>
                                     <ul class="list-group list-group-flush">
                                         <span><b>Point of Interests </b><br>
                                         {{EachPass.poi}}</span>
+                                    </ul>
+                                    <ul class="list-group list-group-flush">
+                                        <span><b>Point of Interests URL</b></span>
+                                        <div class="text-wrap w-90 justify-content-center">
+                                            <span>{{EachPass.poiUrl}}</span>
+                                        </div>
                                     </ul>
                                     <ul class="list-group list-group-flush">
                                         <div class="container">
@@ -32,9 +43,13 @@
                                                 <div class="col-7 border">${{EachPass.replacementFee}}</div>
                                                 <div class="col-5 border"><b>Status</b></div>
                                                 <div class="col-7 border">{{EachPass.passStatus}}</div>
-                   
-                                                <div class="col-5 border"><b>Physical?</b></div>
-                                                <div class="col-7 border">{{EachPass.physical}}</div>
+                                                <div class="col-5 border"><b>Physical/EPass</b></div>
+                                                <template v-if="EachPass.isPhysical==true">
+                                                    <div class="col-7 border">Physical Pass</div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="col-7 border">EPass</div>
+                                                </template>
                                             </div>
                                         </div>
                                     </ul>
