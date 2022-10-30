@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -32,10 +31,10 @@ public class WebSecurityConfig {
 
     private static final String[] WHITE_LIST_URLS = {
         "/**",
-        "/token",
         "/register",
         "/verifyRegistration*",
-        "/resendVerificationToken*"
+        "/resendVerificationToken*",
+        "/login*"
     };
 
     public WebSecurityConfig(RsaKeyProperties rsaKeys) {
@@ -49,12 +48,7 @@ public class WebSecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager user() {
-        return new InMemoryUserDetailsManager(
-            User.withUsername("admin")
-                .password(passwordEncoder().encode("adminpw"))
-                .authorities("read")
-                .build()
-        );
+        return new InMemoryUserDetailsManager();
     }
 
     @Bean
@@ -64,7 +58,6 @@ public class WebSecurityConfig {
             .and()
             .csrf()
             .disable()
-            // .authorizeRequests(auth -> auth.anyRequest().authenticated())
             .authorizeHttpRequests(
                 auth -> 
                     auth.antMatchers(WHITE_LIST_URLS)

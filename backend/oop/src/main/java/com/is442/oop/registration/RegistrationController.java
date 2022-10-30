@@ -47,7 +47,7 @@ public class RegistrationController {
         if (result.equalsIgnoreCase("valid")) {
             return new ResponseEntity<>(new DataResponse(result, "User verification success"), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new DataResponse(result, "User verification failed, bad user, token is " + result), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new DataResponse(result, "User verification failed, bad user, token is " + result), HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/resendVerificationToken")
@@ -91,7 +91,7 @@ public class RegistrationController {
     ) {
         String result = userService.validatePasswordResetToken(token);
         if (!result.equalsIgnoreCase("valid")) {
-            return new ResponseEntity<>(new DataResponse(result, "Save password failed, token is " + result), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DataResponse(result, "Save password failed, token is " + result), HttpStatus.UNAUTHORIZED);
         }
         Optional<User> user = userService.getUserByPasswordResetToken(token);
         if (user.isPresent()) {
@@ -109,7 +109,7 @@ public class RegistrationController {
             return new ResponseEntity<>(new DataResponse(user, "Invalid user email"), HttpStatus.NOT_FOUND);
         }
         if (!userService.checkIfValidOldPassword(user, passwordRequest.getOldPassword())) {
-            return new ResponseEntity<>(new DataResponse(user, "Invalid old password"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DataResponse(user, "Invalid old password"), HttpStatus.UNAUTHORIZED);
         }
         // Save new password
         userService.changePassword(user, passwordRequest.getNewPassword());
