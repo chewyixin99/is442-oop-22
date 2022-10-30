@@ -34,12 +34,14 @@ public class UserController {
         return new ResponseEntity<>(new DataResponse(user, "User"), HttpStatus.OK);
     }
 
-    @PostMapping("")
-    public ResponseEntity<DataResponse> createUser(@RequestBody UserRequest userRequest) {
-        User user = userService.createUser(userRequest);
-        return new ResponseEntity<>(new DataResponse(user, "User"), HttpStatus.CREATED);
-    }
+    // Use registrationController /register route instead
+    // @PostMapping("")
+    // public ResponseEntity<DataResponse> createUser(@RequestBody UserRequest userRequest) {
+    //     User user = userService.createUser(userRequest);
+    //     return new ResponseEntity<>(new DataResponse(user, "User"), HttpStatus.CREATED);
+    // }
 
+    // To change password, use registrationController /changePassword instead
     @PutMapping("/{userId}")
     public ResponseEntity<DataResponse> updateUser(@PathVariable("userId") Integer userId, @RequestBody UserRequest userRequest) {
         User updateUser = null;
