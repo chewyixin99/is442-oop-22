@@ -30,7 +30,7 @@ public class WebSecurityConfig {
     private final RsaKeyProperties rsaKeys;
 
     private static final String[] WHITE_LIST_URLS = {
-        // "/**",
+        "/**",
         "/register",
         "/verifyRegistration*",
         "/resendVerificationToken*",
