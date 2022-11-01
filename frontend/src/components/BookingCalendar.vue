@@ -166,7 +166,7 @@ export default {
         let data = {
             id: this.selectedPassLoans[i].passId,
             title: this.selectedPassLoans[i].userId,
-            date: this.processDate1(this.selectedPassLoans[i].startDate),
+            date: this.selectedPassLoans[i].startDate,
             allDay: true,
           };
 

@@ -46,7 +46,7 @@
               </a>
             </li> -->
             <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
+              <a href="#" class="nav-link link-dark px-0 align-middle text-decoration-none">
                 <router-link to="/admin" class="text-decoration-none">
                   <i class="fs-4 bi bi-graph-up"></i>
                   <span class="d-none d-sm-inline ms-3">Dashboard</span>
@@ -54,7 +54,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
+              <a href="#" class="nav-link link-dark px-0 align-middle text-decoration-none">
                 <router-link to="/admin/booking/view" class="text-decoration-none">
                   <i class="fs-4 bi-calendar-week me-1"></i>
                   <span class="d-none d-sm-inline ms-3">Booking</span>
@@ -62,7 +62,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
+              <a href="#" class="nav-link link-dark px-0 align-middle text-decoration-none">
                 <router-link to="/admin/booking/manage" class="text-decoration-none">
                   <i class="fs-4 bi-calendar-check me-1"></i>
                   <span class="d-none d-sm-inline ms-3">Manage</span>
@@ -70,7 +70,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
+              <a href="#" class="nav-link link-dark px-0 align-middle text-decoration-none">
                 <router-link to="/admin/employee" class="text-decoration-none">
                   <i class="fs-4 bi bi-book"></i>
                   <span class="ms-1 d-none d-sm-inline ms-3">Employee</span>
@@ -78,7 +78,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
+              <a href="#" class="nav-link link-dark px-0 align-middle text-decoration-none">
                 <router-link to="/admin/pass" class="text-decoration-none">
                   <i class="fs-4 bi bi-pass"></i>
                   <span class="ms-1 d-none d-sm-inline ms-3">Pass</span>
@@ -86,7 +86,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
+              <a href="#" class="nav-link link-dark px-0 align-middle text-decoration-none">
                 <router-link to="/admin/email" class="text-decoration-none">
                   <i class="fs-4 bi bi-envelope"></i>
                   <span class="ms-1 d-none d-sm-inline ms-3">Email</span>

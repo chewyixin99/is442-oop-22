@@ -264,11 +264,6 @@
         position: relative;
     }
 
-
-    .gridjs-tr td:last-child{
-        padding: 0;
-    }
-
     .bi-pencil{
         cursor: pointer;
     }

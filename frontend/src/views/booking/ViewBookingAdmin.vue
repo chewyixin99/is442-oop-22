@@ -226,7 +226,7 @@ export default {
                 data.defunct
               ])
               .filter(
-                (data) => (this.processDate(data[2]) >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
+                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
               ),
         },
         search: true,
@@ -307,7 +307,7 @@ export default {
                 data.endDate,
               ])
               .filter(
-                (data) => this.processDate(data[2]) < new Date().toISOString().replace(/T.*$/, "")
+                (data) => data[2] < new Date().toISOString().replace(/T.*$/, "")
               ),
         },
         search: true,
@@ -343,6 +343,14 @@ export default {
     this.currentBookingsGrid.render(document.getElementById("table1"));
     this.pastBookingsGrid.render(document.getElementById("table2"));
     // this.getData();
+    // axios
+    //   .get("http://localhost:8081/loan")
+    //   .then((response) => {
+    //     console.log(response.data.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   },
   methods: {
     processDate(date){

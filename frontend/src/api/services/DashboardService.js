@@ -12,6 +12,15 @@ class DashboardService extends BaseApiService {
         }
     }
 
+    async getPassBreakDown() {
+        try {
+            let loans = await axiosClient.get("/analytics/getPassBreakdown");
+            return loans.data.data
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }    
 }
 
 export default new DashboardService();

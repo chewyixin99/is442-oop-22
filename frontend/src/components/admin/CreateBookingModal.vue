@@ -218,7 +218,7 @@
                   id="exampleCheck1"
                   v-model="isChecked"
                 />
-                <span>I accept the <a href="#">terms and conditions</a> </span>
+                <span>I accept the <a target="_blank" href="https://www.youtube.com/watch?v=xvFZjo5PgG0">terms and conditions</a> </span>
               </div>
               <button
                 type="button"
@@ -334,31 +334,31 @@ console.log(date)
     },
     async submitBooking() {
 
-      this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
-      this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
+      // this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
+      // this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
 
 
       this.isLoading = true;
       console.log(this.retrievedData)
-      axios
-        .post("http://localhost:8081/loan", this.retrievedData)
-        .then((response) => {
-            console.log(response);
-            setTimeout(() => {
-              this.isLoading = false;
-              document.getElementById("create-close-btn").click();
-              this.$emit("bookingSubmitted", this.retrievedData);
-              this.$emit("toastrMsg", {
-                status: "Success",
-                msg: "Booking is successful!",
-              });
-            }, 1000);
+      // axios
+      //   .post("http://localhost:8081/loan", this.retrievedData)
+      //   .then((response) => {
+      //       console.log(response);
+      //       setTimeout(() => {
+      //         this.isLoading = false;
+      //         document.getElementById("create-close-btn").click();
+      //         this.$emit("bookingSubmitted", this.retrievedData);
+      //         this.$emit("toastrMsg", {
+      //           status: "Success",
+      //           msg: "Booking is successful!",
+      //         });
+      //       }, 1000);
             
           
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     },
 
     getData() {

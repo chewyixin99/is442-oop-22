@@ -48,10 +48,9 @@ export default {
           donut: {
             type: 'doughnut',
             data: {
-              labels: ['Overdue', 'Booked', 'Available'],
+              labels: ['Available','On Loan', 'Overdue' ],
               datasets: [{
-                data: [3, 10, 7],
-                backgroundColor: ['rgb(255, 99, 132)', 'rgb(75, 192, 192)','rgb(255, 205, 86)'],
+                backgroundColor: ['rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(255, 99, 132)'],
                 hoverOffset: 1,
                 borderWidth: 2
               }],
@@ -184,8 +183,9 @@ export default {
       async initCharts() {
         this.initChartLabels();
         let loans = await DashboardService.getLoansForMonth();
+        let passBreakdown = await DashboardService.getPassBreakDown();
 
-        this.donutChartCalculation();
+        await this.donutChartCalculation(passBreakdown);
         this.lineChartCalculation(loans);
         this.polarChartCalculation(loans);
         this.barChartCalculation(loans);
@@ -236,8 +236,10 @@ export default {
           this.fullDates.unshift(fullDate);
         }
       },
-      donutChartCalculation(){
+      donutChartCalculation(passBreakDown){
         var that = this;
+
+        that.donut.data.datasets[0].data = passBreakDown ? Object.values(passBreakDown) : [1, 0, 0];
         this.donut.plugins = [{
           beforeDraw: function(chart) {
             var width = chart.chart.width,
@@ -251,7 +253,8 @@ export default {
 
             let donutData = that.donut.data.datasets[0].data;
             let sum = donutData.reduce((partialSum, a) => partialSum + a, 0);
-            var text = (that.donut.data.datasets[0].data[0] / sum * 100).toFixed(0) + '%';
+            var text = (donutData[0] / sum * 100).toFixed(0) + '%';
+            
             var textX = Math.round((width - ctx.measureText(text).width) / 2);
             var textY = height / that.ratio;
 
@@ -261,7 +264,7 @@ export default {
         }];
       },
       barChartCalculation(loans){
-       for (let l of loans){ this.insertIntoCorrectTimeFrame(l, this.bar.data.datasets[0]); }
+        for (let l of loans){ this.insertIntoCorrectTimeFrame(l, this.bar.data.datasets[0]); }
       },
       polarChartCalculation(loans){
         let polarChartData = {};
@@ -278,7 +281,7 @@ export default {
         }
       },
       insertIntoCorrectTimeFrame(l, input){
-        const [day, month, year] = l.startDate.split('/');
+        const [year, month, day] = l.startDate.split('-');
         let record = new Date(+year, +month - 1, +day);
         for (let d = this.fullDates.length - 1; d >= 0; d--){
           const [day1, month1, year1] = this.fullDates[d].split('/');
