@@ -118,14 +118,14 @@ export default {
             data: {
               labels: [],
               datasets: [{
-                label: 'Fort Canning',
+                label: 'Gardens By The Bay',
                 data: [0, 0, 0, 0, 0, 0],
                 fill: false,
                 borderColor: 'rgb(102, 51, 255)',
                 tension: 0.1
               },
               {
-                label: 'Jurong Bird Park',
+                label: 'Singapore Zoo',
                 data: [0, 0, 0, 0, 0, 0],
                 fill: false,
                 borderColor: 'rgb(75, 192, 255)',
@@ -182,12 +182,13 @@ export default {
       },  
       async initCharts() {
         this.initChartLabels();
-        let loans = await DashboardService.getLoansForMonth();
+        let loans = await DashboardService.getAllLoans();
+        let poi = await DashboardService.getPoiBreakDown();
         let passBreakdown = await DashboardService.getPassBreakDown();
 
         await this.donutChartCalculation(passBreakdown);
         this.lineChartCalculation(loans);
-        this.polarChartCalculation(loans);
+        this.polarChartCalculation(poi);
         this.barChartCalculation(loans);
 
         this.myEventHandler();
@@ -266,9 +267,11 @@ export default {
       barChartCalculation(loans){
         for (let l of loans){ this.insertIntoCorrectTimeFrame(l, this.bar.data.datasets[0]); }
       },
-      polarChartCalculation(loans){
+      polarChartCalculation(poi){
+        poi.sort((a, b) => a.passId - b.passId);
+      
         let polarChartData = {};
-        for (let l of loans){ l.poi in polarChartData ? polarChartData[l.poi] += 1 : polarChartData[l.poi] = 1;}
+        for (let p of poi){ polarChartData[p.poi] = p.numLoans}
 
         let polarChartKeys = Object.keys(polarChartData);
         this.polar.data.labels = polarChartKeys;
@@ -276,13 +279,14 @@ export default {
       },
       lineChartCalculation(loans){
         for (let l of loans){
-          var location = this.line.data.datasets.filter(x => x.label == l.poi)[0];
+          var location = this.line.data.datasets.filter(x => x.label == l.pass.poi)[0];
           this.insertIntoCorrectTimeFrame(l, location);
         }
       },
       insertIntoCorrectTimeFrame(l, input){
         const [year, month, day] = l.startDate.split('-');
         let record = new Date(+year, +month - 1, +day);
+
         for (let d = this.fullDates.length - 1; d >= 0; d--){
           const [day1, month1, year1] = this.fullDates[d].split('/');
           let chartJsDate = new Date(+year1, +month1 - 1, +day1);
