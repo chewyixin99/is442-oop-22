@@ -36,7 +36,9 @@ public class ScheduledServiceImpl implements ScheduledService {
         List<Pass> unreturnedPasses = new ArrayList<Pass>();
         for (Loan l: expiredLoans) {
             try {
-                Pass unreturnedPass = passService.updatePassStatus(l.getPassId(), PassStatus.UNRETURNED);
+                Pass unreturnedPass = l.getPass();
+                unreturnedPass.setPassStatus(PassStatus.UNRETURNED);
+                passRepository.save(unreturnedPass);
                 unreturnedPasses.add(unreturnedPass);
             } catch (Exception e) {
                 throw new ActionNotExecutedException("PassService", e);

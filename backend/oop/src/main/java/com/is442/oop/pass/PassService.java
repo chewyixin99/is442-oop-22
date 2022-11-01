@@ -19,6 +19,5 @@ public interface PassService {
     Pass deletePassAttachment(Integer passId) throws ResourceNotFoundException, ActionNotExecutedException;
     Pass deletePassImage(Integer passId) throws ResourceNotFoundException, ActionNotExecutedException;
     Pass deletePass(Integer passId) throws ResourceNotFoundException;
-    Pass getPassByLoanId(Integer loanId) throws RuntimeException;
     List<Pass> getUnreturnedPasses() throws ActionNotExecutedException;
 }

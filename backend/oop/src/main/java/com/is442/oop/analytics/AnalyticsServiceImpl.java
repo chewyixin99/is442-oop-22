@@ -103,21 +103,21 @@ public class AnalyticsServiceImpl implements AnalyticsService {
             throw new ResourceNotFoundException("Loan", "LoanService", "getAllLoan()");
         }
 
-        Map<Integer, Integer> passIdCountMap = new HashMap<>();        
+        Map<Pass, Integer> passCountMap = new HashMap<>();        
         for (Loan loan: allLoans) {
             int numLoans = 1;
-            int passId = loan.getPassId();
-            if (passIdCountMap.containsKey(passId)) {
-                numLoans = passIdCountMap.get(passId) + 1;
+            Pass pass = loan.getPass();
+            if (passCountMap.containsKey(pass)) {
+                numLoans = passCountMap.get(pass) + 1;
             }
-            passIdCountMap.put(passId, numLoans);
+            passCountMap.put(pass, numLoans);
         }
         
         List<AnalyticsPoiBreakdownDTO> result = new ArrayList<>();
         try {
-            for (Entry<Integer, Integer> entry: passIdCountMap.entrySet()) {
-                String poi = passService.getPass(entry.getKey()).getPoi();
-                result.add(new AnalyticsPoiBreakdownDTO(entry.getKey(), poi, entry.getValue()));
+            for (Entry<Pass, Integer> entry: passCountMap.entrySet()) {
+                Pass pass = entry.getKey();
+                result.add(new AnalyticsPoiBreakdownDTO(pass.getPassId(), pass.getPoi(), entry.getValue()));
             }
         } catch (Exception e) {
             throw new ActionNotExecutedException("AnalyticsPoiBreakdownDTO", e);

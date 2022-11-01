@@ -1,7 +1,9 @@
 package com.is442.oop.loan;
 
 import com.is442.oop.data.models.Loan;
+import com.is442.oop.data.models.Pass;
 import com.is442.oop.exception.*;
+import com.is442.oop.pass.PassService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,9 @@ public class LoanServiceImpl implements LoanService{
     @Autowired
     LoanRepository loanRepository;
 
+    @Autowired
+    PassService passService;
+
     @Override
     public List<Loan> getAllLoan() {
         return loanRepository.findAll();
@@ -26,8 +31,14 @@ public class LoanServiceImpl implements LoanService{
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
 
         Integer passID = loanRequest.getPassID();
-        LocalDate startDate = loanRequest.getStartDate();
+        Pass pass = null;
+        try {
+            pass = passService.getPass(passID);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("Pass", e);
+        }
 
+        LocalDate startDate = loanRequest.getStartDate();
         List<Loan> loans = this.getLoanByPassID(passID);
         for (Loan l: loans){
             if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
@@ -37,7 +48,7 @@ public class LoanServiceImpl implements LoanService{
 
         Loan newLoan = new Loan();
         newLoan.setUserId(loanRequest.getUserID());
-        newLoan.setPassId(loanRequest.getPassID());
+        newLoan.setPass(pass);
 
         newLoan.setStartDate(loanRequest.getStartDate());
         newLoan.setEndDate(loanRequest.getEndDate());
@@ -80,7 +91,7 @@ public class LoanServiceImpl implements LoanService{
         List<Loan> loans = this.getAllLoan();
         List<Loan> toReturn = new ArrayList<>();
         for (Loan l: loans){
-            if (l.getPassId() == passID){
+            if (l.getPass().getPassId() == passID){
                 toReturn.add(l);
             }
         }
@@ -125,24 +136,27 @@ public class LoanServiceImpl implements LoanService{
         if (queryLoan.isEmpty()){
             throw new ResourceNotFoundException("Loan", "Loan ID", queryLoanId);
         }
+
+        Integer passID = updateLoanRequest.getPassId();
+        Pass pass = null;
+        try {
+            pass = passService.getPass(passID);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("Pass", e);
+        }
+
         try{
 
             Loan loan = queryLoan.get();
-
             // Making sure the values obtained are inputted during post
             Integer uid = (updateLoanRequest.getUserId() == null) ? loan.getUserId() : updateLoanRequest.getUserId();
-
-            Integer pid = (updateLoanRequest.getPassId() == null) ? loan.getPassId() : updateLoanRequest.getPassId();
-
             LocalDate startDate = (updateLoanRequest.getStartDate() == null) ? loan.getStartDate() : updateLoanRequest.getStartDate();
-
             LocalDate endDate = (updateLoanRequest.getEndDate() == null) ? loan.getEndDate() : updateLoanRequest.getEndDate();
-
             Integer gopId = (updateLoanRequest.getGopId() == null) ? loan.getGopId() : updateLoanRequest.getGopId();
 
             // update the loan
             loan.setUserId(uid);
-            loan.setPassId(pid);
+            loan.setPass(pass);
             loan.setStartDate(startDate);
             loan.setEndDate(endDate);
             loan.setGopId(gopId);

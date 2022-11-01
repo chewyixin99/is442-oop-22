@@ -68,7 +68,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             Loan loan = loanService.getLoanByLoanID(loanId);
             User user = userService.getUser(loan.getUserId());
-            Pass pass = passService.getPass(loan.getPassId());
+            Pass pass = loan.getPass();
             Template template = templateService.getTemplate(templateId);
     
             InputStream attachmentStream = new ByteArrayInputStream(pass.getPassAttachment());

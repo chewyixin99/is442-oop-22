@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
-    @Query(value = "select * from Loan l where l.end_date >= CURRENT_DATE and not l.is_completed and not l.defunct", nativeQuery = true)
+    @Query(value = "select * from Loan l where l.end_date <= CURRENT_DATE and not l.is_completed and not l.defunct", nativeQuery = true)
     List<Loan> getAllExpiredLoans();
 }
