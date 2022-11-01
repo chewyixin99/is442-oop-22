@@ -36,8 +36,13 @@ public class Loan {
     private int gopId;
     // @ManyToOne
     // private Pass pass;
-    @Column(name = "pass_id", nullable = false)
-    private int passId;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "pass_id")
+    private Pass pass;
+
+    // @Column(name = "pass_id", nullable = false)
+    // private int passId;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "start_date", nullable = false)
