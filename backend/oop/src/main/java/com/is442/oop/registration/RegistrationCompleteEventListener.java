@@ -7,6 +7,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import com.is442.oop.data.models.User;
+import com.is442.oop.email.EmailService;
+import com.is442.oop.exception.ActionNotExecutedException;
 import com.is442.oop.user.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,9 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public void onApplicationEvent(RegistrationCompleteEvent event) {
         // create verification token for the user link
@@ -27,6 +32,12 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
 
         // send email to user
         String url = event.getApplicationUrl() + "/verifyRegistration?token=" + token;
+        try {
+            emailService.sendSimpleConfirmationUrlEmail(user, 1, url);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("RegistrationCompleteEvent", e);
+        }
+        
         // ideally this is where we send the email, 'sendVerificationEmail()'
         log.info("Click the link to verify your account {}", url); // to reimplement with email instead of logging just to console
     }

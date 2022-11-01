@@ -44,20 +44,36 @@ public class EmailServiceImpl implements EmailService {
     
     /**
      * ================================================== Main Services ==================================================
-     */
-
-    /**
-     * For admin emails with content differing based on tempalteId.
-     * E.g. (1) Loan Confirmation, (2) Pass Unreturned, (3) Pass Missing
+     * Processes email content before using this.sendGenericEmail() or this.sendAttachmentEmail()
      */
     public void sendAdminEmail(Integer loanId, Integer templateId) throws ActionNotExecutedException {
         try {
             Loan loan = loanService.getLoanByLoanID(loanId);
             User user = userService.getUser(loan.getUserId());
             Template template = templateService.getTemplate(templateId);
-            this.sendGenericEmail(user.getEmail(), template);
+            String emailSubject = template.getTemplateSubject();
+            String emailBody = template.getTemplateData();
+            this.sendGenericEmail(user.getEmail(), emailSubject, emailBody);
         } catch (Exception e) {
-            throw new ActionNotExecutedException("Email", e);
+            throw new ActionNotExecutedException("sendAdminEmail", e);
+        }
+    }
+
+    /**
+     * @param user                          User object
+     * @param tempalteId                    Template Id
+     * @param confirmationUrl               Url to be displayed and anchored in template's body
+     * @throws ActionNotExecutedException   Catch all
+     */
+    public void sendSimpleConfirmationUrlEmail(User user, Integer tempalteId, String confirmationUrl) throws ActionNotExecutedException {
+        try {
+            Template template = templateService.getTemplate(tempalteId);
+            String emailSubject = template.getTemplateSubject();
+            String templateData = template.getTemplateData();
+            String emailBody = String.format(templateData, user.getUsername(), confirmationUrl, confirmationUrl);
+            this.sendGenericEmail(user.getEmail(), emailSubject, emailBody);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("sendSimpleConfirmationUrlEmail", e);
         }
     }
 
@@ -75,28 +91,26 @@ public class EmailServiceImpl implements EmailService {
             DataSource attachment = new ByteArrayDataSource(attachmentStream, "application/octet-stream");
             this.sendAttachmentEmail(user.getEmail(), template, pass.getPassAttachmentName(), attachment);;
         } catch (Exception e) {
-            throw new ActionNotExecutedException("Email", e);
+            throw new ActionNotExecutedException("sendPassConfirmationEmail", e);
         }
     }
     
     /**
      * ================================================== Helper Services ==================================================
      */
-
-    /**
-     * All emails should use a template, thus, should be able to be sent via sendGenericEmail().
-     */
     @Override
-    public void sendGenericEmail(String recipientEmail, Template template) throws ActionNotExecutedException {      
-        SimpleMailMessage message = new SimpleMailMessage();
+    public void sendGenericEmail(String recipientEmail, String emailSubject, String emailBody) throws ActionNotExecutedException {      
+        MimeMessage message = mailSender.createMimeMessage();
+        boolean isHtmlText = true;
 
         try {
-            message.setFrom(this.senderEmail);
-            message.setTo(recipientEmail);
-            message.setSubject(template.getTemplateSubject());
-            message.setText(template.getTemplateData());
+            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+            messageHelper.setFrom(this.senderEmail);
+            messageHelper.setTo(recipientEmail);
+            messageHelper.setSubject(emailSubject);
+            messageHelper.setText(emailBody, isHtmlText);
         } catch(Exception e) {
-            throw new ActionNotExecutedException("Email", e);
+            throw new ActionNotExecutedException("sendGenericEmail", e);
         }
 
         mailSender.send(message);
@@ -109,15 +123,17 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendAttachmentEmail(String recipientEmail, Template template, String attachmentName, DataSource attachment) throws ActionNotExecutedException {        
         MimeMessage message = mailSender.createMimeMessage();
+        boolean isHtmlText = true;
+        
         try {
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
             messageHelper.setFrom(this.senderEmail);
             messageHelper.setTo(recipientEmail);
             messageHelper.setSubject(template.getTemplateSubject());
-            messageHelper.setText(template.getTemplateData());
+            messageHelper.setText(template.getTemplateData(), isHtmlText);
             messageHelper.addAttachment(attachmentName, attachment);
         } catch(Exception e) {
-            throw new ActionNotExecutedException("Email", e);
+            throw new ActionNotExecutedException("sendAttachmentEmail", e);
         }
 
         mailSender.send(message);
