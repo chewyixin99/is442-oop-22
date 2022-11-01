@@ -2,6 +2,7 @@ package com.is442.oop.email;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.time.LocalDate;
 
 import javax.activation.DataSource;
 import javax.mail.internet.MimeMessage;
@@ -18,7 +19,6 @@ import com.is442.oop.data.models.Pass;
 import com.is442.oop.data.models.Template;
 import com.is442.oop.data.models.User;
 import com.is442.oop.exception.ActionNotExecutedException;
-import com.is442.oop.loan.LoanService;
 import com.is442.oop.pass.PassService;
 import com.is442.oop.template.TemplateService;
 import com.is442.oop.user.UserService;
@@ -35,9 +35,6 @@ public class EmailServiceImpl implements EmailService {
     TemplateService templateService;
 
     @Autowired
-    LoanService loanService;
-
-    @Autowired
     PassService passService;
 
     String senderEmail = "sport.singapore.helpdesk@gmail.com";
@@ -46,18 +43,56 @@ public class EmailServiceImpl implements EmailService {
      * ================================================== Main Services ==================================================
      * Processes email content before using this.sendGenericEmail() or this.sendAttachmentEmail()
      */
-    public void sendAdminEmail(Integer loanId, Integer templateId) throws ActionNotExecutedException {
+    // public void sendAdminEmail(Integer loanId, Integer templateId) throws ActionNotExecutedException {
+    //     try {
+    //         Loan loan = loanService.getLoanByLoanID(loanId);
+    //         User user = userService.getUser(loan.getUserId());
+    //         Template template = templateService.getTemplate(templateId);
+    //         String emailSubject = template.getTemplateSubject();
+    //         String emailBody = template.getTemplateData();
+    //         this.sendGenericEmail(user.getEmail(), emailSubject, emailBody);
+    //     } catch (Exception e) {
+    //         throw new ActionNotExecutedException("sendAdminEmail", e);
+    //     }
+    // }
+
+    public void sendLoanConfirmationEmail(Loan loan, Integer templateId) throws ActionNotExecutedException {
         try {
-            Loan loan = loanService.getLoanByLoanID(loanId);
             User user = userService.getUser(loan.getUserId());
+            Pass pass = loan.getPass();
             Template template = templateService.getTemplate(templateId);
+            
+            // Email fields
+            String username = user.getUsername();
+            String poi = pass.getPoi();
+            String date = loan.getStartDate().toString();
+
             String emailSubject = template.getTemplateSubject();
-            String emailBody = template.getTemplateData();
-            this.sendGenericEmail(user.getEmail(), emailSubject, emailBody);
+            String templateData = template.getTemplateData();
+            String emailBody = String.format(templateData, username, poi, date, poi, poi, poi, poi);
+            InputStream attachmentStream = new ByteArrayInputStream(pass.getPassAttachment());
+            DataSource attachment = new ByteArrayDataSource(attachmentStream, "application/octet-stream");
+            this.sendAttachmentEmail(user.getEmail(), emailSubject, emailBody, pass.getPassAttachmentName(), attachment);
         } catch (Exception e) {
-            throw new ActionNotExecutedException("sendAdminEmail", e);
+            throw new ActionNotExecutedException("sendLoanConfirmationEmail", e);
         }
-    }
+    };
+
+
+    // public void sendPassConfirmationEmail(Integer loanId, Integer templateId) throws ActionNotExecutedException {
+    //     try {
+    //         Loan loan = loanService.getLoanByLoanID(loanId);
+    //         User user = userService.getUser(loan.getUserId());
+    //         Pass pass = loan.getPass();
+    //         Template template = templateService.getTemplate(templateId);
+    
+    //         InputStream attachmentStream = new ByteArrayInputStream(pass.getPassAttachment());
+    //         DataSource attachment = new ByteArrayDataSource(attachmentStream, "application/octet-stream");
+    //         this.sendAttachmentEmail(user.getEmail(), template, pass.getPassAttachmentName(), attachment);;
+    //     } catch (Exception e) {
+    //         throw new ActionNotExecutedException("sendPassConfirmationEmail", e);
+    //     }
+    // }
 
     /**
      * @param user                          User object
@@ -74,24 +109,6 @@ public class EmailServiceImpl implements EmailService {
             this.sendGenericEmail(user.getEmail(), emailSubject, emailBody);
         } catch (Exception e) {
             throw new ActionNotExecutedException("sendSimpleConfirmationUrlEmail", e);
-        }
-    }
-
-    /**
-     * Should be triggered on pass confirmation.
-     */
-    public void sendPassConfirmationEmail(Integer loanId, Integer templateId) throws ActionNotExecutedException {
-        try {
-            Loan loan = loanService.getLoanByLoanID(loanId);
-            User user = userService.getUser(loan.getUserId());
-            Pass pass = loan.getPass();
-            Template template = templateService.getTemplate(templateId);
-    
-            InputStream attachmentStream = new ByteArrayInputStream(pass.getPassAttachment());
-            DataSource attachment = new ByteArrayDataSource(attachmentStream, "application/octet-stream");
-            this.sendAttachmentEmail(user.getEmail(), template, pass.getPassAttachmentName(), attachment);;
-        } catch (Exception e) {
-            throw new ActionNotExecutedException("sendPassConfirmationEmail", e);
         }
     }
     
@@ -121,7 +138,7 @@ public class EmailServiceImpl implements EmailService {
      * Email to be sent when pass is confirmed.
      */
     @Override
-    public void sendAttachmentEmail(String recipientEmail, Template template, String attachmentName, DataSource attachment) throws ActionNotExecutedException {        
+    public void sendAttachmentEmail(String recipientEmail, String emailSubject, String emailBody, String attachmentName, DataSource attachment) throws ActionNotExecutedException {        
         MimeMessage message = mailSender.createMimeMessage();
         boolean isHtmlText = true;
         
@@ -129,8 +146,8 @@ public class EmailServiceImpl implements EmailService {
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
             messageHelper.setFrom(this.senderEmail);
             messageHelper.setTo(recipientEmail);
-            messageHelper.setSubject(template.getTemplateSubject());
-            messageHelper.setText(template.getTemplateData(), isHtmlText);
+            messageHelper.setSubject(emailSubject);
+            messageHelper.setText(emailBody, isHtmlText);
             messageHelper.addAttachment(attachmentName, attachment);
         } catch(Exception e) {
             throw new ActionNotExecutedException("sendAttachmentEmail", e);

@@ -2,6 +2,7 @@ package com.is442.oop.loan;
 
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.models.Pass;
+import com.is442.oop.email.EmailService;
 import com.is442.oop.exception.*;
 import com.is442.oop.pass.PassService;
 
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 @Service
 public class LoanServiceImpl implements LoanService{
     @Autowired
@@ -21,11 +24,15 @@ public class LoanServiceImpl implements LoanService{
     @Autowired
     PassService passService;
 
+    @Autowired
+    EmailService emailService;
+
     @Override
     public List<Loan> getAllLoan() {
         return loanRepository.findAll();
     }
     // Done
+    @Transactional
     @Override
     public Loan createLoan(LoanRequest loanRequest) throws ActionNotExecutedException {
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
@@ -54,6 +61,12 @@ public class LoanServiceImpl implements LoanService{
         newLoan.setEndDate(loanRequest.getEndDate());
         newLoan.setGopId(1);
         loanRepository.save(newLoan);
+
+        try {
+            emailService.sendLoanConfirmationEmail(newLoan, 3);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("sendLoanConfirmationEmail", e);
+        }
 
         return newLoan;
     }
