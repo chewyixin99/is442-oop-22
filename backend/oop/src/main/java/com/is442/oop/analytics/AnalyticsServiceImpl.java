@@ -1,7 +1,10 @@
 package com.is442.oop.analytics;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,8 +12,10 @@ import org.springframework.stereotype.Service;
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.models.Pass;
 import com.is442.oop.data.models.PassStatus;
+import com.is442.oop.data.payloads.dto.AnalyticsPoiBreakdownDTO;
 import com.is442.oop.data.payloads.dto.AnalyticsPassBreakdownDTO;
 import com.is442.oop.exception.ActionNotExecutedException;
+import com.is442.oop.exception.ResourceNotFoundException;
 import com.is442.oop.loan.LoanService;
 import com.is442.oop.pass.PassService;
 
@@ -92,5 +97,35 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         }
         
         return passBreakdown;
+    };
+
+    @Override
+    public List<AnalyticsPoiBreakdownDTO> getPoiBreakdown() throws ActionNotExecutedException {
+        List<Loan> allLoans = loanService.getAllLoan();
+        if (allLoans == null) {
+            throw new ResourceNotFoundException("Loan", "LoanService", "getAllLoan()");
+        }
+
+        Map<Integer, Integer> passIdCountMap = new HashMap<>();        
+        for (Loan loan: allLoans) {
+            int numLoans = 1;
+            int passId = loan.getPassId();
+            if (passIdCountMap.containsKey(passId)) {
+                numLoans = passIdCountMap.get(passId) + 1;
+            }
+            passIdCountMap.put(passId, numLoans);
+        }
+        
+        List<AnalyticsPoiBreakdownDTO> result = new ArrayList<>();
+        try {
+            for (Entry<Integer, Integer> entry: passIdCountMap.entrySet()) {
+                String poi = passService.getPass(entry.getKey()).getPoi();
+                result.add(new AnalyticsPoiBreakdownDTO(entry.getKey(), poi, entry.getValue()));
+            }
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("AnalyticsPoiBreakdownDTO", e);
+        }
+
+        return result;
     };
 }

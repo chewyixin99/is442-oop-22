@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.payloads.dto.AnalyticsPassBreakdownDTO;
+import com.is442.oop.data.payloads.dto.AnalyticsPoiBreakdownDTO;
 import com.is442.oop.data.payloads.response.DataResponse;
+import com.is442.oop.exception.ResourceNotFoundException;
 
 @RestController
 @RequestMapping("/analytics")
@@ -62,5 +64,19 @@ public class AnalyticsController {
             return new ResponseEntity<>(new DataResponse(passBreakdown, e), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(new DataResponse(passBreakdown, "AnalyticsService"), HttpStatus.OK);
+    }
+
+    @GetMapping("/getPoiBreakdown")
+    public ResponseEntity<DataResponse> getPoiBreakdown() {
+        List<AnalyticsPoiBreakdownDTO> poiBreakdown = null;
+        try {
+            poiBreakdown = analyticsService.getPoiBreakdown();
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(new DataResponse(poiBreakdown, e), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(poiBreakdown, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        return new ResponseEntity<>(new DataResponse(poiBreakdown, "AnalyticsService"), HttpStatus.OK);
     }
 }
