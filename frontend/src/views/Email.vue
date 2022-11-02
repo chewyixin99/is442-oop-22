@@ -322,9 +322,15 @@ export default {
       console.log(this.emailTemplates);
     },
     async deleteTemplateMethod(templateID) {
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       try {
         await axios
-          .delete(this.templateURL + "/" + templateID)
+          .delete(this.templateURL + "/" + templateID, config)
           .then((response) => {
             this.getEmailDatas();
             console.log(response);
@@ -347,9 +353,15 @@ export default {
       this.putTemplateMethod(templateID, temp);
     },
     async putTemplateMethod(templateID, templateDATA) {
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       try {
         await axios
-          .put(this.templateURL + "/" + templateID, templateDATA)
+          .put(this.templateURL + "/" + templateID, templateDATA, config)
           .then((response) => {
             this.backupContentData = ``;
             this.getEmailDatas();
@@ -371,9 +383,15 @@ export default {
       this.PostTemplateMethod(temp);
     },
     async PostTemplateMethod(templateDATAToPost) {
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       try {
         await axios
-          .post(this.templateURL, templateDATAToPost)
+          .post(this.templateURL, templateDATAToPost, config)
           .then((response) => {
             this.getEmailDatas();
             console.log(response);

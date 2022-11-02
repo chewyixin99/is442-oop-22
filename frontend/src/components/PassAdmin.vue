@@ -339,6 +339,12 @@ export default({
                 
             },
             onUpload(){ //This function POST new data information into DB
+                const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+                const config = {
+                    headers: {
+                    Authorization: bearer_token,
+                    },
+                };
                 const fd = new FormData()
                 fd.append("passDesc", this.NEWpassDesc)
                 fd.append("poi", this.NEWpoi)
@@ -354,7 +360,7 @@ export default({
                 if(this.selectedImage!==null){
                     fd.append("passImage", this.selectedImage)
                 }
-                axios.post("http://localhost:8081/passes", fd)
+                axios.post("http://localhost:8081/passes", fd, config)
                 .then(res=>{
                     console.log(res)
                     this.initialState()
@@ -364,7 +370,12 @@ export default({
             async updatePassMethod(passID){
                 console.log(this.PassAdminPasses[passID-1].passDesc)
                 console.log(this.PassAdminPasses[passID-1].poiUrl)
-                
+                const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+                const config = {
+                    headers: {
+                    Authorization: bearer_token,
+                    },
+                };
                 const UPDATEfd = new FormData()
                 UPDATEfd.append("passDesc", this.PassAdminPasses[passID-1].passDesc)
                 UPDATEfd.append("poi", this.PassAdminPasses[passID-1].poi)
@@ -383,7 +394,7 @@ export default({
                 
                 console.log(UPDATEfd)
                 try{
-                    await axios.put(this.passURL+"/"+passID, UPDATEfd)
+                    await axios.put(this.passURL+"/"+passID, UPDATEfd, config)
                     .then(response => {
                         this.selectedFile = null
                         this.$emit('getPassData')
@@ -404,8 +415,14 @@ export default({
                 downloadLink.click();
             },
             async deleteExistingPass(passID){
+                const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+                const config = {
+                    headers: {
+                    Authorization: bearer_token,
+                    },
+                };
                 try{
-                    await axios.delete(this.passURL+"/"+passID)
+                    await axios.delete(this.passURL+"/"+passID, config)
                     .then(response => {
                         this.$emit('getPassData')
                         console.log(response);
@@ -415,8 +432,14 @@ export default({
                 }
             },
             async removeFileFromDB(passID){
+                const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+                const config = {
+                    headers: {
+                    Authorization: bearer_token,
+                    },
+                };
                 try{
-                    await axios.put(this.passURL+"/deletePassAttachment/"+passID)
+                    await axios.put(this.passURL+"/deletePassAttachment/"+passID, config)
                     .then(response => {
                         this.$refs.updatePassAttachmentText.value = null;
                         this.$emit('getPassData')
