@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -39,7 +40,26 @@ public class RegistrationController {
     @Autowired
     private EmailService emailService;
 
+
+    // Deprecated (can delete)
+    // @PostMapping("/register")
+    // public ResponseEntity<DataResponse> registerUser(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
+    //     System.out.println("RegistrationController: registerUser");
+    //     User user = null;            
+    //     try {
+    //         user = userService.registerUser(userRequest);
+    //     } catch (IllegalArgumentException e) {
+    //         return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.NOT_ACCEPTABLE);
+    //     } catch (Exception e) {
+    //         return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
+    //     }
+
+    //     publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(request)));
+    //     return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
+    // }
+
     @PostMapping("/register")
+    @Transactional
     public ResponseEntity<DataResponse> registerUser(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
         System.out.println("RegistrationController: registerUser");
         User user = null;            
@@ -51,7 +71,23 @@ public class RegistrationController {
             return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(request)));
+        // Prepare token for email
+        String url = null;
+        try {
+            String token = UUID.randomUUID().toString();
+            userService.saveVerificationTokenForUser(token, user);
+            url = this.applicationUrl(request) + "/verifyRegistration?token=" + token;
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        // Send email
+        try {
+            emailService.sendSimpleConfirmationUrlEmail(user, 1, url);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
     }
 
