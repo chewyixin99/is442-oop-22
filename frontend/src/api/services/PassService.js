@@ -3,8 +3,14 @@ import BaseApiService from "../BaseApiService";
 
 class PassService extends BaseApiService {
     async getAllPasses() {
+        const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+        const config = {
+            headers: {
+                Authorization: bearer_token,
+            },
+        };
         try {
-            let passes = await axiosClient.get("/passes");
+            let passes = await axiosClient.get("/passes", config);
             // console.log(passes.data);
             return passes.data
 
