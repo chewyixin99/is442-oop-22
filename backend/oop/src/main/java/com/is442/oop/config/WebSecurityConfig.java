@@ -30,12 +30,11 @@ public class WebSecurityConfig {
     private final RsaKeyProperties rsaKeys;
 
     private static final String[] WHITE_LIST_URLS = {
-        "/swagger-ui/index.html",
+        "/**",
         "/register",
         "/verifyRegistration*",
         "/resendVerificationToken*",
-        "/login*",
-        // "/**"
+        "/login*"
     };
 
     public WebSecurityConfig(RsaKeyProperties rsaKeys) {
