@@ -23,6 +23,9 @@ public class Pass {
     @Column(name = "pass_id", nullable = false)
     private Integer passId;
 
+    @Column(name = "pass_number", nullable = false)
+    private Integer passNumber;
+
     @Column(name = "pass_desc", nullable = true)
     private String passDesc;
 

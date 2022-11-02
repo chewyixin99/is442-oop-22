@@ -33,6 +33,7 @@ public class PassServiceImpl implements PassService {
         try {
             pass.setPoi(passRequest.getPoi());
             pass.setPoiUrl(passRequest.getPoiUrl());
+            pass.setPassNumber(passRequest.getPassNumber());
             pass.setPassDesc(passRequest.getPassDesc());
             pass.setNumGuests(passRequest.getNumGuests());
             pass.setReplacementFee(passRequest.getReplacementFee());
@@ -110,6 +111,7 @@ public class PassServiceImpl implements PassService {
             pass = queryPass.get();
             pass.setPoi(passRequest.getPoi());
             pass.setPoiUrl(passRequest.getPoiUrl());
+            pass.setPassNumber(passRequest.getPassNumber());
             pass.setPassDesc(passRequest.getPassDesc());
             pass.setNumGuests(passRequest.getNumGuests());
             pass.setReplacementFee(passRequest.getReplacementFee());

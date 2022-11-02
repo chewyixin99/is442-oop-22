@@ -40,6 +40,7 @@ public class PassController {
     public ResponseEntity<DataResponse> createPass(
             @RequestParam(value = "passDesc", required = true) String passDesc,
             @RequestParam(value = "poi", required = true) String poi,
+            @RequestParam(value = "passNumber", required = true) Integer passNumber,
             @RequestParam(value = "poiUrl", required = false) String poiUrl,
             @RequestParam(value = "numGuests", required = true) Integer numGuests,
             @RequestParam(value = "replacementFee", required = true) Double replacementFee,
@@ -49,7 +50,7 @@ public class PassController {
             @RequestParam(value = "passAttachment", required = false) MultipartFile passAttachment,
             @RequestParam(value = "passImage", required = false) MultipartFile passImage) {
 
-        PassRequest passRequest = new PassRequest(passDesc, poi, poiUrl, numGuests, replacementFee, isPhysical,
+        PassRequest passRequest = new PassRequest(passDesc, poi, passNumber, poiUrl, numGuests, replacementFee, isPhysical,
                 passStatus, passAttachmentName, passAttachment, passImage);
         Pass newPass = null;
         try {
@@ -68,6 +69,7 @@ public class PassController {
             @PathVariable("passId") Integer passId,
             @RequestParam(value = "passDesc", required = true) String passDesc,
             @RequestParam(value = "poi", required = true) String poi,
+            @RequestParam(value = "passNumber", required = true) Integer passNumber,
             @RequestParam(value = "poiUrl", required = false) String poiUrl,
             @RequestParam(value = "numGuests", required = true) Integer numGuests,
             @RequestParam(value = "replacementFee", required = true) Double replacementFee,
@@ -77,7 +79,7 @@ public class PassController {
             @RequestParam(value = "passAttachment", required = false) MultipartFile passAttachment,
             @RequestParam(value = "passImage", required = false) MultipartFile passImage) {
         Pass updatePass = null;
-        PassRequest passRequest = new PassRequest(passDesc, poi, poiUrl, numGuests, replacementFee, isPhysical,
+        PassRequest passRequest = new PassRequest(passDesc, poi, passNumber, poiUrl, numGuests, replacementFee, isPhysical,
         passStatus, passAttachmentName, passAttachment, passImage);
         try {
             updatePass = passService.updatePass(passId, passRequest);
