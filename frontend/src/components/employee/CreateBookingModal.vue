@@ -218,7 +218,14 @@
                   id="exampleCheck1"
                   v-model="isChecked"
                 />
-                <span>I accept the <a target="_blank" href="https://www.youtube.com/watch?v=xvFZjo5PgG0">terms and conditions</a> </span>
+                <span
+                  >I accept the
+                  <a
+                    target="_blank"
+                    href="https://www.youtube.com/watch?v=xvFZjo5PgG0"
+                    >terms and conditions</a
+                  >
+                </span>
               </div>
               <button
                 type="button"
@@ -261,7 +268,8 @@ export default {
   },
   data() {
     return {
-      selectedLoan: {id:null}, // this to prevent a type error as edit booking modal is using this
+      user: {},
+      selectedLoan: { id: null }, // this to prevent a type error as edit booking modal is using this
       bookingGuestDetails: [
         {
           name: "",
@@ -280,7 +288,7 @@ export default {
       availablePasses: [],
       retrievedData: {
         passID: null,
-        userID: 0,
+        userID: this.user.userId,
         start: "",
         end: "",
       },
@@ -320,41 +328,44 @@ export default {
     forceRerender() {
       this.componentKey += 1;
     },
-    
-    processDate2(date){
-      
-      let split = date.split("-").reverse()
+
+    processDate2(date) {
+      let split = date.split("-").reverse();
       for (let i = 0; i < split.length; i++) {
         if (split[i].length == 1) {
           split[i] = "0" + split[i];
         }
       }
-console.log(date)
+      console.log(date);
       return split.join("/");
     },
     async submitBooking() {
-
       // this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
       // this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
-
+      ``;
 
       this.isLoading = true;
-      console.log(this.retrievedData)
+      console.log(this.retrievedData);
+
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       axios
-        .post("http://localhost:8081/loan", this.retrievedData)
+        .post("http://localhost:8081/loan", this.retrievedData, config)
         .then((response) => {
           console.log(response);
-            setTimeout(() => {
-              this.isLoading = false;
-              document.getElementById("create-close-btn").click();
-              this.$emit("bookingSubmitted", this.retrievedData);
-              this.$emit("toastrMsg", {
-                status: "Success",
-                msg: "Booking is successful!",
-              });
-            }, 1000);
-
-          
+          setTimeout(() => {
+            this.isLoading = false;
+            document.getElementById("create-close-btn").click();
+            this.$emit("bookingSubmitted", this.retrievedData);
+            this.$emit("toastrMsg", {
+              status: "Success",
+              msg: "Booking is successful!",
+            });
+          }, 1000);
         })
         .catch((error) => {
           console.log(error);
@@ -362,8 +373,14 @@ console.log(date)
     },
 
     getData() {
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       axios
-        .get("http://localhost:8081/passes")
+        .get("http://localhost:8081/passes",config)
         .then((response) => {
           this.availablePasses = response.data.data;
         })
@@ -375,6 +392,9 @@ console.log(date)
   mounted() {
     // fetch data from api
     this.getData();
+  },
+  beforeCreate() {
+    this.user = JSON.parse(localStorage.getItem("user"));
   },
 };
 </script>

@@ -228,8 +228,14 @@ export default {
     },
     async cancelBooking() {
       this.isLoading = true;
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       axios
-        .delete("http://localhost:8081/loan/" + this.rowData.id)
+        .delete("http://localhost:8081/loan/" + this.rowData.id,config)
         .then((response) => {
           console.log(response);
           if (response.status != 500) {

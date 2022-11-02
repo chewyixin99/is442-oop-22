@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="flex-column d-flex align-items-center justify-content-center">
-      <h1 class="pt-4 mb-4">Booking</h1>
+      <h1 class="pt-4 mb-4">My Booking</h1>
       <div class="tableBox position-relative">
         <hr />
         <div class="container">
@@ -88,7 +88,7 @@ import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/employee/CancelBookingModal.vue";
 import EditBookingModal from "@/components/employee/EditBookingModal.vue";
 
-import axios from "axios";
+// import axios from "axios";
 
 export default {
   name: "ViewBooking",
@@ -100,6 +100,8 @@ export default {
   },
   data() {
     return {
+      user: JSON.parse(localStorage.getItem("user")),
+      token: "",
       toastrResponse: "",
       formInput: { startStr: "null" },
       type: "employee",
@@ -115,7 +117,6 @@ export default {
       successFlag: false,
       retrievedData: [],
       bookingDetails: {},
-      userId: 1,
       currentBookingsGrid: new Grid({
         resizable: true,
         columns: [
@@ -216,17 +217,19 @@ export default {
         ],
         server: {
           url: "http://localhost:8081/loan",
+          headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
               .map((data) => [
                 data.loanId,
-                data.passId,
-                data.startDate,
+                data.pass.poi,
+                data.startDate,   
                 data.endDate,
-                data.defunct
+                data.defunct,
+                data.userId
               ])
               .filter(
-                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
+                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false) && (data[5] == this.user.userId)
               ),
         },
         search: true,
@@ -298,16 +301,18 @@ export default {
         ],
         server: {
           url: "http://localhost:8081/loan",
+          headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
               .map((data) => [
                 data.loanId,
-                data.passId,
+                data.pass.poi,
                 data.startDate,
                 data.endDate,
+                data.userId
               ])
               .filter(
-                (data) => data[2] < new Date().toISOString().replace(/T.*$/, "")
+                (data) => data[2] < new Date().toISOString().replace(/T.*$/, "") && (data[4] == this.user.userId)
               ),
         },
         search: true,
@@ -339,10 +344,17 @@ export default {
       }),
     };
   },
+  beforeCreate(){
+    const getToken = localStorage.getItem("token");
+    this.token = `Bearer ${getToken}`
+  },
   mounted() {
+
     this.currentBookingsGrid.render(document.getElementById("table1"));
     this.pastBookingsGrid.render(document.getElementById("table2"));
-    this.getData();
+    // this.getData();
+  
+
   },
   methods: {
     processDate(date){
@@ -370,44 +382,51 @@ export default {
     updateToastrMsg(res) {
       this.toastrResponse = res;
     },
-    getData() {
-      axios
-        .get("http://localhost:8081/loan")
-        .then((response) => {
-          let resList = [];
-          console.log(response.data.data);
-          console.log(this.selectedPass);
-          resList = response.data.data.filter((pass) => pass.userId == this.userId);
+    // getData() {
 
-          // loop through resList
-          for (let i = 0; i < resList.length; i++) {
-            let passTitle = resList[i].passId;
-            let id = resList[i].loanId;
-            let startDate = resList[i].startDate;
-            let endDate = resList[i].endDate;
-            let previous = "N.A.";
-            let following = "N.A.";
-            console.log(             id,
-              passTitle,
-              startDate,
-              endDate,
-              previous,
-              following);
-            this.currentBookingsGrid.data.push([
-              id,
-              passTitle,
-              startDate,
-              endDate,
-              previous,
-              following,
-            ]);
-          }
-          console.log(this.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    //   const bearer_token = `Bearer ${localStorage.getItem('token')}`;
+    //   const config = {
+    //       headers: {
+    //         Authorization: bearer_token
+    //       }
+    //   };
+    //   axios
+    //     .get("http://localhost:8081/loan", config)
+    //     .then((response) => {
+    //       let resList = [];
+    //       console.log(response.data.data);
+    //       console.log(this.selectedPass);
+    //       resList = response.data.data.filter((pass) => pass.userId == this.userId);
+
+    //       // loop through resList
+    //       for (let i = 0; i < resList.length; i++) {
+    //         let passTitle = resList[i].passId;
+    //         let id = resList[i].loanId;
+    //         let startDate = resList[i].startDate;
+    //         let endDate = resList[i].endDate;
+    //         let previous = "N.A.";
+    //         let following = "N.A.";
+    //         console.log(             id,
+    //           passTitle,
+    //           startDate,
+    //           endDate,
+    //           previous,
+    //           following);
+    //         this.currentBookingsGrid.data.push([
+    //           id,
+    //           passTitle,
+    //           startDate,
+    //           endDate,
+    //           previous,
+    //           following,
+    //         ]);
+    //       }
+    //       console.log(this.data);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
     bookingSubmitted(data) {
       console.log(data);      
       this.currentBookingsGrid.forceRender();

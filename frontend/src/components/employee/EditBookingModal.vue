@@ -252,9 +252,16 @@ export default {
       this.retrievedLoanData.startDate = this.retrievedData.startDate
       this.retrievedLoanData.endDate = this.retrievedData.endDate
       console.log(this.retrievedLoanData);
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       axios
-        .put("http://localhost:8081/loan/update", this.retrievedLoanData)
+        .put("http://localhost:8081/loan/update", this.retrievedLoanData,config)
         .then((response) => {
+          console.log(response);
           if (response.status != 500) {
             this.isLoading = false;
             document.getElementById("edit-close-btn").click();
@@ -271,12 +278,19 @@ export default {
     },
 
     getData() {
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       axios
-        .get("http://localhost:8081/loan/" + this.rowData.id)
+        .get("http://localhost:8081/loan/" + this.rowData.id, config)
         .then((response1) => {
           this.retrievedLoanData = response1.data.data
+          console.log(response1);
           axios
-            .get("http://localhost:8081/passes/" + response1.data.data.passId)
+            .get("http://localhost:8081/passes/" + response1.data.data.pass.passId, config)
             .then((response2) => {
               console.log('response2', response2.data);
               setTimeout(() => {

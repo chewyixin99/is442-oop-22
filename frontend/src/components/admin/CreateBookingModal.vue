@@ -362,8 +362,14 @@ console.log(date)
     },
 
     getData() {
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
       axios
-        .get("http://localhost:8081/passes")
+        .get("http://localhost:8081/passes", config)
         .then((response) => {
           this.availablePasses = response.data.data;
         })

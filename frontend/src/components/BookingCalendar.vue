@@ -22,6 +22,7 @@ export default {
   },
   data() {
     return {
+      user: {},
       componentKey: 0,
       isEditing: false,
       calendarOptions: {
@@ -46,9 +47,9 @@ export default {
         droppable: true,
         eventDrop: this.handleDropChange,
       },
-      userId: 1,
+      userId: this.user.userId,
       selectedData: {
-        userID: 0,
+        userID: this.userId,
         passID: 0,
         startDate: "",
         endDate: "",
@@ -122,11 +123,18 @@ export default {
 
     // retrieve data, process it, and set it as the events source
     getData() {
+      const bearer_token = `Bearer ${localStorage.getItem('token')}`;
+      const config = {
+          headers: {
+            Authorization: bearer_token
+          }
+      };
       axios
-        .get("http://localhost:8081/loan")
+        .get("http://localhost:8081/loan",config)
         .then((response) => {
+          console.log(response);
           this.selectedPassLoans = response.data.data.filter(
-            (pass) => pass.passId == this.selectedPass.passId && pass.defunct == false
+            (pass) => pass.pass.passId == this.selectedPass.passId && pass.defunct == false
           );
 
           console.log(this.selectedPassLoans);
@@ -207,6 +215,9 @@ export default {
       this.selectedData.passID = this.selectedPass.passId
       this.selectedData.userID = this.userId
     }
+  },
+  beforeCreate() {
+    this.user = JSON.parse(localStorage.getItem("user"));
   },
 };
 </script>

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import jwt_decode from "jwt-decode";
 // import Home from '../views/Home.vue'
 import ViewBooking from '../views/booking/ViewBooking.vue'
 import ViewBookingAdmin from '../views/booking/ViewBookingAdmin.vue'
@@ -148,9 +148,11 @@ router.beforeEach((to, from, next) => { // This way, you don't need to write hoo
   // get where user being stored ex:
   // const user = store.getter('user') // assume user have a role with `user.role`
   // const user = {role: 'ADMIN'}
-  const user = localStorage.getItem('userType') ? localStorage.getItem('userType') : 'NULL' 
+  const token = localStorage.getItem('token') ? localStorage.getItem('token') : 'NULL' 
+  const decoded = jwt_decode(token);
+  
   if (to.meta.requiredAuthorization) {
-    if (to.meta?.roles?.includes(user)) {
+    if (to.meta?.roles?.includes(decoded.scope)) {
       next()
     } else {
       next('/login')

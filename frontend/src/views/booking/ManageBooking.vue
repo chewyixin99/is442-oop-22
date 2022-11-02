@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="flex-column d-flex align-items-center justify-content-center">
-      <h1 class="pt-4 mb-4">Employee Bookings</h1>
+      <h1 class="pt-4 mb-4">All Bookings</h1>
       <div class="tableBox position-relative">
         <hr />
         <div class="container">
@@ -82,6 +82,7 @@ export default {
   },
   data() {
     return {
+      user: {},
       formInput: { startStr: "null" },
       type: "admin",
       calendarInput: {
@@ -171,6 +172,7 @@ export default {
         ],
         server: {
           url: "http://localhost:8081/loan",
+          headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
               .map((data) => [
@@ -285,6 +287,7 @@ export default {
         ],
         server: {
           url: "http://localhost:8081/loan",
+          headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
               .map((data) => [
@@ -328,6 +331,12 @@ export default {
       }),
     };
   },
+  beforeCreate(){
+    const getToken = localStorage.getItem("token");
+    this.user = JSON.parse(localStorage.getItem("user"));
+    this.token = `Bearer ${getToken}`
+  },
+
   mounted() {
     this.currentGrid.render(document.getElementById("table1"));
     this.pastGrid.render(document.getElementById("table2"));
@@ -356,9 +365,17 @@ export default {
       });
     });
 
+    const bearer_token = `Bearer ${localStorage.getItem('token')}`;
+    const config = {
+        headers: {
+          Authorization: bearer_token
+        }
+    };
+
     axios
-      .get("http://localhost:8081/loan")
+      .get("http://localhost:8081/loan", config)
       .then((response) => {
+        console.log(response);
         this.bookingData = response.data.data;
       })
       .catch((error) => {
@@ -370,11 +387,18 @@ export default {
     updatestatus(rowData){
       console.log(rowData);
 
+      const bearer_token = `Bearer ${localStorage.getItem('token')}`;
+      const config = {
+        headers: {
+        Authorization: bearer_token
+      }
+      };
+
       axios
         .put("http://localhost:8081/loan/updateCompleted", {
           loanId : rowData,
           gopId : 1
-        })
+        }, config)
         .then((response) => {
           console.log(response);
           if (response.status == 200) {

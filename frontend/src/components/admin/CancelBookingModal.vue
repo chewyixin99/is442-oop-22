@@ -75,7 +75,11 @@
               </button>
             </div>
             <div class="col text-start">
-              <button class="btn btn-secondary" style="min-width: 100px" @click.stop="clickedCancel">
+              <button
+                class="btn btn-secondary"
+                style="min-width: 100px"
+                @click.stop="clickedCancel"
+              >
                 No
               </button>
             </div>
@@ -86,7 +90,7 @@
   </div>
 </template>
 <script>
-import axios from 'axios';
+import axios from "axios";
 export default {
   name: "CancelBookingModal",
   props: {
@@ -102,18 +106,22 @@ export default {
   },
   methods: {
     cancelSubmitted() {
-      let isAllDeleted = true
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+      const config = {
+        headers: {
+          Authorization: bearer_token,
+        },
+      };
+      let isAllDeleted = true;
       this.isLoading = true;
       this.dataOfSelectedRow.map((data) => {
         axios
-          .delete(
-            `http://localhost:8081/loan/${data.loanId}`
-          )
+          .delete(`http://localhost:8081/loan/${data.loanId}`,config)
           .then((res) => {
             console.log(res);
           })
           .catch((err) => {
-            isAllDeleted = false
+            isAllDeleted = false;
             console.log(err);
           });
       });
@@ -126,18 +134,16 @@ export default {
           status: "Success",
           msg: "Cancellation is successful!",
         });
-      }
-      else {
+      } else {
         this.$emit("toastrMsg", {
           status: "Error",
           msg: "Cancellation is unsuccessful!",
         });
       }
-
     },
-    clickedCancel(){
-        document.getElementById("cancel-close-btn").click();
-    }
+    clickedCancel() {
+      document.getElementById("cancel-close-btn").click();
+    },
   },
 };
 </script>
