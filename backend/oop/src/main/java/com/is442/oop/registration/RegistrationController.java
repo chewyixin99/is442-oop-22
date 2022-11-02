@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.is442.oop.data.models.User;
 import com.is442.oop.data.models.VerificationToken;
 import com.is442.oop.data.payloads.response.DataResponse;
+import com.is442.oop.email.EmailService;
+import com.is442.oop.exception.ActionNotExecutedException;
 import com.is442.oop.password.PasswordRequest;
 import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserService;
@@ -34,9 +36,21 @@ public class RegistrationController {
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowired
+    private EmailService emailService;
+
     @PostMapping("/register")
     public ResponseEntity<DataResponse> registerUser(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
-        User user = userService.registerUser(userRequest);
+        System.out.println("RegistrationController: registerUser");
+        User user = null;            
+        try {
+            user = userService.registerUser(userRequest);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(request)));
         return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
     }
@@ -62,8 +76,6 @@ public class RegistrationController {
         }
 
         User user = verificationToken.getUser();
-
-        // send email
         resendVerificationTokenMail(user, applicationUrl(request), verificationToken);
 
         // return "Verification link sent";
@@ -123,7 +135,12 @@ public class RegistrationController {
     ) {
         // send email to user
         String url = applicationUrl + "/savePassword?token=" + token;
-        // ideally this is where we send the email, 'sendVerificationEmail()'
+        try {
+            emailService.sendSimpleConfirmationUrlEmail(user, 2, url);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("passwordResetTokenMail", e);
+        }
+
         log.info("Click the link to reset your password {}", url); // to reimplement with email instead of logging jsut to console
 
         return url;
@@ -136,7 +153,12 @@ public class RegistrationController {
     ) {
         // send email to user
         String url = applicationUrl + "/verifyRegistration?token=" + verificationToken.getToken();
-        // ideally this is where we send the email, 'sendVerificationEmail()'
+        try {
+            emailService.sendSimpleConfirmationUrlEmail(user, 1, url);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("resendVerificationTokenMail", e);
+        }
+
         log.info("Click the link to verify your account {}", url); // to reimplement with email instead of logging jsut to console
     }
 

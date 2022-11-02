@@ -28,6 +28,10 @@ public class PassRequest {
     @NotNull
     private String poi;
     
+    @NotBlank
+    @NotNull
+    private Integer passNumber;
+
     private String poiUrl;
     
     @NotBlank

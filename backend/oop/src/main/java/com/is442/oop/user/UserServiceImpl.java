@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.is442.oop.data.models.PasswordResetToken;
 import com.is442.oop.data.models.User;
 import com.is442.oop.data.models.VerificationToken;
+import com.is442.oop.exception.ActionNotExecutedException;
 import com.is442.oop.exception.ResourceNotFoundException;
 import com.is442.oop.password.PasswordResetTokenRepository;
 import com.is442.oop.verification.VerificationTokenRepository;
@@ -38,17 +39,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     };
 
-    @Override
-    public User createUser(UserRequest userRequest) {
-        User user = new User();
-        user.setUsername(userRequest.getUsername());
-        user.setPassword(userRequest.getPassword());
-        user.setEmail(userRequest.getEmail());
-        user.setContactNumber(userRequest.getContactNumber());
-        user.setUserType(userRequest.getUserType());
-        userRepository.save(user);
-        return user;
-    };
+    // Deprecated
+    // @Override
+    // public User createUser(UserRequest userRequest) {
+    //     User user = new User();
+    //     user.setUsername(userRequest.getUsername());
+    //     user.setPassword(userRequest.getPassword());
+    //     user.setEmail(userRequest.getEmail());
+    //     user.setContactNumber(userRequest.getContactNumber());
+    //     user.setUserType(userRequest.getUserType());
+    //     userRepository.save(user);
+    //     return user;
+    // };
 
     @Override
     public User updateUser(Integer userId, UserRequest userRequest) throws ResourceNotFoundException {
@@ -81,15 +83,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(UserRequest userRequest) {
-        User user = new User();
-        user.setEmail(userRequest.getEmail());
-        user.setUsername(userRequest.getUsername());
-        user.setUserType(userRequest.getUserType()); // can be dynamic later
-        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        user.setContactNumber(userRequest.getContactNumber());
+    public User registerUser(UserRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException {
+        System.out.println("UserController: registerUser");
 
-        userRepository.save(user);
+        User existingUser = null;
+        existingUser = userRepository.findByUsername(userRequest.getUsername());
+        if (existingUser instanceof User) {
+            throw new IllegalArgumentException(String.format("User with username (%s) already exists.", userRequest.getUsername()));
+        }
+
+        existingUser = userRepository.findByEmail(userRequest.getEmail());
+        if (existingUser instanceof User) {
+            throw new IllegalArgumentException(String.format("User with email (%s) already exists.", userRequest.getEmail()));
+        }
+
+        User user = new User();
+        try {
+            user.setEmail(userRequest.getEmail());
+            user.setUsername(userRequest.getUsername());
+            user.setUserType(userRequest.getUserType()); // can be dynamic later
+            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+            user.setContactNumber(userRequest.getContactNumber());
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("registerUser", e);
+        }
         return user;
     }
 

@@ -34,6 +34,7 @@ public class UserController {
         return new ResponseEntity<>(new DataResponse(user, "User"), HttpStatus.OK);
     }
 
+    // Deprecated
     // Use registrationController /register route instead
     // @PostMapping("")
     // public ResponseEntity<DataResponse> createUser(@RequestBody UserRequest userRequest) {
