@@ -2,9 +2,11 @@ package com.is442.oop.loan;
 
 import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.models.Pass;
+import com.is442.oop.data.models.User;
 import com.is442.oop.email.EmailService;
 import com.is442.oop.exception.*;
 import com.is442.oop.pass.PassService;
+import com.is442.oop.user.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class LoanServiceImpl implements LoanService{
     LoanRepository loanRepository;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     PassService passService;
 
     @Autowired
@@ -34,7 +39,7 @@ public class LoanServiceImpl implements LoanService{
     // Done
     @Transactional
     @Override
-    public Loan createLoan(LoanRequest loanRequest) throws ActionNotExecutedException {
+    public Loan createLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException {
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
 
         Integer passID = loanRequest.getPassID();
@@ -42,7 +47,7 @@ public class LoanServiceImpl implements LoanService{
         try {
             pass = passService.getPass(passID);
         } catch (Exception e) {
-            throw new ActionNotExecutedException("Pass", e);
+            throw new ResourceNotFoundException("User", "User Id", loanRequest.getUserID());
         }
 
         LocalDate startDate = loanRequest.getStartDate();
@@ -52,11 +57,17 @@ public class LoanServiceImpl implements LoanService{
                 throw new ActionNotExecutedException("Loan", "Pass is already loaned for the day");
             }
         }
+        
+        User user = null;
+        try {
+            user = userService.getUser(loanRequest.getUserID());
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("User", "User Id", loanRequest.getUserID());
+        }
 
         Loan newLoan = new Loan();
-        newLoan.setUserId(loanRequest.getUserID());
+        newLoan.setUser(user);
         newLoan.setPass(pass);
-
         newLoan.setStartDate(loanRequest.getStartDate());
         newLoan.setEndDate(loanRequest.getEndDate());
         newLoan.setGopId(1);
@@ -93,7 +104,7 @@ public class LoanServiceImpl implements LoanService{
         List<Loan> loans = loanRepository.findAll();
         List<Loan> toReturn = new ArrayList<>();
         for (Loan l: loans){
-            if (l.getUserId() == userID){
+            if (l.getUser().getUserId() == userID){
                  toReturn.add(l);
             }
         }
@@ -160,17 +171,23 @@ public class LoanServiceImpl implements LoanService{
             throw new ActionNotExecutedException("Pass", e);
         }
 
+        User user = null;
+        try {
+            user = userService.getUser(updateLoanRequest.getUserId());
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("User", "User Id", updateLoanRequest.getUserId());
+        }
+
         try{
 
             Loan loan = queryLoan.get();
             // Making sure the values obtained are inputted during post
-            Integer uid = (updateLoanRequest.getUserId() == null) ? loan.getUserId() : updateLoanRequest.getUserId();
             LocalDate startDate = (updateLoanRequest.getStartDate() == null) ? loan.getStartDate() : updateLoanRequest.getStartDate();
             LocalDate endDate = (updateLoanRequest.getEndDate() == null) ? loan.getEndDate() : updateLoanRequest.getEndDate();
             Integer gopId = (updateLoanRequest.getGopId() == null) ? loan.getGopId() : updateLoanRequest.getGopId();
 
             // update the loan
-            loan.setUserId(uid);
+            loan.setUser(user);
             loan.setPass(pass);
             loan.setStartDate(startDate);
             loan.setEndDate(endDate);
@@ -183,4 +200,12 @@ public class LoanServiceImpl implements LoanService{
         
     }
 
+    @Override
+    public Loan getLoanForPassByDateBefore(LocalDate queryDate, Integer passId) {
+        Optional<Loan> queryLoan = loanRepository.getLoanForPassByDate(queryDate, passId);
+        if (queryLoan.isEmpty()) {
+            throw new ActionNotExecutedException("Loan", "No loans available.");
+        }
+        return queryLoan.get();
+    }
 }
