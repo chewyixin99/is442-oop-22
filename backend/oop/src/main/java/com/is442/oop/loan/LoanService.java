@@ -1,7 +1,7 @@
 package com.is442.oop.loan;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.stereotype.Component;
 
@@ -19,5 +19,5 @@ public interface LoanService {
     Loan deleteLoan(Integer loanID)throws ResourceNotFoundException;
     Loan updateLoanToCompleted(UpdateLoantoCompletedRequest updateLoanRequest) throws RuntimeException;
     Loan updateLoan(UpdateLoanRequest updateLoanRequest) throws RuntimeException;
-    Loan getLoanForPassByDateBefore(LocalDate queryDate, Integer passId) throws ActionNotExecutedException;
+    Optional<Loan> getLoanForPassByDateBefore(LocalDate queryDate, Integer passId) throws ActionNotExecutedException;
 }

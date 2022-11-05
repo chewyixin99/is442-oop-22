@@ -201,11 +201,8 @@ public class LoanServiceImpl implements LoanService{
     }
 
     @Override
-    public Loan getLoanForPassByDateBefore(LocalDate queryDate, Integer passId) {
+    public Optional<Loan> getLoanForPassByDateBefore(LocalDate queryDate, Integer passId) {
         Optional<Loan> queryLoan = loanRepository.getLoanForPassByDate(queryDate, passId);
-        if (queryLoan.isEmpty()) {
-            throw new ActionNotExecutedException("Loan", "No loans available.");
-        }
-        return queryLoan.get();
+        return queryLoan;
     }
 }

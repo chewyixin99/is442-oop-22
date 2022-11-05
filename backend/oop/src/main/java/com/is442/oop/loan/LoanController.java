@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,11 +39,10 @@ public class LoanController {
         try {
             for (Loan loan: loans) {
                 User prevUser = null;
-                try {
-                    prevUser = loanService.getLoanForPassByDateBefore(loan.getStartDate(), loan.getPass().getPassId()).getUser();
-                } catch (Exception e) {
-                    // Prev user not available, do nothing (it's fine)
-                }
+                Optional<Loan> prevLoan = loanService.getLoanForPassByDateBefore(loan.getStartDate(), loan.getPass().getPassId());
+                if (prevLoan.isPresent()) {
+                    prevUser = prevLoan.get().getUser();
+                }  
                 result.add(LoanUtil.toPrevUserDTO(loan, prevUser));
             } 
         } catch (Exception e) {
@@ -60,7 +60,10 @@ public class LoanController {
 
         try{
             loan = loanService.getLoanByLoanID(loanId);
-            prevUser = loanService.getLoanForPassByDateBefore(loan.getStartDate(), loan.getPass().getPassId()).getUser();
+            Optional<Loan> prevLoan = loanService.getLoanForPassByDateBefore(loan.getStartDate(), loan.getPass().getPassId());
+            if (prevLoan.isPresent()) {
+                prevUser = prevLoan.get().getUser();
+            }
             result = LoanUtil.toPrevUserDTO(loan, prevUser);
         } catch (Exception e){
             return new ResponseEntity<>(new DataResponse(result, e), HttpStatus.NOT_FOUND); // I think this is not needed becuase empty is still a valid response for search
@@ -137,12 +140,14 @@ public class LoanController {
     public ResponseEntity<DataResponse> getLoanForPassByDateBefore(
         @PathVariable("queryDate") String queryDate,
         @PathVariable("passId") Integer passId) {
-        try {
-            Loan loan = loanService.getLoanForPassByDateBefore(LocalDate.parse(queryDate), passId);
-            return new ResponseEntity<>(new DataResponse(loan, "Loan"), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<DataResponse>(new DataResponse(null, "Loan"), HttpStatus.INTERNAL_SERVER_ERROR);
+        Optional<Loan> loan = loanService.getLoanForPassByDateBefore(LocalDate.parse(queryDate), passId);
+        if (loan.isEmpty()) {
+            return new ResponseEntity<>(new DataResponse(
+                loan.orElse(null), 
+                new ResourceNotFoundException("Loan", "queryDate", queryDate)), HttpStatus.NOT_FOUND
+            );
         }
+        return new ResponseEntity<>(new DataResponse(loan.get(), "Loan"), HttpStatus.OK);
     }
 }
 
