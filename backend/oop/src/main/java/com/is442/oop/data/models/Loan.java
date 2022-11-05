@@ -26,16 +26,15 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loan_id", nullable = false)
     private int loanId;
-    // @ManyToOne
-    // private User user;
-    @Column(name = "user_id", nullable = false)
-    private int userId;
+
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false)
+    private User user;
+
     // @ManyToOne
     // private User gop;
     @Column(name = "gop_id")
     private int gopId;
-    // @ManyToOne
-    // private Pass pass;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "pass_id")

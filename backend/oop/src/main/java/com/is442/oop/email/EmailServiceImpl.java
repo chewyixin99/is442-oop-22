@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailService {
 
     public void sendLoanConfirmationEmail(Loan loan, Integer templateId) throws ActionNotExecutedException {
         try {
-            User user = userService.getUser(loan.getUserId());
+            User user = loan.getUser();
             Pass pass = loan.getPass();
             Template template = templateService.getTemplate(templateId);
             

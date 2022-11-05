@@ -64,7 +64,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         try{
             for (Loan l: loans){
                 Integer loanMonth = l.getStartDate().getMonthValue();
-                if (l.getUserId() == userId && loanMonth.equals(month)) {
+                if (l.getUser().getUserId() == userId && loanMonth.equals(month)) {
                     loansPerUserPerMonth.add(l);
                 }
             }
