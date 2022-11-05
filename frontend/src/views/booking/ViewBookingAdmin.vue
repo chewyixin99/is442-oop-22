@@ -145,11 +145,6 @@ export default {
             width: "15%",
           },
           {
-            id: "following",
-            name: "Next",
-            width: "15%",
-          },
-          {
             id: "edit",
             sort: false,
             name: "Edit",
@@ -184,7 +179,7 @@ export default {
           {
             id: "delete",
             sort: false,
-            name: "Delete",
+            name: "Del",
             formatter: (cell, row) => {
               return h(
                 "i",
@@ -224,12 +219,18 @@ export default {
                 data.pass.poi,
                 data.startDate,
                 data.endDate,
-                data.defunct,
-                data.userId
+                data.prevUser
+                  ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
+                  : "N/A",
+                data.user.userId,
+                data.defunct
               ])
               .filter(
-                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false) && (data[5] == this.user.userId)
+                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
               ),
+          handle: (res) => {
+            return res.json();
+          },
         },
         search: true,
         sort: true,
@@ -269,7 +270,7 @@ export default {
           {
             id: "passTitle",
             name: "Pass Title",
-            width: "30%",
+            width: "20%",
           },
           {
             id: "startDate",
@@ -284,18 +285,9 @@ export default {
           {
             id: "previous",
             name: "Previous",
-            width: "20%",
+            width: "30%",
           },
-          {
-            id: "following",
-            name: "following",
-            width: "20%",
-          },
-          {
-            id: "filler",
-            sort: false,
-            width: "5%"
-          }
+
                    
         ],
         server: {
@@ -308,11 +300,17 @@ export default {
                 data.pass.poi,
                 data.startDate,
                 data.endDate,
-                data.userId
+                data.prevUser
+                  ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
+                  : "N/A",
+                data.user.userId
               ])
               .filter(
-                (data) => data[2] < new Date().toISOString().replace(/T.*$/, "") && (data[4] == this.user.userId)
+                (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
               ),
+          handle: (res) => {
+            return res.json();
+          },
         },
         search: true,
         sort: true,
@@ -447,6 +445,10 @@ export default {
 <style>
 .tableBox {
   width: 70vw;
+}
+
+.gridjs-table{
+  width: 100% !important;
 }
 
 .btnHover:hover {

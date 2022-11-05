@@ -10,7 +10,11 @@
               <h4 class="pt-4">Current Bookings</h4>
             </div>
             <div class="col-2 gap-4 d-flex justify-content-end align-items-end">
-              <div data-bs-toggle="modal" data-bs-target="#cancelModal" v-if="recordsToDelete.length > 0">
+              <div
+                data-bs-toggle="modal"
+                data-bs-target="#cancelModal"
+                v-if="recordsToDelete.length > 0"
+              >
                 <i
                   class="bi bi-calendar-x fs-2 btnHover"
                   data-bs-toggle="tooltip"
@@ -135,16 +139,9 @@ export default {
           {
             id: "previous",
             name: "Previous",
-            width: "15%",
+            width: "30%",
           },
           {
-            id: "following",
-            name: "Following",
-            width: "15%",
-          },
-          {
-            id: "status",
-            name: "Status",
             // formatter: (cell, row) => {
             //     return h('button', {
             //         className: 'py-2 px-3 border rounded text-white bg-primary',
@@ -152,40 +149,68 @@ export default {
             //     }, 'Edit');
             // }
 
-            formatter: (cell,row) => {
+            formatter: (cell, row) => {
               return h(
                 "select",
                 {
-                  className: `form-select ${row.cells[6].data ? "text-success" : "text-danger"} `,
+                  className: `form-select ${
+                    row.cells[6].data ? "text-success" : "text-danger"
+                  } `,
                   onChange: () => {
                     this.updatestatus(row.cells[1].data);
                   },
                 },
                 [
-  h("option", { value: true, selected: row.cells[6].data, disabled: row.cells[6].data, className: `${ row.cells[6].data ? "" : "text-dark"}`}, "Completed" ),
-                  h("option", { value: false, selected: !row.cells[6].data, disabled: row.cells[6].data, className: `${ row.cells[6].data ? "" : "text-dark"}` }, "Not Completed"),
+                  h(
+                    "option",
+                    {
+                      value: true,
+                      selected: row.cells[6].data,
+                      disabled: row.cells[6].data,
+                      className: `${row.cells[6].data ? "" : "text-dark"}`,
+                    },
+                    "Completed"
+                  ),
+                  h(
+                    "option",
+                    {
+                      value: false,
+                      selected: !row.cells[6].data,
+                      disabled: row.cells[6].data,
+                      className: `${row.cells[6].data ? "" : "text-dark"}`,
+                    },
+                    "Not Completed"
+                  ),
                 ]
-              )
+              );
             },
             sort: false,
           },
         ],
         server: {
           url: "http://localhost:8081/loan",
-          headers: { "Authorization" : this.token},
+          headers: { Authorization: this.token },
           then: (data) =>
             data.data
               .map((data) => [
                 data.loanId,
-                data.passId,
+                data.user.email,
                 data.startDate,
                 data.endDate,
+                data.prevUser
+                  ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
+                  : "N/A",
+                data.completed,
                 data.defunct,
-                data.completed
               ])
               .filter(
-                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
+                (data) =>
+                  data[2] > new Date().toISOString().replace(/T.*$/, "") &&
+                  data[6] == false
               ),
+          handle: (res) => {
+            return res.json();
+          },
         },
         search: true,
         sort: true,
@@ -250,12 +275,7 @@ export default {
           {
             id: "previous",
             name: "Previous",
-            width: "15%",
-          },
-          {
-            id: "following",
-            name: "Following",
-            width: "15%",
+            width: "30%",
           },
           {
             id: "status",
@@ -267,40 +287,68 @@ export default {
             //     }, 'Edit');
             // }
 
-            formatter: (cell,row) => {
+            formatter: (cell, row) => {
               return h(
                 "select",
                 {
-                  className: `form-select ${row.cells[6].data ? "text-success" : "text-danger"} `,
+                  className: `form-select ${
+                    row.cells[6].data ? "text-success" : "text-danger"
+                  } `,
                   onChange: () => {
                     this.updatestatus(row.cells[1].data);
                   },
                 },
                 [
-                  h("option", { value: true, selected: row.cells[6].data, disabled: row.cells[6].data, className: `${ row.cells[6].data ? "" : "text-dark"}`}, "Completed" ),
-                  h("option", { value: false, selected: !row.cells[6].data, disabled: row.cells[6].data, className: `${ row.cells[6].data ? "" : "text-dark"}` }, "Not Completed"),
+                  h(
+                    "option",
+                    {
+                      value: true,
+                      selected: row.cells[6].data,
+                      disabled: row.cells[6].data,
+                      className: `${row.cells[6].data ? "" : "text-dark"}`,
+                    },
+                    "Completed"
+                  ),
+                  h(
+                    "option",
+                    {
+                      value: false,
+                      selected: !row.cells[6].data,
+                      disabled: row.cells[6].data,
+                      className: `${row.cells[6].data ? "" : "text-dark"}`,
+                    },
+                    "Not Completed"
+                  ),
                 ]
-              )
+              );
             },
             sort: false,
           },
         ],
         server: {
           url: "http://localhost:8081/loan",
-          headers: { "Authorization" : this.token},
+          headers: { Authorization: this.token },
           then: (data) =>
             data.data
               .map((data) => [
                 data.loanId,
-                data.passId,
+                data.user.email,
                 data.startDate,
                 data.endDate,
+                data.prevUser
+                  ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
+                  : "N/A",
+                data.completed,
                 data.defunct,
-                data.completed
               ])
               .filter(
-                (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false)
+                (data) =>
+                  data[2] < new Date().toISOString().replace(/T.*$/, "") &&
+                  data[6] == false
               ),
+          handle: (res) => {
+            return res.json();
+          },
         },
         search: true,
         sort: true,
@@ -331,13 +379,14 @@ export default {
       }),
     };
   },
-  beforeCreate(){
+  beforeCreate() {
     const getToken = localStorage.getItem("token");
     this.user = JSON.parse(localStorage.getItem("user"));
-    this.token = `Bearer ${getToken}`
+    this.token = `Bearer ${getToken}`;
   },
 
   mounted() {
+    console.log("2022-10-01");
     this.currentGrid.render(document.getElementById("table1"));
     this.pastGrid.render(document.getElementById("table2"));
 
@@ -365,11 +414,11 @@ export default {
       });
     });
 
-    const bearer_token = `Bearer ${localStorage.getItem('token')}`;
+    const bearer_token = `Bearer ${localStorage.getItem("token")}`;
     const config = {
-        headers: {
-          Authorization: bearer_token
-        }
+      headers: {
+        Authorization: bearer_token,
+      },
     };
 
     axios
@@ -381,29 +430,32 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-
   },
   methods: {
-    updatestatus(rowData){
+    updatestatus(rowData) {
       console.log(rowData);
 
-      const bearer_token = `Bearer ${localStorage.getItem('token')}`;
+      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
       const config = {
         headers: {
-        Authorization: bearer_token
-      }
+          Authorization: bearer_token,
+        },
       };
 
       axios
-        .put("http://localhost:8081/loan/updateCompleted", {
-          loanId : rowData,
-          gopId : 1
-        }, config)
+        .put(
+          "http://localhost:8081/loan/updateCompleted",
+          {
+            loanId: rowData,
+            gopId: 1,
+          },
+          config
+        )
         .then((response) => {
           console.log(response);
           if (response.status == 200) {
             this.currentGrid.forceRender();
-            this.updateToastrMsg({status: "Success", msg: "Status Updated"});
+            this.updateToastrMsg({ status: "Success", msg: "Status Updated" });
             var bsAlert = new Toast(document.getElementById("theToastr"));
             bsAlert.show();
           }
@@ -412,9 +464,15 @@ export default {
           console.log(error);
         });
     },
-    processDate(date){
-      let split = date.split("/")
-      return new Date(parseInt(split[2]), parseInt(split[1])-1, parseInt(split[0])).toISOString().replace(/T.*$/, "")
+    processDate(date) {
+      let split = date.split("/");
+      return new Date(
+        parseInt(split[2]),
+        parseInt(split[1]) - 1,
+        parseInt(split[0])
+      )
+        .toISOString()
+        .replace(/T.*$/, "");
     },
     filterSelected() {
       this.dataOfSelectedRow = this.bookingData.filter((row) => {
@@ -423,7 +481,7 @@ export default {
       console.log(this.dataOfSelectedRow);
     },
     cancelSubmitted() {
-      this.forceRerender()
+      this.forceRerender();
       this.currentGrid.forceRender();
       this.pastGrid.forceRender();
       this.dataOfSelectedRow = [];
@@ -436,12 +494,10 @@ export default {
     },
     bookingSubmitted() {
       // this.forceRerender();
-        this.currentGrid.forceRender();
-        this.pastGrid.forceRender();
-        var bsAlert = new Toast(document.getElementById("theToastr"));
-        bsAlert.show();
-
-
+      this.currentGrid.forceRender();
+      this.pastGrid.forceRender();
+      var bsAlert = new Toast(document.getElementById("theToastr"));
+      bsAlert.show();
     },
     forceRerender() {
       this.componentKey += 1;

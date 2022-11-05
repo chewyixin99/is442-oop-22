@@ -223,8 +223,8 @@ export default {
     },
     selectedData($event) {
       this.retrievedData = {
-        passID: $event.passID.toString(),
-        userID: $event.userID.toString(),
+        passId: $event.passID,
+        userId: $event.userID,
         startDate: $event.startDate,
         endDate: $event.endDate,
       };
@@ -249,9 +249,11 @@ export default {
 
   
       this.isLoading = true;
-      this.retrievedLoanData.startDate = this.retrievedData.startDate
-      this.retrievedLoanData.endDate = this.retrievedData.endDate
-      console.log(this.retrievedLoanData);
+      // this.retrievedLoanData.startDate = this.retrievedData.startDate
+      // this.retrievedLoanData.endDate = this.retrievedData.endDate
+      this.retrievedData.gopId = 1
+      this.retrievedData.loanId = this.retrievedLoanData.loanId
+      console.log(this.retrievedData);
       const bearer_token = `Bearer ${localStorage.getItem("token")}`;
       const config = {
         headers: {
@@ -259,7 +261,7 @@ export default {
         },
       };
       axios
-        .put("http://localhost:8081/loan/update", this.retrievedLoanData,config)
+        .put("http://localhost:8081/loan/update", this.retrievedData,config)
         .then((response) => {
           console.log(response);
           if (response.status != 500) {

@@ -146,11 +146,6 @@ export default {
             width: "15%",
           },
           {
-            id: "following",
-            name: "Next",
-            width: "15%",
-          },
-          {
             id: "edit",
             sort: false,
             name: "Edit",
@@ -185,7 +180,7 @@ export default {
           {
             id: "delete",
             sort: false,
-            name: "Delete",
+            name: "Del",
             formatter: (cell, row) => {
               return h(
                 "i",
@@ -223,14 +218,20 @@ export default {
               .map((data) => [
                 data.loanId,
                 data.pass.poi,
-                data.startDate,   
+                data.startDate,
                 data.endDate,
-                data.defunct,
-                data.userId
+                data.prevUser
+                  ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
+                  : "N/A",
+                data.user.userId,
+                data.defunct
               ])
               .filter(
-                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[4] == false) && (data[5] == this.user.userId)
+                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
               ),
+          handle: (res) => {
+            return res.json();
+          },
         },
         search: true,
         sort: true,
@@ -270,7 +271,7 @@ export default {
           {
             id: "passTitle",
             name: "Pass Title",
-            width: "30%",
+            width: "20%",
           },
           {
             id: "startDate",
@@ -285,19 +286,8 @@ export default {
           {
             id: "previous",
             name: "Previous",
-            width: "20%",
-          },
-          {
-            id: "following",
-            name: "following",
-            width: "20%",
-          },
-          {
-            id: "filler",
-            sort: false,
-            width: "5%"
-          }
-                   
+            width: "30%",
+          },                
         ],
         server: {
           url: "http://localhost:8081/loan",
@@ -309,11 +299,18 @@ export default {
                 data.pass.poi,
                 data.startDate,
                 data.endDate,
-                data.userId
+                data.prevUser
+                  ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
+                  : "N/A",
+                data.user.userId,
+                data.defunct
               ])
               .filter(
-                (data) => data[2] < new Date().toISOString().replace(/T.*$/, "") && (data[4] == this.user.userId)
+                (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
               ),
+          handle: (res) => {
+            return res.json();
+          },
         },
         search: true,
         sort: true,
@@ -448,6 +445,11 @@ export default {
 </script>
 
 <style>
+
+.gridjs-table{
+  width: 100% !important;
+}
+
 .tableBox {
   width: 70vw;
 }

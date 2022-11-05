@@ -342,7 +342,6 @@ export default {
     async submitBooking() {
       // this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
       // this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
-      ``;
 
       this.isLoading = true;
       console.log(this.retrievedData);
@@ -353,6 +352,7 @@ export default {
           Authorization: bearer_token,
         },
       };
+
       axios
         .post("http://localhost:8081/loan", this.retrievedData, config)
         .then((response) => {
