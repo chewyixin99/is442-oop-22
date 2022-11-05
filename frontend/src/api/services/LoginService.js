@@ -21,6 +21,16 @@ class LoginService extends BaseApiService {
             return this.handleError(error);
         }
     }
+
+    async savePassword(token, userDetails) {
+        try {
+            let user = await axiosClient.post("/savePassword", {...userDetails}, {params: {"token": token}});
+            return user.data
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
 }
 
 export default new LoginService();

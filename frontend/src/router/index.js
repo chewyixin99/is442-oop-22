@@ -12,6 +12,7 @@ import Pass from '../views/Pass.vue'
 import PassUser from '../views/PassUser.vue'
 import Email from '../views/Email.vue'
 import Login from '../views/Login.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 // import NotFound from '../views/NotFound.vue'
 import page404 from '../views/page404.vue'
 
@@ -26,6 +27,12 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+    meta: { requiredAuthorization: false }
+  },
+  {
+    path: '/resetPassword',
+    name: 'ResetPassword',
+    component: ResetPassword,
     meta: { requiredAuthorization: false }
   },
   {
