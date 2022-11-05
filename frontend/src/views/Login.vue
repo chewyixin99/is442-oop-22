@@ -106,6 +106,17 @@
                 <div class="form-floating mb-3">
                   <input
                     class="form-control"
+                    id="contactNumber"
+                    type="number"
+                    v-model="contactNumber"
+                    placeholder="Contact Number"
+                    required
+                  />
+                  <label for="contactNumber">Contact Number</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input
+                    class="form-control"
                     id="floatingPassword"
                     type="password"
                     v-model="password"
@@ -137,7 +148,8 @@
                     id="register"
                     type="button"
                     name="registerSubmit"
-                    :disabled="!username || !email || !password"
+                    @click="register()"
+                    :disabled="!username || !email || !password || !contactNumber"
                   >
                     Register
                   </button>
@@ -169,7 +181,7 @@
                   <input
                     class="form-control"
                     id="floatingInput"
-                    v-model="resetemail"
+                    v-model="email"
                     type="email"
                     placeholder="name@example.com"
                     required
@@ -185,8 +197,8 @@
                     name="resetSubmit"
                     @click="reset_password()"
                     :disabled="
-                      resetemail &&
-                      (!resetemail.includes('@') || !resetemail.includes('.'))
+                      email &&
+                      (!email.includes('@') || !email.includes('.'))
                     "
                   >
                     Reset
@@ -213,7 +225,6 @@
               </div>
             </div>
           </div>
-          <TheToastr :toastrResponse="toastrResponse"></TheToastr>
         </div>
         <div
           class="col-lg-6 col-xl-5 ms-xl-auto px-lg-4 text-center text-primary"
@@ -228,6 +239,7 @@
           <p class="lead text-muted"><i>Time to book some fun!</i></p>
         </div>
       </div>
+      <TheToastr :toastrResponse="toastrResponse"></TheToastr>
     </div>
   </div>
 </template>
@@ -237,6 +249,7 @@ import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import LoginService from "@/api/services/LoginService";
 
 // https://therichpost.com/vue-3-bootstrap-5-user-login-registration-forms-show-hide-on-button-click/
 
@@ -247,10 +260,10 @@ export default {
   },
   data() {
     return {
-      username: "",
-      email: "admin@gmail.com",
-      resetemail: "",
+      username: "test",
+      email: "leeroy2@mailinator.com",
       password: "123",
+      contactNumber: "91234567",
       userlogin: true,
       userregister: false,
       userforgotpassword: false,
@@ -319,8 +332,10 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error.status);
-          alert("Incorrect credentials! Please try again.");
+          console.log(error);
+          this.toastrResponse = {status: "Error", msg: "Incorrect credentials! Please try again."};    
+          var bsAlert = new Toast(document.getElementById("theToastr"));
+          bsAlert.show();
         });
     },
     user_register() {
@@ -338,15 +353,47 @@ export default {
       this.userlogin = false;
       this.userforgotpassword = true;
     },
-    reset_password() {
+    async reset_password() {
       this.isResetButtonEmailClicked = true;
-      this.toastrResponse = {
-        status: "Success",
-        msg: "An email has been sent to your email!",
-      };
-      var bsAlert = new Toast(document.getElementById("theToastr"));
-      bsAlert.show();
+
+
+      try {
+        await LoginService.resetUserPassword(this.email);
+        this.toastrResponse = { status: "Success", msg: "An email has been successfully sent to you, please click on that link to reset your password!", };
+
+
+      } catch (e) {
+        this.toastrResponse = { status: "Error", msg: "Something went wrong.. We're unable to reset your password", };
+
+      } finally {
+        var bsAlert = new Toast(document.getElementById("theToastr"));
+        bsAlert.show();
+
+      }
+
+
     },
+    async register(){
+      try {
+        let userDetails = {
+          "username": this.username,
+          "email": this.email,
+          "contactNumber": this.contactNumber,
+          "userType": "BORROWER",
+          "password": this.password,
+          "defunct": false
+        };
+        await LoginService.registerUser(userDetails);
+        this.toastrResponse = {status: "Success", msg: "Registration was successful! Please check your email for verification link"};    
+        
+      } catch (e){
+        this.toastrResponse = {status: "Error", msg: "Something went wrong, unable to register user"};    
+
+      } finally{
+        var bsAlert = new Toast(document.getElementById("theToastr"));
+        bsAlert.show();
+      }
+    }
   },
 
 };
