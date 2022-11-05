@@ -49,6 +49,8 @@
                                     <div class="row">
                                         <div class="col-5 border"><b>ID</b></div>
                                         <div class="col-7 border">{{EachPass.passId}}</div>
+                                        <div class="col-5 border"><b>Pass Number</b></div>
+                                        <div class="col-7 border">{{EachPass.passNumber}}</div>
                                         <div class="col-5 border"><b>Guests Numbers</b></div>
                                         <div class="col-7 border">{{EachPass.numGuests}}</div>
                                         <div class="col-5 border"><b>Replacement Fee</b></div>
@@ -62,9 +64,14 @@
                                         <template v-else>
                                             <div class="col-7 border">EPass</div>
                                         </template>
-                                        <div class="col-12"><b>Attachment(PDF)</b></div>
-                                        <div class="col-12"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
-
+                                        
+                                            <div class="col-12"><b>Attachment(PDF)</b></div>
+                                                <template v-if="EachPass.passAttachment">
+                                                    <div class="col-12"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="col-12"><button class="btn btn-success mb-1" disabled>No File Attached</button></div>
+                                                </template>
                                     </div>
                                 </div>
                             </ul>
@@ -78,13 +85,13 @@
                             </div>
                     </div>
                     <!-- Pass update modal -->
-                    <div class="modal fade" :id="`viewUM`+EachPass.passId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" data-bs-backdrop="static"  :id="`viewUM`+EachPass.passId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Update pass information</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeButtonMethod"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="initialStateEachPass(EachPass.passId)"></button>
                                 </div>
                                 <div class="modal-body text-start">
                                     <form>
@@ -110,7 +117,8 @@
                                             </div>
                                             <hr>
                                             <label class="col-form-label"><b>ID: {{EachPass.passId}}</b></label><br>
-
+                                            <label class="col-form-label"><b>Pass Number:</b></label> 
+                                            <input class="form-control" v-model ="EachPass.passNumber" required >
                                             <label class="col-form-label"><b>Description:</b></label> 
                                             <input class="form-control" v-model ="EachPass.passDesc" required >
                                             <label class="col-form-label"><b>Point of Interests:</b></label>
@@ -179,7 +187,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)" data-bs-dismiss="modal">Update Now</button>
                                     <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button> 
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeButtonMethod">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialStateEachPass(EachPass.passId)">Cancel</button>
                                 </div>
                             </div>
                         </div>
@@ -191,12 +199,12 @@
                 <!-- ====================================Loop ends============================= -->
 
                 <!-- Add New Pass Form Modal-->
-                <div class="modal fade" id="addNewPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" data-bs-backdrop="static"  id="addNewPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Create new pass</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="closeButtonMethod"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="initialState"></button>
                             </div>
 
                             <div class="modal-body text-start">
@@ -213,6 +221,8 @@
                                                 </div>
                                             </div>
                                             <hr>
+                                            <label class="col-form-label"><b>Pass Number:</b></label> 
+                                            <input type="number"  class="form-control" required v-model="NEWpassNumber">
                                             <label class="col-form-label"><b>Description:</b></label> 
                                             <input class="form-control" required v-model="NEWpassDesc">
                                             <label class="col-form-label"><b>Point of Interests:</b></label>
@@ -271,7 +281,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" @click="onUpload()" data-bs-dismiss="modal">Create Pass</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState">Cancel</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState">Close</button>
                             </div>
                         </div>
                     </div>
@@ -308,6 +318,7 @@ export default({
                 selectedFileName: null,
                 NEWpassDesc: null,
                 NEWpoi: null,
+                NEWpassNumber: null,
                 NEWpoiUrl: null,
                 NEWnumGuests: 1,
                 NEWreplacementFee: 0,
@@ -349,6 +360,7 @@ export default({
                 fd.append("passDesc", this.NEWpassDesc)
                 fd.append("poi", this.NEWpoi)
                 fd.append("poiUrl", this.NEWpoiUrl)
+                fd.append("passNumber", this.NEWpassNumber)
                 fd.append("numGuests", this.NEWnumGuests)
                 fd.append("replacementFee", this.NEWreplacementFee)
                 fd.append("isPhysical", this.NEWisPhysical)
@@ -380,6 +392,7 @@ export default({
                 UPDATEfd.append("passDesc", this.PassAdminPasses[passID-1].passDesc)
                 UPDATEfd.append("poi", this.PassAdminPasses[passID-1].poi)
                 UPDATEfd.append("poiUrl", this.PassAdminPasses[passID-1].poiUrl)
+                UPDATEfd.append("passNumber", this.PassAdminPasses[passID-1].passNumber)
                 UPDATEfd.append("numGuests", this.PassAdminPasses[passID-1].numGuests)
                 UPDATEfd.append("replacementFee", this.PassAdminPasses[passID-1].replacementFee)
                 UPDATEfd.append("isPhysical", this.PassAdminPasses[passID-1].isPhysical)
@@ -471,12 +484,26 @@ export default({
                 this.selectedImage= null
                 this.localImageSrc = null;
             },
-            // removeImageSelect_updatePass(){
-            //     this.selectedImage= null
-            //     this.$refs.updateImageUpload.value = null;
-            //     console.log(this.$refs.updateImageUpload.value)
-            //     this.localImageSrc = null;
-            // },
+            initialStateEachPass(PassId){
+                this.passIDtoDelete= null,
+                
+                this.selectedFile= null,
+                this.selectedFileName= null,
+
+                this.NEWpassDesc= null,
+                this.NEWpoi= null,
+                this.NEWpoiUrl= null,
+                this.NEWpassNumber
+                this.NEWnumGuests= 1,
+                this.NEWreplacementFee= 0,
+                this.NEWpassStatus= "AVAILABLE",
+                this.NEWisPhysical= true
+
+                this.selectedImage= null
+                this.localImageSrc = null;
+                document.getElementById("newImageUploadInput").value = null;
+                this.removeImageSelect_newAndUpdatePass(PassId);
+            },
             initialState(){
                 this.passIDtoDelete= null,
                 
@@ -486,6 +513,7 @@ export default({
                 this.NEWpassDesc= null,
                 this.NEWpoi= null,
                 this.NEWpoiUrl= null,
+                this.NEWpassNumber
                 this.NEWnumGuests= 1,
                 this.NEWreplacementFee= 0,
                 this.NEWpassStatus= "AVAILABLE",
@@ -494,6 +522,7 @@ export default({
                 this.selectedImage= null
                 this.localImageSrc = null;
                 document.getElementById("newImageUploadInput").value = null;
+                
             }
         },
 
