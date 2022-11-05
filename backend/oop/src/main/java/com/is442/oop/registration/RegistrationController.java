@@ -170,7 +170,8 @@ public class RegistrationController {
         String token
     ) {
         // send email to user
-        String url = applicationUrl + "/savePassword?token=" + token;
+        // String url = applicationUrl + "/savePassword?token=" + token;
+        String url =  "http://localhost:8888/resetPassword?token=" + token +"&email=" + user.getEmail();
         try {
             emailService.sendSimpleConfirmationUrlEmail(user, 2, url);
         } catch (Exception e) {
