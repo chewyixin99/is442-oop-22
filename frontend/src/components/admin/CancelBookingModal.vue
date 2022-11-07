@@ -27,10 +27,18 @@
           <div class="" v-for="data in dataOfSelectedRow" :key="data">
             <div class="row gap-5">
               <div class="col text-end">
-                <span>Pass Name:</span>
+                <span>Loan ID:</span>
               </div>
               <div class="col text-start">
-                <span>{{ data.passId }}</span>
+                <span>{{ data.loanId }}</span>
+              </div>
+            </div>
+             <div class="row gap-5">
+              <div class="col text-end">
+                <span>Pass Title:</span>
+              </div>
+              <div class="col text-start">
+                <span>{{ data.pass?.poi }}</span>
               </div>
             </div>
             <div class="row gap-5">
@@ -38,7 +46,7 @@
                 <span>Staff Email:</span>
               </div>
               <div class="col text-start">
-                <span>{{ data.userId }}</span>
+                <span>{{ user.email }}</span>
               </div>
             </div>
             <div class="row gap-5">
@@ -101,6 +109,7 @@ export default {
   components: {},
   data() {
     return {
+      user: JSON.parse(localStorage.getItem("user")),
       isLoading: false,
     };
   },
@@ -144,6 +153,10 @@ export default {
     clickedCancel() {
       document.getElementById("cancel-close-btn").click();
     },
+  },
+  mounted() {
+    console.log(this.dataOfSelectedRow);
+  
   },
 };
 </script>

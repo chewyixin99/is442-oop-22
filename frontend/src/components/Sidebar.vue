@@ -175,8 +175,9 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.removeItem("userType")
-      this.$router.replace('/login')
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      this.$router.replace('/login');
     }
   }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="flex-column d-flex align-items-center justify-content-center">
-      <h1 class="pt-4 mb-4">My Bookings</h1>
+      <h1 class="pt-4 mb-4">My Booking</h1>
       <div class="tableBox position-relative">
         <hr />
         <div class="container">
@@ -91,7 +91,7 @@ import EditBookingModal from "@/components/employee/EditBookingModal.vue";
 // import axios from "axios";
 
 export default {
-  name: "ViewBookingAdmin",
+  name: "ViewBookingGOP",
   components: {
     CreateBookingModal,
     CancelBookingModal,
@@ -303,8 +303,7 @@ export default {
                 data.prevUser
                   ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
                   : "N/A",
-                data.user.userId,
-                data.defunct
+                data.user.userId
               ])
               .filter(
                 (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)

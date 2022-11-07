@@ -320,7 +320,7 @@ export default {
                   } else if (decoded.scope == "BORROWER") {
                     this.$router.replace("/booking/view");
                   } else if (decoded.scope == "GOP") {
-                    this.$router.replace("/gop");
+                    this.$router.replace("/gop/booking/view");
                   } else {
                     alert("Incorrect credentials! Please try again.");
                   }

@@ -11,11 +11,11 @@
         </div>
         <div class="col d-flex">
           <div class="circle-legend-past" />
-          <span class="align-items-center d-flex ms-2">Your Existing Bookings </span>
+          <span class="align-items-center d-flex ms-2">Your Existing Bookings</span>
         </div>
         <div class="col d-flex">
           <div class="circle-legend-new" />
-          <span class="align-items-center d-flex ms-2">Your New Bookings</span>
+          <span class="align-items-center d-flex ms-2">Your Selected Booking</span>
         </div>
       </div>
     </div>

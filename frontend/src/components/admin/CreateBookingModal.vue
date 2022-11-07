@@ -53,33 +53,33 @@
               <div class="form-group">
                 <h4>Booking Details</h4>
                 <div class="row my-4">
-                  <div class="col">
+                  <div class="col-6">
                     <label for="exampleFormControlInput1">Email address</label>
                     <input
                       type="email"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      placeholder="aloysius@sss.edu.sg"
+                      :value="user.email"
                       disabled
                     />
                   </div>
-                  <div class="col">
+                  <div class="col-2">
                     <label for="exampleFormControlInput1">Staff ID</label>
                     <input
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      placeholder="1525"
+                      :value="user.userId"
                       disabled
                     />
                   </div>
-                  <div class="col">
+                  <div class="col-4">
                     <label for="exampleFormControlInput1">Contact Number</label>
                     <input
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      placeholder="84623411"
+                      :value="user.contactNumber"
                       disabled
                     />
                   </div>
@@ -261,6 +261,7 @@ export default {
   },
   data() {
     return {
+      user: JSON.parse(localStorage.getItem("user")),
       selectedLoan: {id:null}, // this to prevent a type error as edit booking modal is using this
       bookingGuestDetails: [
         {

@@ -106,6 +106,7 @@ export default {
   },
   data() {
     return {
+      user: JSON.parse(localStorage.getItem("user")),
       isChecked: false,
       selectedPassId: null,
       selectedPass: null,

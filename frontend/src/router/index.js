@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import jwt_decode from "jwt-decode";
-// import Home from '../views/Home.vue'
+
 import ViewBooking from '../views/booking/ViewBooking.vue'
 import ViewBookingAdmin from '../views/booking/ViewBookingAdmin.vue'
-
-// import Booking from '../views/booking/Booking.vue'
+import ViewBookingGOP from '../views/booking/ViewBookingGOP.vue'
 import ManageBooking from '../views/booking/ManageBooking.vue'
+import ManageBookingGOP from '../views/booking/ManageBookingGOP.vue'
+
 import Dashboard from '../views/Dashboard.vue'
 import Employee from '../views/Employee.vue'
 import Pass from '../views/Pass.vue'
@@ -13,12 +14,11 @@ import PassUser from '../views/PassUser.vue'
 import Email from '../views/Email.vue'
 import Login from '../views/Login.vue'
 import ResetPassword from '../views/ResetPassword.vue'
-// import NotFound from '../views/NotFound.vue'
 import page404 from '../views/page404.vue'
 
 import SidebarAdmin from '../components/SidebarAdmin.vue'
+import SidebarGOP from '../components/SidebarGOP.vue'
 import Sidebar from '../components/Sidebar.vue'
-// import AdminOutlet from '../components/AdminOutlet.vue'
 
 // https://router.vuejs.org/guide/advanced/composition-api.html
 
@@ -63,7 +63,7 @@ const routes = [
         component: PassUser,
         meta: { 
           requiredAuthorization: true, 
-          roles: ['GOP','BORROWER'] 
+          roles: ['BORROWER'] 
         }
       },
     ]
@@ -71,10 +71,6 @@ const routes = [
   {
     path: '/admin',
     component: SidebarAdmin,
-    // meta: {
-    //   requiredAuthorization: true,
-    //   roles: ['ADMIN']
-    // },
     children: [ // ALL ROUTES AFTER LOGIN
       {
         path: '',
@@ -128,6 +124,39 @@ const routes = [
         meta: {
           requiredAuthorization: true,
           roles: ['ADMIN']
+        }
+      },
+    ]
+  },
+  {
+    path: '/gop',
+    component: SidebarGOP,
+    children: [ // ALL ROUTES AFTER LOGIN
+      {
+        path: '/gop/booking/view',
+        name: 'ViewBookingGOP',
+        component: ViewBookingGOP,
+        meta: {
+          requiredAuthorization: true,
+          roles: ['GOP']
+        }
+      },
+      {
+        path: '/gop/booking/manage',
+        name: 'ManageBookingGOP',
+        component: ManageBookingGOP,
+        meta: {
+          requiredAuthorization: true,
+          roles: ['GOP']
+        }
+      },
+      {
+        path: '/gop/passes',
+        name: 'Passes',
+        component: PassUser,
+        meta: { 
+          requiredAuthorization: true, 
+          roles: ['GOP'] 
         }
       },
     ]

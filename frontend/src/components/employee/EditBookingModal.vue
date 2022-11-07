@@ -28,14 +28,6 @@
                   <span>{{ rowData.id }}</span>
                 </div>
               </div>
-              <div class="row gap-5">
-                <div class="col text-end">
-                  <span>Pass Name:</span>
-                </div>
-                <div class="col text-start">
-                  <span>{{ rowData.passTitle }}</span>
-                </div>
-              </div>
             </div>
             <div class="p-4">
               <div class="" v-if="selectedPass">
@@ -66,7 +58,7 @@
                       type="email"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      placeholder="aloysius@sss.edu.sg"
+                      :value="user.email"
                       disabled
                     />
                   </div>
@@ -76,7 +68,7 @@
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      placeholder="1525"
+                      :value="user.userId"
                       disabled
                     />
                   </div>
@@ -86,7 +78,7 @@
                       type="text"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      placeholder="84623411"
+                      :value="user.contactNumber"
                       disabled
                     />
                   </div>
@@ -96,12 +88,12 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col">
-                    <label for="exampleFormControlInput1">Pass Type</label>
+                    <label for="exampleFormControlInput1">Pass Title</label>
                     <input
                       type="email"
                       class="form-control"
                       id="exampleFormControlInput1"
-                      :value="retrievedData.passTitle"
+                      :value="rowData.poi"
                       disabled
                     />
                   </div>
@@ -189,6 +181,7 @@ export default {
   },
   data() {
     return {
+      user: JSON.parse(localStorage.getItem("user")),
       bookingGuestDetails: [
         {
           name: "",
