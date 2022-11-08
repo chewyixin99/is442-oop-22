@@ -234,15 +234,15 @@
                         },
                         width: '5%',
                     },
-                    { name: 'ID', width: '10%' },
+                    { name: 'ID', width: '9%' },
                     { name: 'Name', width: '20%' },
                     { name: 'Email',  width: '25%' },
-                    { name: 'Contact Number',  width: '20%' },
-                    'Role', 
+                    { name: 'Contact Number',  width: '15%' },
+                    { name: 'Role', width: '15%'}, 
                     { 
-                        name: '#',
+                        name: 'Edit',
                         formatter: () => html(`<i class="fa-lg button bi bi-pencil text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
-                        width: '6%'
+                        width: '10%'
                     }
                 ],
                 }).forceRender();

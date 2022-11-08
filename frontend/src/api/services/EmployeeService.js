@@ -8,7 +8,7 @@ class EmployeeService extends BaseApiService {
             headers: { Authorization: bearer_token },
         };
         try {
-            let employee = await axiosClient.post("/users", { ...employeeDetails }, config);
+            let employee = await axiosClient.post("/register", { ...employeeDetails }, config);
             return employee.data
 
         } catch (error) {
@@ -68,25 +68,6 @@ class EmployeeService extends BaseApiService {
         try {
             let deletionStatus = await axiosClient.delete("/users/" + employeeID, config);
             return deletionStatus.data.message
-
-        } catch (error) {
-            return this.handleError(error);
-        }
-    }
-
-    async importEmployees(employeeDetails) {
-        const bearer_token = `Bearer ${localStorage.getItem("token")}`;
-        const config = {
-            headers: { Authorization: bearer_token },
-        };
-        try {
-            let employees = await axiosClient.post("/import_employees", {
-                params : {
-                    ...employeeDetails
-                }
-            }, config);
-            console.log(employees);
-            return employees.data.message
 
         } catch (error) {
             return this.handleError(error);
