@@ -127,12 +127,13 @@
                 </div>
                 <div class="form-check mb-3">
                   <input
+                    v-model="termsAndCondition"
                     class="form-check-input"
                     type="checkbox"
                     name="agree"
                     id="agree"
                   />
-                  <label class="form-check-label d-flex ms-1" for="agree"
+                  <label class="form-check-label d-flex ms-1" for="agree" 
                     >I agree with the
                     <a
                       target="_blank"
@@ -144,14 +145,25 @@
                 </div>
                 <div class="form-group">
                   <button
+                    v-if="!isRegisterButtonClicked"
                     class="btn btn-primary"
                     id="register"
                     type="button"
                     name="registerSubmit"
                     @click="register()"
-                    :disabled="!username || !email || !password || !contactNumber"
+                    :disabled="!termsAndCondition || !username || !email || !password || !contactNumber"
                   >
                     Register
+                  </button>
+                  <button
+                    v-else
+                    class="btn btn-primary"
+                    id="reset"
+                    type="button"
+                    name="resetSubmit"
+                    @click="user_login()"
+                  >
+                    Back to Login
                   </button>
                 </div>
               </form>
@@ -267,8 +279,10 @@ export default {
       userlogin: true,
       userregister: false,
       userforgotpassword: false,
+      termsAndCondition: false,
       isResetButtonEmailClicked: false,
       toastrResponse: "",
+      isRegisterButtonClicked: false,
     };
   },
   methods: {
@@ -348,6 +362,7 @@ export default {
       this.userregister = false;
       this.userforgotpassword = false;
       this.isResetButtonEmailClicked = false;
+      this.isRegisterButtonClicked = false;
     },
     user_forgotpassword() {
       this.userlogin = false;
@@ -374,6 +389,8 @@ export default {
 
     },
     async register(){
+      this.isRegisterButtonClicked = true;
+      var that = this;
       try {
         let userDetails = {
           "username": this.username,
@@ -385,10 +402,10 @@ export default {
         };
         await LoginService.registerUser(userDetails);
         this.toastrResponse = {status: "Success", msg: "Registration was successful! Please check your email for verification link"};    
-        
+        setTimeout(function(){ that.user_login() }, 1250);
       } catch (e){
-        this.toastrResponse = {status: "Error", msg: "Something went wrong, unable to register user"};    
-
+        this.isRegisterButtonClicked = false;
+        this.toastrResponse = e.response.status == 406 ? {status: "Error", msg: "Duplicated email/username found, please change!"} : {status: "Error", msg: "Something went wrong, unable to register user"};
       } finally{
         var bsAlert = new Toast(document.getElementById("theToastr"));
         bsAlert.show();

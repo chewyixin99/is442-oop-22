@@ -242,7 +242,7 @@
                     { 
                         name: '#',
                         formatter: () => html(`<i class="fa-lg button bi bi-pencil text-primary" data-bs-toggle="modal" data-bs-target="#editModal"></i>`),
-                        width: '1%'
+                        width: '6%'
                     }
                 ],
                 }).forceRender();
