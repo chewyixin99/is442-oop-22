@@ -1,12 +1,18 @@
 <template>
-    <div id="employee" class="px-3">
-        <h1>Employee</h1>
+    <div id="employee" class="position-relative">
+        <div v-if="loading" class="overlay">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        <h1 class="pt-3">Employee</h1>
         ------------------------------------
         <p>Admin functionalities:</p>
         ------------------------------------
         <p>1. Table that displays all employee details with edit/delete functionalities</p>
         <p>2. Search function tied to the table</p>
         <p>3. Upload of CSV file</p>
+
         <div id="tableBox">
             <div id="buttonsHolder" class="d-flex">
 
@@ -23,6 +29,7 @@
         <EmployeeModal id="createModal" modalType="create" @createEmployee="createEmployee"></EmployeeModal>
         <EmployeeModal id="editModal" modalType="edit" @editEmployee="editEmployee" :selectedEmployeeToEdit="selectedEmployeeToEdit"></EmployeeModal>
         <TheToastr :toastrResponse="toastrResponse"></TheToastr>
+
     </div>
 </template>
 <script>
@@ -42,11 +49,13 @@
         },
         data() {
             return {
+                loading: false,
                 form: { file: null },
                 toastrResponse: "",
                 recordsToDelete: [],
                 gridJsTableData: [],
                 selectedEmployeeToEdit: {},
+                fullListOfEmployees: [],
                 grid: new Grid({
                     resizable: true,
                     columns: [],
@@ -108,6 +117,7 @@
             },
             async getAllEmployees(){
                 var employees = await EmployeeService.getAllEmployees();
+                this.fullListOfEmployees = employees;
                 this.gridJsTableData = [];
                 for (let e of employees){
                     let gridJsEmployeeObject = { "id": e.userId, "name": e.username, "email": e.email, "contactNumber": e.contactNumber, "role": e.userType };
@@ -116,14 +126,14 @@
             },
             async createEmployee(details){
                 var row = Object.keys(details).map((key) => details[key]);
-                let doesNameExist = this.gridJsTableData.some((e) => e.name === details.username);
-                if (!doesNameExist && details.name != ""){ //check if name exist in current table, if name is empty, or is first row a header row
+                let doesNameOrEmailExist = this.fullListOfEmployees.some((e) => (e.username === details.username) || (e.email === details.email));
+                if (!doesNameOrEmailExist && details.name != ""){ //check if name or email exist in current table, if name is empty, or is first row a header row
                     this.pushRow(row);
                     this.toastrResponse = {status: "Success", msg: "New employee has been created!"};    
                 } else {
-                    this.toastrResponse = {status: "Error", msg: "Employee name already exist!"};            
+                    this.toastrResponse = {status: "Error", msg: "Employee name/email already exist!"};
+                    this.showToast();     
                 }
-                this.showToast();
             },
             async editEmployee(details){
                 details.password = "test";
@@ -169,9 +179,8 @@
                     } else {
                         this.toastrResponse = {status: "Error", msg: "Invalid file extension, please only use .csv, .txt, or .xlsx!"};  
                     }
-
-                    file.value = ''; //clear input field so that we can upload the same file again
                     this.showToast();
+                    file.value = ''; //clear input field so that we can upload the same file again
                 }
             },
             csvImport(selected, reader){
@@ -180,8 +189,9 @@
                     for (let i in data) {
                         data[i] = data[i].split(",");
                         let name = data[i][0];
-                        let doesNameExist = this.gridJsTableData.some((row) => row.name === name);
-                        if (!doesNameExist && name != "" && name != "Name"){ //check if name exist in current table, if name is empty, or is first row a header row
+                        let email = data[i][1];
+                        let doesNameOrEmailExist = this.fullListOfEmployees.some((row) => (row.username === name) || (row.email === email));
+                        if (!doesNameOrEmailExist && name != "" && name != "Name"){ //check if name exist in current table, if name is empty, or is first row a header row
                             await this.pushRow(data[i]);
                         }
                     }
@@ -195,7 +205,10 @@
                     for (let sheetName of workbook.SheetNames) {
                         var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                         for (let row of XL_row_object){
-                            let doesNameExist = this.gridJsTableData.some(z => row?.Name == undefined ? z.name === Object.values(row)[1] : z.name === row.Name);
+                            let doesNameExist = this.fullListOfEmployees.some(z => row?.Name == undefined ? 
+                            (z.username === Object.values(row)[1] || z.email === Object.values(row)[2])
+                            : (z.username === row.Name || z.email === row.Email));
+
                             if (!doesNameExist && row.Name != ""){
                                 var record = Object.keys(row).map((key) => String(row[key])); //convert object to array form
                                 //If .xlsx file has no header, switch the position of affected elements in the array. From [Contact number, Name, Email] to [Name, Email, Contact Number]
@@ -210,14 +223,17 @@
             },
             async pushRow(row){
                 if (row.length == 4 && !row.includes("")){
+                    this.loading = true;
                     let record = { "username": row[0], "email": row[1], "contactNumber": row[2], "userType": row[3], "password": "test" };
                     await EmployeeService.createEmployee(record);
                     await this.getAllEmployees();
                     this.refreshTable();
+                    this.loading = false;
                 } else {
                     this.toastrResponse = {status: "Error", msg: "Your data is invalid, please check your data set for missing fields or cells!"}; 
                     throw new Error("Invalid file");
                 }
+                this.showToast();
             },
             refreshTable(){
                 this.grid.updateConfig({
@@ -300,5 +316,23 @@
         .delBtn{
             right: 5px;
         }
+    }
+
+    .overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        opacity: 0.5;
+        filter: alpha(opacity=50);
+    }
+
+    .spinner-border{
+        position: absolute;
+        top: 50%;
+        left: 45%;
+        z-index: 999;
+        width: 120px !important;
+        height: 120px !important;  
     }
 </style>
