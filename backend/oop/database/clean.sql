@@ -1,6 +1,6 @@
-drop database if exists `oop`;
-create database if not exists `oop` default character set utf8 collate utf8_general_ci;
-use `oop`;
+drop database if exists `heroku_ad30dd59e74b08c`;
+create database if not exists `heroku_ad30dd59e74b08c` default character set utf8 collate utf8_general_ci;
+use `heroku_ad30dd59e74b08c`;
 
 -- This is done, and follows the ER diagram in the Google Drive
 -- Link here: https://app.diagrams.net/#G1TDR1A4IQ3V2OcwaAHy8hvXOS3MokRVjd
@@ -11,7 +11,7 @@ create table if not exists `template` (
     `template_data` varchar(8000) not null,
     `defunct` bit not null, -- 1 for True and 0 for False
 primary key (`template_id`)
-) engine = InnoDB default charset = utf8;
+) engine = InnoDB default charset = utf8 collate utf8_general_ci;
 
 INSERT INTO `template` (`template_id`, `template_name`, `template_subject`, `template_data`, `defunct`) VALUES
 (1, 'Account Registration Template', 'Singapore Sport School - Corp Pass Account Registration', '<h1>Dear %s,</h1><p>Thank you for registering an account. Please click on the link below to verify your account.</p><p><a href="%s">%s</a></p>', 0),
@@ -30,7 +30,7 @@ create table if not exists `user` (
 `defunct` bit not null, -- 1 for True and 0 for False
 `enabled` bit not null,
 primary key (`user_id`)
-) engine = InnoDB default charset = utf8;
+) engine = InnoDB default charset = utf8 collate utf8_general_ci;
 
 create table if not exists `pass` (
     `pass_id` int auto_increment not null,
@@ -47,7 +47,7 @@ create table if not exists `pass` (
     `pass_attachment` longblob null,
     `pass_image` longblob null,
 primary key (`pass_id`)
-) engine=InnoDB default charset=utf8;
+) engine=InnoDB default charset=utf8 collate utf8_general_ci;
 
 INSERT INTO `pass` (`pass_id`, `pass_number`, `num_guests`, `replacement_fee`, `poi`, `poi_url`, `is_physical`, `defunct`, `pass_status`, `pass_desc`) VALUES
 (1, 12345678, 2, 20.00, 'Gardens By The Bay', 'https://www.gardensbythebay.com.sg/', 1, 0, 'ONLOAN', 'Pass 1 description'),
@@ -69,4 +69,4 @@ primary key (`loan_id`,`user_id`,`pass_id`),
 foreign key (`user_id`) references `user` (`user_id`),
 foreign key (`gop_id`) references `user` (`user_id`),
 foreign key (`pass_id`) references `pass` (`pass_id`)
-) engine = InnoDB default charset = utf8;
+) engine = InnoDB default charset = utf8 collate utf8_general_ci;
