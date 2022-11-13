@@ -202,7 +202,20 @@ public class LoanServiceImpl implements LoanService{
 
     @Override
     public Optional<Loan> getLoanForPassByDateBefore(LocalDate queryDate, Integer passId) {
-        Optional<Loan> queryLoan = loanRepository.getLoanForPassByDate(queryDate, passId);
+        Optional<Loan> queryLoan = loanRepository.getLoanForPassByDate(queryDate, passId);   
         return queryLoan;
     }
+
+    @Override
+    public List<Loan> getLoanByDate(LocalDate date) {
+        List<Loan> loans = this.getAllLoan();
+        List<Loan> toReturn = new ArrayList<>();
+        for (Loan l: loans){
+            if (l.getStartDate().equals(date) && !(l.isDefunct() || l.isCompleted())){
+                toReturn.add(l);
+            }
+        }
+        return toReturn;
+    }
+
 }
