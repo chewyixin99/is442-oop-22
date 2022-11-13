@@ -87,7 +87,7 @@
                     <!-- Pass update modal -->
                     <div class="modal fade" data-bs-backdrop="static"  :id="`viewUM`+EachPass.passId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Update pass information</h5>
@@ -110,20 +110,20 @@
                                                     
                                                 </div>
                                                 <div class="input-group mb w-75 ">
-                                                    <label class="col-12 col-form-label text-center"><b>Insert card image here(if any)</b></label>
+                                                    <label class="col-12 col-form-label text-center"><b>Insert new card image here to replace current image</b></label>
                                                     <input class="col-8 col-md-5 form-control form-control" type="file" accept="image/*" @change="onImageSelected" :id="`updateImageUploadInput`+EachPass.passId">
                                                     <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeImageSelect_newAndUpdatePass(EachPass.passId)">X</button>
                                                 </div>
                                             </div>
                                             <hr>
                                             <label class="col-form-label"><b>ID: {{EachPass.passId}}</b></label><br>
-                                            <label class="col-form-label"><b>Pass Number:</b></label> 
-                                            <input class="form-control" v-model ="EachPass.passNumber" required >
-                                            <label class="col-form-label"><b>Description:</b></label> 
+                                            <label class="col-form-label"><b>Pass Number</b></label> 
+                                            <input type="number" min="1" class="form-control" v-model ="EachPass.passNumber" required >
+                                            <label class="col-form-label"><b>Description</b></label> 
                                             <input class="form-control" v-model ="EachPass.passDesc" required >
-                                            <label class="col-form-label"><b>Point of Interests:</b></label>
+                                            <label class="col-form-label"><b>Point of Interests</b></label>
                                             <input class="form-control" v-model ="EachPass.poi" required >
-                                            <label class="col-form-label"><b>Point of Interests URL:</b></label>
+                                            <label class="col-form-label"><b>Point of Interests URL</b></label>
                                             <input class="form-control" v-model ="EachPass.poiUrl" required >
                                             
                                         </div>
@@ -186,7 +186,10 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)" data-bs-dismiss="modal">Update Now</button>
-                                    <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button> 
+                                    <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button>
+                                    <!--  -->
+                                    
+                                    <!--  -->
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialStateEachPass(EachPass.passId)">Cancel</button>
                                 </div>
                             </div>
@@ -200,7 +203,7 @@
 
                 <!-- Add New Pass Form Modal-->
                 <div class="modal fade" data-bs-backdrop="static"  id="addNewPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Create new pass</h5>
@@ -221,13 +224,13 @@
                                                 </div>
                                             </div>
                                             <hr>
-                                            <label class="col-form-label"><b>Pass Number:</b></label> 
-                                            <input type="number"  class="form-control" required v-model="NEWpassNumber">
-                                            <label class="col-form-label"><b>Description:</b></label> 
+                                            <label class="col-form-label"><b>Pass Number</b></label> 
+                                            <input type="number" min ="1" class="form-control" required v-model="NEWpassNumber">
+                                            <label class="col-form-label"><b>Description</b></label> 
                                             <input class="form-control" required v-model="NEWpassDesc">
-                                            <label class="col-form-label"><b>Point of Interests:</b></label>
+                                            <label class="col-form-label"><b>Point of Interests</b></label>
                                             <input class="form-control" required v-model="NEWpoi">
-                                            <label class="col-form-label"><b>Point of Interests Website:</b></label>
+                                            <label class="col-form-label"><b>Point of Interests Website</b></label>
                                             <input class="form-control" required v-model="NEWpoiUrl">
                                         </div>
                                         <div class="row mb-3">
@@ -463,6 +466,7 @@ export default({
                 }
             },
             deletePassMethod(passID){
+
                 this.deleteExistingPass(passID)
             },
             closeButtonMethod(){
