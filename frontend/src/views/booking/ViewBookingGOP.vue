@@ -82,11 +82,11 @@
 </template>
 <script>
 import { Grid, h } from "gridjs";
-import CreateBookingModal from "@/components/employee/CreateBookingModal.vue";
+import CreateBookingModal from "@/components/borrower/CreateBookingModal.vue";
 import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
-import CancelBookingModal from "@/components/employee/CancelBookingModal.vue";
-import EditBookingModal from "@/components/employee/EditBookingModal.vue";
+import CancelBookingModal from "@/components/borrower/CancelBookingModal.vue";
+import EditBookingModal from "@/components/borrower/EditBookingModal.vue";
 
 // import axios from "axios";
 
@@ -227,7 +227,7 @@ export default {
               ])
               .filter(
                 (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
-              ),
+              ).reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -307,7 +307,7 @@ export default {
               ])
               .filter(
                 (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
-              ),
+              ).reverse(),
           handle: (res) => {
             return res.json();
           },

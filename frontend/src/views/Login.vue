@@ -15,6 +15,9 @@
                 Log in to get started!
               </p>
               <form id="loginForm" action="index.html">
+                stephenhawking@gmailwe.com<br>
+                brucewayne@gmailwe.com<br>
+                tonystark@gmailwe.com
                 <div class="form-floating mb-3">
                   <input
                     class="form-control"
