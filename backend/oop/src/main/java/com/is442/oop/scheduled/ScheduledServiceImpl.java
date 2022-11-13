@@ -177,7 +177,7 @@ public class ScheduledServiceImpl implements ScheduledService {
                 
             }
         }
-        System.out.println("-----------Houding completed-----------");
+        System.out.println("-----------Reminder's completed-----------");
 
     }   
 
