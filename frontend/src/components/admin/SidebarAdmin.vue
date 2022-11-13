@@ -249,6 +249,10 @@ export default {
   min-height: 100vh;
 }
 
+.nav-item:hover{
+  transform: scale(1.1);
+}
+
 @media screen and (max-width: 575px) {
   .logo {
     display: none;

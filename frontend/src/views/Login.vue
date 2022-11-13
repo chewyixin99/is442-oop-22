@@ -1,23 +1,20 @@
 <template>
-  <div class="page-holder align-items-center py-4 bg-gray-100 vh-100">
+  <div class="page-holder align-items-center py-4 vh-100 bg-grad vh-100">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-lg-6 px-lg-4 mb-4" v-if="userlogin">
           <div class="card">
             <div class="card-header px-lg-5">
-              <div class="card-heading text-dark"><h2>Login</h2></div>
+              <div class="card-heading text-dark p-2 "><h1>Login</h1></div>
             </div>
             <div class="card-body p-lg-5">
               <h3 class="mb-4">Hi, welcome back! 👋👋</h3>
-              <p class="text-muted text-sm mb-5">
+              <p class="text-muted text-sm mb-3">
                 This is the prototype for SSS's corporate booking system in
                 collaboration with SMU. <br />
                 Log in to get started!
               </p>
               <form id="loginForm" action="index.html">
-                stephenhawking@gmailwe.com<br>
-                brucewayne@gmailwe.com<br>
-                tonystark@gmailwe.com
                 <div class="form-floating mb-3">
                   <input
                     class="form-control"
@@ -75,7 +72,7 @@
         <div class="col-lg-6 px-lg-4" v-if="userregister">
           <div class="card">
             <div class="card-header px-lg-5">
-              <div class="card-heading text-dark"><h2>Register</h2></div>
+              <div class="card-heading text-dark"><h1>Register</h1></div>
             </div>
             <div class="card-body p-lg-5">
               <h3 class="mb-4">No account? Simply sign up now!</h3>
@@ -248,8 +245,8 @@
             src="../assets/SSS_logo.png"
             alt=""
           />
-          <h1 class="mb-4">Corporate Pass Booking System</h1>
-          <p class="lead text-muted"><i>Time to book some fun!</i></p>
+          <h1 class="mb-4 text-dark">Corporate Pass Booking System</h1>
+          <p class="lead text-dark"><i>Time to book some fun!</i></p>
         </div>
       </div>
       <TheToastr :toastrResponse="toastrResponse"></TheToastr>
@@ -403,6 +400,11 @@ export default {
 </script>
 
 <style>
+
+.bg-grad {
+  background-image: linear-gradient(to right, var(--sss_red), var(--sss_orange)) !important;
+}
+
 .card-header:first-child {
   border-radius: calc(1rem - 1px) calc(1rem - 1px) 0 0;
 }
@@ -412,7 +414,7 @@ export default {
   border-bottom: none;
   background-color: white;
   box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 8%);
-  z-index: 2;
+  z-index: 2;;
 }
 .card {
   position: relative;
@@ -431,6 +433,7 @@ export default {
 }
 body {
   font-family: "Poppins" !important;
+  
 }
 .text-primary {
   color: #4650dd !important;

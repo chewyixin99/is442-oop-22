@@ -23,6 +23,8 @@ export default {
   text-align: center; */
   color: #2c3e50;
   font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 :root {

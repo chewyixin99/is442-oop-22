@@ -519,6 +519,7 @@ export default {
   color: var(--sss_orange) !important;
 }
 
+
 .btnHover {
   cursor: pointer;
 }

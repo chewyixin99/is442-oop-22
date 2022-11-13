@@ -175,12 +175,18 @@ router.beforeEach((to, from, next) => {
   // check if the route requires authorization, if yes check if the user is logged in, else redirect to login page
   if (to.meta.requiredAuthorization) {
     const token = localStorage.getItem('token') ? localStorage.getItem('token') : 'NULL'
-    const decoded = jwt_decode(token);
-    if (to.meta?.roles?.includes(decoded.scope)) {
-      next()
-    } else {
-      next('/login')
+    if (token != 'NULL'){
+      const decoded = jwt_decode(token);
+      if (to.meta?.roles?.includes(decoded.scope)) {
+        next()
+      } else {
+        next('/')
+      }
     }
+    else {
+      next('/')
+    }
+   
   } else {
     next()
   }
