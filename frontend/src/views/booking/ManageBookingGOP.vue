@@ -395,7 +395,7 @@ export default {
       const checkboxPlugin = this.currentGrid.config.plugin.get("employeeCheckBox");
 
       // subscribe to the store events
-      checkboxPlugin.props.store.on("updated", (state, prevState) => {
+      checkboxPlugin.props.store?.on("updated", (state, prevState) => {
         console.log("checkbox updated", state, prevState);
         this.recordsToDelete = state["rowIds"];
         this.filterSelected();
@@ -407,7 +407,7 @@ export default {
       const checkboxPlugin = this.pastGrid.config.plugin.get("employeeCheckBox");
 
       // subscribe to the store events
-      checkboxPlugin.props.store.on("updated", (state, prevState) => {
+      checkboxPlugin.props.store?.on("updated", (state, prevState) => {
         console.log("checkbox updated", state, prevState);
         this.recordsToDelete = state["rowIds"];
         this.filterSelected();
