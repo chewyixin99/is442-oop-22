@@ -12,4 +12,5 @@ public interface ScheduledService {
     List<Pass> updatePassesToUnreturned() throws ActionNotExecutedException;
 
     void reminderCollectPass();
+    void reminderReturnPass();
 }

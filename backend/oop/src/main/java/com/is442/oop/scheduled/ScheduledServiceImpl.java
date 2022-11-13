@@ -75,7 +75,6 @@ public class ScheduledServiceImpl implements ScheduledService {
         HashMap<String, List<Pass>> emailPassMap = new HashMap<String, List<Pass>>();
         for (Loan l: loans) {
             String email = l.getUser().getEmail();
-            System.out.println(email);
             if (l.getPass().getIsPhysical() == false) {
                 continue;
             }
@@ -93,7 +92,6 @@ public class ScheduledServiceImpl implements ScheduledService {
         for (String email: emailPassMap.keySet()) {
             System.out.println(emailPassMap.keySet());
             String htmlString = "You have booked the following passes. Be sure to head down to GOP office and collect them. <br> <table border='1'> <tr> <th>Pass Number</th> <th>Pass Description</th> <th>Places Of Interest</th> <th> URL </th> <th>Number of Guests</th> <th>Replacement Fee</th>  </tr>";
-            System.out.println("suppose to send to " + email);
             List<Pass> passToBeCollected = emailPassMap.get(email);
 
             // "<tr> <td>Alfreds Futterkiste</td> <td>Maria Anders</td> <td>Germany</td> </tr> <tr> <td>Centro comercial Moctezuma</td> <td>Francisco Chang</td> <td>Mexico</td> </tr> </table>"
@@ -108,9 +106,8 @@ public class ScheduledServiceImpl implements ScheduledService {
             else{
                 try{
                     String toSend = htmlString;
-                    System.out.println(passToBeCollected.size());
                     for (Pass pass: passToBeCollected){
-                         toSend += htmlString + String.format("<td>%d</td> <td>%s</td> <td>%s</td> <td> %s </td> <td>%d</td> <td>$%.2f</td></tr>", pass.getPassNumber(), pass.getPassDesc(), pass.getPoi(), pass.getPoiUrl(), pass.getNumGuests(), pass.getReplacementFee());
+                         toSend += String.format("<tr><td>%d</td> <td>%s</td> <td>%s</td> <td> %s </td> <td>%d</td> <td>$%.2f</td></tr>", pass.getPassNumber(), pass.getPassDesc(), pass.getPoi(), pass.getPoiUrl(), pass.getNumGuests(), pass.getReplacementFee());
         
                     }
                     toSend += "</table>";
@@ -123,6 +120,65 @@ public class ScheduledServiceImpl implements ScheduledService {
             System.out.println("Reminders sent");
         }
     }
+
+    public void reminderReturnPass(){
+        // obtain all loans that are expired
+        List<Loan> expiredLoans = loanRepository.getAllExpiredLoans();
+        
+        // get unique list of users from expired loans
+        HashSet<User> users = new HashSet<User>();
+        for (Loan l: expiredLoans) {
+            users.add(l.getUser());
+        }
+
+        // get map of users and their expired loans
+        HashMap<User, List<Loan>> userLoanMap = new HashMap<User, List<Loan>>();
+        for (Loan l: expiredLoans) {
+            User user = l.getUser();
+            if (userLoanMap.containsKey(user)) {
+                userLoanMap.get(user).add(l);
+            } else {
+                List<Loan> loans = new ArrayList<Loan>();
+                loans.add(l);
+                userLoanMap.put(user, loans);
+            }
+        }
+
+        // send email to each user
+        for (User user: userLoanMap.keySet()) {
+            System.out.println(userLoanMap.keySet());
+            String htmlString = "You have not returned the following passes. Please head down to the GOP office to return them. If you have lost them, please pay the Replacement Fee. <br><br> <table border='1'> <tr> <th>Pass Number</th> <th>Pass Description</th> <th>Places Of Interest</th> <th> URL </th> <th>Number of Guests</th> <th>Replacement Fee</th>  </tr>";
+            List<Loan> myExpiredLoans = userLoanMap.get(user);
+            
+            if (myExpiredLoans.size() == 1) {
+                Pass pass = myExpiredLoans.get(0).getPass();
+                String toSend = htmlString + String.format("<tr><td>%d</td> <td>%s</td> <td>%s</td> <td> %s </td> <td>%d</td> <td>$%.2f</td></tr></table>", pass.getPassNumber(), pass.getPassDesc(), pass.getPoi(), pass.getPoiUrl(), pass.getNumGuests(), pass.getReplacementFee());
+
+                emailService.sendGenericEmail(user.getEmail(),"[Reminder] Please Return Passes" , toSend);
+                System.out.println("Email sent to " + user.getEmail());
+            }
+            else{
+                try{
+                    String toSend = String.valueOf(htmlString);
+                    for (Loan loan: myExpiredLoans){
+                        Pass pass = loan.getPass();
+                        toSend += String.format("<tr><td>%d</td> <td>%s</td> <td>%s</td> <td> %s </td> <td>%d</td> <td>$%.2f</td></tr>", pass.getPassNumber(), pass.getPassDesc(), pass.getPoi(), pass.getPoiUrl(), pass.getNumGuests(), pass.getReplacementFee());
+        
+                    }
+                    toSend += "</table>";
+                    System.out.println(toSend);
+                    emailService.sendGenericEmail(user.getEmail(),"[Reminder] Please Return Passes" , toSend);
+                    System.out.println("Email sent to " + user.getEmail());    
+    
+                } catch (Exception e){
+                    System.out.println(e.getStackTrace());
+                }
+                
+            }
+        }
+        System.out.println("-----------Reminder's completed-----------");
+
+    }   
 
 }
     

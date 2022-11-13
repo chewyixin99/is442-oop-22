@@ -249,7 +249,7 @@
 </template>
 
 <script>
-import BookingCalendar from "@/components/BookingCalendar.vue";
+import BookingCalendar from "@/components/common/BookingCalendar.vue";
 import axios from "axios";
 export default {
   name: "CreateBookingModal",
@@ -334,9 +334,6 @@ console.log(date)
       return split.join("/");
     },
     async submitBooking() {
-
-      // this.retrievedData.startDate = this.processDate2(this.retrievedData.startDate)
-      // this.retrievedData.endDate = this.processDate2(this.retrievedData.endDate)
 
 
       this.isLoading = true;

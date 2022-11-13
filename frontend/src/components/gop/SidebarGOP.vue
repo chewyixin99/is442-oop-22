@@ -94,7 +94,7 @@
               </li>
               <li @click="logout">
                 <a class="dropdown-item" href="#">
-                  <router-link to="/login" class="text-decoration-none">
+                  <router-link to="/" class="text-decoration-none">
                     Sign out
                   </router-link>
                 </a>
@@ -130,7 +130,7 @@ export default {
     logout() {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
-      this.$router.replace('/login');
+      this.$router.replace('/');
     }
   }
 

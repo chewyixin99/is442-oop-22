@@ -285,22 +285,7 @@ export default {
   },
   methods: {
     login() {
-      // if (this.email.split("@")[0] == "admin" ) {
-      //     localStorage.setItem("userType", "ADMIN")
-      //     this.$router.replace('/admin');
-      // }
-      // else if (this.email.split("@")[0] == "gop") {
-      //     localStorage.setItem("userType", "GOP")
-      // }
-      // else if (this.email.split("@")[0] == "borrower") {
-      //     localStorage.setItem("userType", "BORROWER")
-      //     this.$router.replace('/booking/view');
-      // }
-      // else {
-      //     alert("Incorrect credentials! Please try again.")
-      // }
 
-      //login api call
       axios
         .post("http://localhost:8081/login", {
           email: this.email,
