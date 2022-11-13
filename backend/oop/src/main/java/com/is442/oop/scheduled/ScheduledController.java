@@ -31,8 +31,12 @@ public class ScheduledController {
         return new ResponseEntity<>(new DataResponse(unreturnedPasses, "ScheduledService"), HttpStatus.OK);
     }
 
+    // Following function runs everyday at midnight
     @Scheduled(cron="0 0 0 * * *")
+    // @Scheduled(fixedRate= 1000L)
     void emailCollectPass() {
+        scheduledService.updatePassesToUnreturned();
         scheduledService.reminderCollectPass();
+        scheduledService.reminderReturnPass();
     }
 }
