@@ -20,4 +20,5 @@ public interface LoanService {
     Loan updateLoanToCompleted(UpdateLoantoCompletedRequest updateLoanRequest) throws RuntimeException;
     Loan updateLoan(UpdateLoanRequest updateLoanRequest) throws RuntimeException;
     Optional<Loan> getLoanForPassByDateBefore(LocalDate queryDate, Integer passId) throws ActionNotExecutedException;
+    List<Loan> getLoanByDate(LocalDate date) throws ResourceNotFoundException;
 }

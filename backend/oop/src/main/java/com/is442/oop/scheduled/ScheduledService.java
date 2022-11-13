@@ -10,4 +10,7 @@ import com.is442.oop.exception.ActionNotExecutedException;
 @Component
 public interface ScheduledService {
     List<Pass> updatePassesToUnreturned() throws ActionNotExecutedException;
+
+    void reminderCollectPass();
+    void reminderReturnPass();
 }

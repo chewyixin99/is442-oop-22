@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.is442.oop.data.models.Pass;
 import com.is442.oop.data.payloads.response.DataResponse;
+import org.springframework.scheduling.annotation.Scheduled;
+
 
 @RestController
 @RequestMapping("/scheduled")
@@ -27,5 +29,14 @@ public class ScheduledController {
             return new ResponseEntity<>(new DataResponse(unreturnedPasses, e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new DataResponse(unreturnedPasses, "ScheduledService"), HttpStatus.OK);
+    }
+
+    // Following function runs everyday at midnight
+    @Scheduled(cron="0 0 0 * * *")
+    // @Scheduled(fixedRate= 1000L)
+    void emailCollectPass() {
+        scheduledService.updatePassesToUnreturned();
+        scheduledService.reminderCollectPass();
+        scheduledService.reminderReturnPass();
     }
 }
