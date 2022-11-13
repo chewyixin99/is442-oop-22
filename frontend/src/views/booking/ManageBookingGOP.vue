@@ -142,13 +142,8 @@ export default {
             width: "30%",
           },
           {
-            // formatter: (cell, row) => {
-            //     return h('button', {
-            //         className: 'py-2 px-3 border rounded text-white bg-primary',
-            //         onClick: () => alert(`Editing "${row.cells[0].data}" "${row.cells[1].data}"`)
-            //     }, 'Edit');
-            // }
-
+            id: "status",
+            name: "Status",
             formatter: (cell, row) => {
               return h(
                 "select",
@@ -207,7 +202,7 @@ export default {
                 (data) =>
                   data[2] > new Date().toISOString().replace(/T.*$/, "") &&
                   data[6] == false
-              ),
+              ).reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -345,7 +340,7 @@ export default {
                 (data) =>
                   data[2] < new Date().toISOString().replace(/T.*$/, "") &&
                   data[6] == false
-              ),
+              ).reverse(),
           handle: (res) => {
             return res.json();
           },

@@ -218,7 +218,14 @@
                   id="exampleCheck1"
                   v-model="isChecked"
                 />
-                <span>I accept the <a target="_blank" href="https://www.youtube.com/watch?v=xvFZjo5PgG0">terms and conditions</a> </span>
+                <span
+                  >I accept the
+                  <a
+                    target="_blank"
+                    href="https://www.youtube.com/watch?v=xvFZjo5PgG0"
+                    >terms and conditions</a
+                  >
+                </span>
               </div>
               <button
                 type="button"
@@ -234,11 +241,14 @@
                 @click.stop="submitBooking"
                 style="min-width: 100px"
               >
-                <div class="" v-show="!isLoading">Submit</div>
+                <div class="" v-if="!isLoading">Submit</div>
                 <div
                   class="spinner-border spinner-border-sm text-light"
-                  v-show="isLoading"
-                ></div>
+                  v-else
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
               </button>
             </div>
           </form>
@@ -262,7 +272,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      selectedLoan: {id:null}, // this to prevent a type error as edit booking modal is using this
+      selectedLoan: { id: null }, // this to prevent a type error as edit booking modal is using this
       bookingGuestDetails: [
         {
           name: "",
@@ -321,38 +331,33 @@ export default {
     forceRerender() {
       this.componentKey += 1;
     },
-    
-    processDate2(date){
-      
-      let split = date.split("-").reverse()
+
+    processDate2(date) {
+      let split = date.split("-").reverse();
       for (let i = 0; i < split.length; i++) {
         if (split[i].length == 1) {
           split[i] = "0" + split[i];
         }
       }
-console.log(date)
+      console.log(date);
       return split.join("/");
     },
     async submitBooking() {
-
-
       this.isLoading = true;
-      console.log(this.retrievedData)
+      
       axios
         .post("http://localhost:8081/loan", this.retrievedData)
         .then((response) => {
-            console.log(response);
-            setTimeout(() => {
-              this.isLoading = false;
-              document.getElementById("create-close-btn").click();
-              this.$emit("bookingSubmitted", this.retrievedData);
-              this.$emit("toastrMsg", {
-                status: "Success",
-                msg: "Booking is successful!",
-              });
-            }, 1000);
-            
-          
+          console.log(response);
+          setTimeout(() => {
+            this.isLoading = false;
+            document.getElementById("create-close-btn").click();
+            this.$emit("bookingSubmitted", this.retrievedData);
+            this.$emit("toastrMsg", {
+              status: "Success",
+              msg: "Booking is successful!",
+            });
+          }, 1000);
         })
         .catch((error) => {
           console.log(error);

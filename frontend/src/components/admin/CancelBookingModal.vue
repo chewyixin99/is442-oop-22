@@ -9,7 +9,7 @@
       class="modal-dialog modal-dialog-centered"
       style="justify-content: center"
     >
-      <div class="modal-content">
+      <div class="modal-content cancel-modal">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">
             <p class="m-0">Cancel Booking</p>
@@ -23,8 +23,8 @@
           ></i>
         </div>
         <div class="modal-body">
-          <h4>Booking Details</h4>
-          <div class="" v-for="data in dataOfSelectedRow" :key="data">
+          <!-- <h4>Confirm Cancel?</h4> -->
+          <!-- <div class="" v-for="data in dataOfSelectedRow" :key="data">
             <div class="row gap-5">
               <div class="col text-end">
                 <span>Loan ID:</span>
@@ -66,7 +66,7 @@
               </div>
             </div>
             <hr />
-          </div>
+          </div> -->
           <p>Confirm cancel?</p>
           <div class="row">
             <div class="col text-end">
@@ -160,3 +160,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.cancel-modal{
+  max-width: 50%;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
     <div id="employee" class="position-relative">
         <div v-if="loading" class="overlay">
-            <div class="spinner-border" role="status">
+            <div class="spinner-border-custom spinner-border" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
@@ -328,7 +328,7 @@
         filter: alpha(opacity=50);
     }
 
-    .spinner-border{
+    .spinner-border-custom{
         position: absolute;
         top: 50%;
         left: 45%;

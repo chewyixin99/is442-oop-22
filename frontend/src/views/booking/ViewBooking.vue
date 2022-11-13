@@ -228,7 +228,7 @@ export default {
               ])
               .filter(
                 (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
-              ),
+              ).reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -307,7 +307,7 @@ export default {
               ])
               .filter(
                 (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
-              ),
+              ).reverse(),
           handle: (res) => {
             return res.json();
           },

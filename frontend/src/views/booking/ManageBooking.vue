@@ -41,7 +41,6 @@
 
         <!-- current bookings table -->
         <div id="table1"></div>
-        <hr />
         <div class="text-start">
           <h4 class="pt-4 ps-4">Past Bookings</h4>
         </div>
@@ -142,13 +141,8 @@ export default {
             width: "30%",
           },
           {
-            // formatter: (cell, row) => {
-            //     return h('button', {
-            //         className: 'py-2 px-3 border rounded text-white bg-primary',
-            //         onClick: () => alert(`Editing "${row.cells[0].data}" "${row.cells[1].data}"`)
-            //     }, 'Edit');
-            // }
-
+            id: "status",
+            name: "Status",
             formatter: (cell, row) => {
               return h(
                 "select",
@@ -179,7 +173,7 @@ export default {
                       disabled: row.cells[6].data,
                       className: `${row.cells[6].data ? "" : "text-dark"}`,
                     },
-                    "Not Completed"
+                    "Incomplete"
                   ),
                 ]
               );
@@ -207,7 +201,8 @@ export default {
                 (data) =>
                   data[2] > new Date().toISOString().replace(/T.*$/, "") &&
                   data[6] == false
-              ),
+              )
+              .reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -231,11 +226,13 @@ export default {
         error: "An error happened while fetching the data",
         style: {
           th: {
-            "background-color": "rgba(0, 0, 0, 0.1)",
+            "background-color": "var(--sss_orange)",
+            color: "#273746",
             "text-align": "center",
           },
           td: {
             "text-align": "center",
+            "font-size": "0.9rem",
           },
         },
       }),
@@ -280,20 +277,13 @@ export default {
           {
             id: "status",
             name: "Status",
-            // formatter: (cell, row) => {
-            //     return h('button', {
-            //         className: 'py-2 px-3 border rounded text-white bg-primary',
-            //         onClick: () => alert(`Editing "${row.cells[0].data}" "${row.cells[1].data}"`)
-            //     }, 'Edit');
-            // }
-
             formatter: (cell, row) => {
               return h(
                 "select",
                 {
                   className: `form-select ${
                     row.cells[6].data ? "text-success" : "text-danger"
-                  } `,
+                  }`,
                   onChange: () => {
                     this.updatestatus(row.cells[1].data);
                   },
@@ -317,7 +307,7 @@ export default {
                       disabled: row.cells[6].data,
                       className: `${row.cells[6].data ? "" : "text-dark"}`,
                     },
-                    "Not Completed"
+                    "Incomplete"
                   ),
                 ]
               );
@@ -345,7 +335,8 @@ export default {
                 (data) =>
                   data[2] < new Date().toISOString().replace(/T.*$/, "") &&
                   data[6] == false
-              ),
+              )
+              .reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -369,11 +360,13 @@ export default {
         error: "An error happened while fetching the data",
         style: {
           th: {
-            "background-color": "rgba(0, 0, 0, 0.1)",
+            "background-color": "var(--sss_orange)",
+            color: "#273746",
             "text-align": "center",
           },
           td: {
             "text-align": "center",
+            "font-size": "0.9rem",
           },
         },
       }),
@@ -386,14 +379,13 @@ export default {
   },
 
   mounted() {
-    console.log("2022-10-01");
     this.currentGrid.render(document.getElementById("table1"));
     this.pastGrid.render(document.getElementById("table2"));
 
     this.currentGrid.on("ready", () => {
       // find the plugin with the give plugin ID
-      const checkboxPlugin = this.currentGrid.config.plugin.get("employeeCheckBox");
-
+      const checkboxPlugin =
+        this.currentGrid.config.plugin.get("employeeCheckBox");
       // subscribe to the store events
       checkboxPlugin.props.store?.on("updated", (state, prevState) => {
         console.log("checkbox updated", state, prevState);
@@ -404,7 +396,8 @@ export default {
 
     this.pastGrid.on("ready", () => {
       // find the plugin with the give plugin ID
-      const checkboxPlugin = this.pastGrid.config.plugin.get("employeeCheckBox");
+      const checkboxPlugin =
+        this.pastGrid.config.plugin.get("employeeCheckBox");
 
       // subscribe to the store events
       checkboxPlugin.props.store?.on("updated", (state, prevState) => {
@@ -481,11 +474,11 @@ export default {
       console.log(this.dataOfSelectedRow);
     },
     cancelSubmitted() {
-      this.forceRerender();
-      this.currentGrid.forceRender();
-      this.pastGrid.forceRender();
-      this.dataOfSelectedRow = [];
+      this.dataOfSelectedRow = [{}];
       this.recordsToDelete = [];
+      this.currentGrid.updateConfig().forceRender();
+      this.forceRerender();
+
       var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
@@ -493,7 +486,7 @@ export default {
       this.toastrResponse = res;
     },
     bookingSubmitted() {
-      // this.forceRerender();
+      this.forceRerender();
       this.currentGrid.forceRender();
       this.pastGrid.forceRender();
       var bsAlert = new Toast(document.getElementById("theToastr"));
@@ -523,8 +516,9 @@ export default {
   width: 70vw;
 }
 .btnHover:hover {
-  color: #0d6efd;
+  color: var(--sss_orange) !important;
 }
+
 
 .btnHover {
   cursor: pointer;
