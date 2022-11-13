@@ -166,7 +166,6 @@ public class ScheduledServiceImpl implements ScheduledService {
         
                     }
                     toSend += "</table>";
-                    System.out.println("LOOK HERE");
                     System.out.println(toSend);
                     emailService.sendGenericEmail(user.getEmail(),"[Reminder] Please Return Passes" , toSend);
                     System.out.println("Email sent to " + user.getEmail());    
