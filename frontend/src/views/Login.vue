@@ -188,7 +188,7 @@
                 we'll send you an email to reset your password! Remember to
                 check your spam if you don't receive it after a few minutes~
               </p>
-              <form id="loginForm" action="index.html">
+              <form v-if="!isResetButtonEmailClicked" id="loginForm" action="index.html">
                 <div class="form-floating mb-3">
                   <input
                     class="form-control"
@@ -202,7 +202,6 @@
                 </div>
                 <div class="form-group">
                   <button
-                    v-if="!isResetButtonEmailClicked"
                     class="btn btn-primary"
                     id="reset"
                     type="button"
@@ -215,18 +214,17 @@
                   >
                     Reset
                   </button>
-                  <button
-                    v-else
-                    class="btn btn-primary"
-                    id="reset"
-                    type="button"
-                    name="resetSubmit"
-                    @click="user_login()"
-                  >
-                    Back to Login
-                  </button>
                 </div>
               </form>
+              <div v-else>
+                <div class="alert alert-warning border border-warning border-4" role="alert">
+                  Check your inbox (<b>{{email}}</b>) for the next steps! If you don't receive an email, and it's not in your spam folder, then you might have signed up with a different address.
+                </div>
+                <p class="text-muted text-sm mb-5">
+                  Still can't login? Feel free to email us at <a href="mailto:sport.singapore.helpdesk@gmail.com">sport.singapore.helpdesk@gmail.com</a> if you require additional assistance!
+                </p>
+              </div>
+
             </div>
             <div class="card-footer px-lg-5 py-lg-4">
               <div class="text-sm text-muted">
