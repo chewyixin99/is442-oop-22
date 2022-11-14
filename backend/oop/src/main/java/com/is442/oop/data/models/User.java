@@ -45,5 +45,8 @@ public class User {
     @Column(name = "defunct", nullable = false)
     @Value("false") // Default value
     private boolean defunct;
+
+    @Column(name = "enabled", nullable = false)
+    @Value("false") // Default value
     private boolean enabled = false;
 }

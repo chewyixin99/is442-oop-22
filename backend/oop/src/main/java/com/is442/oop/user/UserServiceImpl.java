@@ -111,10 +111,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(UserRegisterRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException {
-        System.out.println("UserController: registerUser");
         // Search for user and enabled false
         User existingUser = null;
-
         existingUser = userRepository.findByEmail(userRequest.getEmail());
         if (existingUser == null) {
             throw new IllegalArgumentException(String.format("User with email (%s) has not been added to registration whitelist.", userRequest.getEmail()));
@@ -124,16 +122,14 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException(String.format("User with email (%s) has already has a validated account.", userRequest.getEmail()));
         }
 
-        User user = new User();
         try {
-            user.setEmail(userRequest.getEmail());
-            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-            userRepository.save(user);
+            existingUser.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+            userRepository.save(existingUser);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new ActionNotExecutedException("registerUser", e);
         }
-    
-        return user;
+        return existingUser;
     }
 
     @Override
