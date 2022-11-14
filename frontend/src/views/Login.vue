@@ -77,21 +77,9 @@
             <div class="card-body p-lg-5">
               <h3 class="mb-4">No account? Simply sign up now!</h3>
               <p class="text-muted text-sm mb-5">
-                After registering, you will receive your account credentials if
-                your email is registered in our system!
+                To register, you must be whitelisted by the administrator! Please contact the admin if you require the necessary permission
               </p>
               <form action="index.html">
-                <div class="form-floating mb-3">
-                  <input
-                    class="form-control"
-                    id="username"
-                    type="email"
-                    v-model="username"
-                    placeholder="name@example.com"
-                    required
-                  />
-                  <label for="username">Username</label>
-                </div>
                 <div class="form-floating mb-3">
                   <input
                     class="form-control"
@@ -102,17 +90,6 @@
                     required
                   />
                   <label for="floatingInput">Email address</label>
-                </div>
-                <div class="form-floating mb-3">
-                  <input
-                    class="form-control"
-                    id="contactNumber"
-                    type="number"
-                    v-model="contactNumber"
-                    placeholder="Contact Number"
-                    required
-                  />
-                  <label for="contactNumber">Contact Number</label>
                 </div>
                 <div class="form-floating mb-3">
                   <input
@@ -151,19 +128,13 @@
                     type="button"
                     name="registerSubmit"
                     @click="register()"
-                    :disabled="!termsAndCondition || !username || !email || !password || !contactNumber"
+                    :disabled="!termsAndCondition || !email || !password"
                   >
                     Register
                   </button>
-                  <button
-                    v-else
-                    class="btn btn-primary"
-                    id="reset"
-                    type="button"
-                    name="resetSubmit"
-                    @click="user_login()"
-                  >
-                    Back to Login
+                  <button v-else class="btn btn-primary" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Loading...
                   </button>
                 </div>
               </form>
@@ -370,27 +341,21 @@ export default {
 
       }
 
-
     },
     async register(){
       this.isRegisterButtonClicked = true;
       var that = this;
       try {
-        let userDetails = {
-          "username": this.username,
-          "email": this.email,
-          "contactNumber": this.contactNumber,
-          "userType": "BORROWER",
-          "password": this.password,
-          "defunct": false
-        };
+        let userDetails = { "email": this.email, "password": this.password };
         await LoginService.registerUser(userDetails);
-        this.toastrResponse = {status: "Success", msg: "Registration was successful! Please check your email for verification link"};    
+        this.toastrResponse = {status: "Success", msg: "Registration was successful! Please check your email for verification link~"};    
         setTimeout(function(){ that.user_login() }, 1250);
+      
       } catch (e){
-        this.isRegisterButtonClicked = false;
-        this.toastrResponse = e.response.status == 406 ? {status: "Error", msg: "Duplicated email/username found, please change!"} : {status: "Error", msg: "Something went wrong, unable to register user"};
+        this.toastrResponse = e.response.status == 406 ? {status: "Error", msg: "Sorry, you have not been added to registration whitelist! Please contact the administrator"} : {status: "Error", msg: "Something went wrong, unable to register user"};
+      
       } finally{
+        this.isRegisterButtonClicked = false;
         var bsAlert = new Toast(document.getElementById("theToastr"));
         bsAlert.show();
       }

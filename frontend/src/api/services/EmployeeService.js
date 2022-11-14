@@ -1,35 +1,21 @@
 import { axiosClient } from "../axiosClient";
 import BaseApiService from "../BaseApiService";
 
-class EmployeeService extends BaseApiService {
-    async createEmployee(employeeDetails) {
+class EmployeeService extends BaseApiService {    
+    async whiteList(employeeDetails) {
         const bearer_token = `Bearer ${localStorage.getItem("token")}`;
         const config = {
             headers: { Authorization: bearer_token },
         };
         try {
-            let employee = await axiosClient.post("/register", { ...employeeDetails }, config);
+            let employee = await axiosClient.post("/whitelist", {...employeeDetails }, config);
             return employee.data
 
         } catch (error) {
             return this.handleError(error);
         }
     }
-
-    async getEmployee(val) {
-        const bearer_token = `Bearer ${localStorage.getItem("token")}`;
-        const config = {
-            headers: { Authorization: bearer_token },
-        };
-        try {
-            let employee = await axiosClient.get("users/" + val, config);
-            return employee.data
-
-        } catch (error) {
-            return this.handleError(error);
-        }
-    }
-
+    
     async getAllEmployees() {
         const bearer_token = `Bearer ${localStorage.getItem("token")}`;
         const config = {

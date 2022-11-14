@@ -227,8 +227,8 @@
             async pushRow(row){
                 if (row.length == 4 && !row.includes("")){
                     this.loading = true;
-                    let record = { "username": row[0], "email": row[1], "contactNumber": row[2], "userType": row[3], "password": "test" };
-                    await EmployeeService.createEmployee(record);
+                    let record = { "username": row[0], "email": row[1], "contactNumber": row[2], "userType": row[3] };
+                    await EmployeeService.whiteList(record);
                     await this.getAllEmployees();
                     this.refreshTable();
                     this.loading = false;
