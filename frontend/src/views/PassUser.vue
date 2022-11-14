@@ -14,10 +14,10 @@
                         <div v-if="EachPass.defunct=='0'">
                             <div class="card border-secondary h-100" style="width: 25rem;">
                                 <template v-if="EachPass.passImage">
-                                    <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2 border-secondary" height="200" width="375">
+                                    <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2 border-secondary" height="250" width="375">
                                 </template>
                                 <template v-else>
-                                    <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2 border-secondary" height="200" width="375">
+                                    <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2 border-secondary" height="250" width="375">
                                 </template>
                                     <div class="card-body ">
                                         <b class="card-title">{{EachPass.passDesc}}</b>
@@ -37,6 +37,8 @@
                                             <div class="row">
                                                 <div class="col-5 border"><b>ID</b></div>
                                                 <div class="col-7 border">{{EachPass.passId}}</div>
+                                                <div class="col-5 border"><b>Pass Number</b></div>
+                                                <div class="col-7 border">{{EachPass.passNumber}}</div>
                                                 <div class="col-5 border"><b>Guests Numbers</b></div>
                                                 <div class="col-7 border">{{EachPass.numGuests}}</div>
                                                 <div class="col-5 border"><b>Replacement Fee</b></div>
