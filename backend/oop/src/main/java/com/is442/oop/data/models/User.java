@@ -29,7 +29,7 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
     
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = true)
     private String password;
 
     @Column(name = "email", nullable = false)
@@ -45,5 +45,8 @@ public class User {
     @Column(name = "defunct", nullable = false)
     @Value("false") // Default value
     private boolean defunct;
+
+    @Column(name = "enabled", nullable = false)
+    @Value("false") // Default value
     private boolean enabled = false;
 }

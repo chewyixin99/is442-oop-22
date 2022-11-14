@@ -23,7 +23,7 @@ COMMIT;
 create table if not exists `user` (
 `user_id` int auto_increment not null,
 `username` varchar(50) not null,
-`password` varchar(60) not null,
+`password` varchar(60),
 `email` varchar(50) not null,
 `contact_number` varchar(50) not null,
 `user_type` varchar(50) not null,

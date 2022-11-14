@@ -23,6 +23,8 @@ import com.is442.oop.email.EmailService;
 import com.is442.oop.exception.ActionNotExecutedException;
 import com.is442.oop.password.PasswordRequest;
 import com.is442.oop.user.UserRequest;
+import com.is442.oop.user.UserRegisterRequest;
+import com.is442.oop.user.UserRegisterWhitelistRequest;
 import com.is442.oop.user.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -58,9 +60,42 @@ public class RegistrationController {
     //     return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
     // }
 
+    @PostMapping("/registerOverride")
+    @Transactional
+    public ResponseEntity<DataResponse> registerOverride(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
+        System.out.println("RegistrationController: registerOverride");
+        User user = null;            
+        try {
+            user = userService.registerUserOverride(userRequest);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Prepare token for email
+        String url = null;
+        try {
+            String token = UUID.randomUUID().toString();
+            userService.saveVerificationTokenForUser(token, user);
+            url = this.applicationUrl(request) + "/verifyRegistration?token=" + token;
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        // Send email
+        try {
+            emailService.sendSimpleConfirmationUrlEmail(user, 1, url);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
+    }
+
     @PostMapping("/register")
     @Transactional
-    public ResponseEntity<DataResponse> registerUser(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
+    public ResponseEntity<DataResponse> registerUser(@RequestBody UserRegisterRequest userRequest, final HttpServletRequest request) {
         System.out.println("RegistrationController: registerUser");
         User user = null;            
         try {
@@ -89,6 +124,20 @@ public class RegistrationController {
         }
 
         return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
+    }
+
+    @PostMapping("/whitelist")
+    public ResponseEntity<DataResponse> whitelistUser(@RequestBody UserRegisterWhitelistRequest userRequest) {
+        User user = null;            
+        try {
+            user = userService.addUserForRegistration(userRequest);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new DataResponse(user, "User successfully whitelisted"), HttpStatus.OK);
     }
 
     @GetMapping("/verifyRegistration")
