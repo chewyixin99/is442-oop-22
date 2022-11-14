@@ -261,7 +261,7 @@
 <script>
 import BookingCalendar from "@/components/common/BookingCalendar.vue";
 import axios from "axios";
-import { ENDPOINT } from '../../constants';
+import ENDPOINT from '../../constants';
 export default {
   name: "CreateBookingModal",
   props: {

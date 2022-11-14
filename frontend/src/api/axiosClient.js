@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ENDPOINT } from '@/constants';
+import ENDPOINT from "../constants";
 
 const fallbackURL = ENDPOINT
 
