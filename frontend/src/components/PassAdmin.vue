@@ -13,19 +13,19 @@
         </span>
 
 
-            <div class="row row-cols-auto g-5 my-2">
+        <div class="row row-cols-auto g-5 my-2">
                 <!-- Passes 'Card' -->
-                <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId" >
+            <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId" >
                 <div v-if="EachPass.defunct=='0'">
 
-                    <div class="card border-secondary h-100" style="width: 25rem;">
+                    <div class="card border h-100" style="width: 25rem;">
                         <!-- Show Image here -->
                             
                             <template v-if="EachPass.passImage">
-                                <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2 border-secondary" height="200" width="375">
+                                <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2" height="250" width="375">
                             </template>
                             <template v-else>
-                                <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2 border-secondary" height="200" width="375">
+                                <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2" height="250" width="375">
                             </template>
                             <div class="card-body ">
                                 <b class="card-title">{{EachPass.passDesc}}
@@ -87,7 +87,7 @@
                     <!-- Pass update modal -->
                     <div class="modal fade" data-bs-backdrop="static"  :id="`viewUM`+EachPass.passId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Update pass information</h5>
@@ -99,67 +99,102 @@
                                             <div class="row mb-3 d-flex justify-content-center">
                                                 <div>
                                                     <template v-if="localImageSrc">
-                                                        <img :src="localImageSrc" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                        <img :src="localImageSrc" class="mx-auto d-block border border-2" height="200" width="300">
                                                     </template>
                                                     <template v-else-if="EachPass.passImage">
-                                                        <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                        <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto d-block border border-2" height="200" width="300">
                                                     </template>
                                                     <template v-else>
-                                                        <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                        <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto d-block border border-2 " height="200" width="300">
                                                     </template>
-                                                    
                                                 </div>
+                                                <div class="d-flex justify-content-center my-1">
+                                                    <button type="button" class="btn btn-outline-danger" @click="removeImageFromDB(EachPass.passId)" :disabled="!EachPass.passImage">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                                                        </svg>
+                                                        Remove Image from Database
+                                                    </button>
+                                                </div>
+                                                
                                                 <div class="input-group mb w-75 ">
-                                                    <label class="col-12 col-form-label text-center"><b>Insert card image here(if any)</b></label>
+                                                    <label class="col-12 col-form-label text-center"><b>Insert new image here to replace current image</b></label>
                                                     <input class="col-8 col-md-5 form-control form-control" type="file" accept="image/*" @change="onImageSelected" :id="`updateImageUploadInput`+EachPass.passId">
                                                     <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeImageSelect_newAndUpdatePass(EachPass.passId)">X</button>
                                                 </div>
                                             </div>
                                             <hr>
-                                            <label class="col-form-label"><b>ID: {{EachPass.passId}}</b></label><br>
-                                            <label class="col-form-label"><b>Pass Number:</b></label> 
-                                            <input class="form-control" v-model ="EachPass.passNumber" required >
-                                            <label class="col-form-label"><b>Description:</b></label> 
-                                            <input class="form-control" v-model ="EachPass.passDesc" required >
-                                            <label class="col-form-label"><b>Point of Interests:</b></label>
-                                            <input class="form-control" v-model ="EachPass.poi" required >
-                                            <label class="col-form-label"><b>Point of Interests URL:</b></label>
-                                            <input class="form-control" v-model ="EachPass.poiUrl" required >
+                                            <label class="col-form-label"><b>Pass ID: {{EachPass.passId}}</b></label><br>
+                                            <div class="input-group mb-1 was-validated">
+                                                <label class="col-form-label col-12"><b>Pass Number</b></label> 
+                                                <div class="col-12">
+                                                    <input type="number" min="1" class="form-control" v-model ="EachPass.passNumber" required >
+                                                    <div class="invalid-feedback text-black-50">Please enter pass numbers. e.g: 213750</div>
+                                                </div>
+                                            </div>
+                                            <div class="input-group mb-1 was-validated">
+                                                <label class="col-form-label col-12"><b>Pass Number</b></label> 
+                                                <div class="col-12">
+                                                    <input class="form-control" v-model ="EachPass.passDesc" required >
+                                                    <div class="invalid-feedback text-black-50">Please enter pass descriptions. e.g: Take a break!</div>
+                                                </div>
+                                            </div>
+                                            <div class="input-group mb-1 was-validated">
+                                                <label class="col-form-label col-12"><b>Point of Interests</b></label>
+                                                <div class="col-12">
+                                                    <input class="form-control" v-model ="EachPass.poi" required >
+                                                        <div class="invalid-feedback text-black-50">Please enter place of interest(s). e.g: Singapore Zoo</div>
+                                                </div>
+                                            </div>
+                                            <div class="input-group mb-3 was-validated">
+                                                <label class="col-form-label col-12"><b>Point of Interests Website</b></label>
+                                                <div class="col-12">
+                                                    <input class="form-control" v-model ="EachPass.poiUrl" required >
+                                                    <div class="invalid-feedback text-black-50">Please enter website of place of interest(s). e.g: www.sportsschool.edu.sg</div>
+                                                </div>
+                                            </div>
+                                            
                                             
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="input-group mb-3 was-validated">
                                             <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
                                             <div class="col-7">
-                                                <input type="number" v-model="EachPass.numGuests" class="form-control" min="1">
+                                                <input type="number" v-model="EachPass.numGuests" class="form-control" min="0">
+                                                <div class="invalid-feedback text-black-50">Please enter more than 1 guest(s). e.g: 5</div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="input-group mb-3 was-validated">
                                             <label class="col-5 col-form-label"><b>Replacement Fee</b></label>
                                             <div class="col-7">
-                                                <div class="input-group">
-                                                    <div class="input-group-text">$</div>
+                                                <div class="input-group ">
+                                                    <div class="input-group-text ">$</div>
                                                     <input type="number" v-model="EachPass.replacementFee" class="form-control" min="0">
+                                                    <div class="invalid-feedback text-black-50">Please enter replacement fee. e.g: 15.50</div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
+                                        <div class="input-group mb-3 was-validated">
                                             <label class="col-5 col-form-label"><b>Status</b></label>
                                             <div class="col-7">
-                                                <select class="form-select" v-model="EachPass.passStatus">
+                                                <select class="form-select" required v-model="EachPass.passStatus">
+                                                    <option value="">Select Pass Status</option>
                                                     <option value="AVAILABLE">Available</option>
                                                     <option value="ONLOAN">On Loan</option>
                                                     <option value="UNRETURNED">Unreturned</option>
-
                                                 </select>
+                                                <div class="invalid-feedback text-black-50">Please select a valid pass status.</div>
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Physical/EPass</b></label>
+                                        <div class="input-group mb-3 was-validated">
+                                            <label class="col-5 col-form-label"><b>Physical/Epass</b></label>
                                             <div class="col-7">
-                                                <select class="form-select" v-model="EachPass.isPhysical">
-                                                    <option value="true">Physical Pass</option>
-                                                    <option value="false">EPass</option>
+                                                <select class="form-select" required v-model="EachPass.isPhysical">
+                                                    <option value="">Select Pass Type</option>
+                                                    <option value="true">Epass</option>
+                                                    <option value="false">Physical Pass</option>
                                                 </select>
+                                                <div class="invalid-feedback text-black-50">Please select a valid pass type.</div>
                                             </div>
                                         </div>
                                         <hr>
@@ -167,16 +202,21 @@
                                             <h3>Atttachment information</h3>
                                             <div class="row mb-3">
 
-
                                                 <div class="input-group mb-3">
-                                                    <label class="col-5 col-form-label"><b>Current Attachment(PDF):</b></label>
+                                                    <label class="col-5 col-form-label"><b>Current Attachment(PDF)</b></label>
                                                     <input type="text" class="col-5 form-control" :placeholder="EachPass.passAttachmentName" ref="updatePassAttachmentText" disabled>
-                                                    <button class="col-2 btn btn-outline-danger" type="button" @click="removeFileFromDB(EachPass.passId)">X</button>
+                                                    <button type="button" class="btn btn-outline-danger" @click="removeFileFromDB(EachPass.passId)" :disabled="!EachPass.passAttachmentName">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                                                        </svg>
+                                                        <span class="visually-hidden">Button</span>
+                                                    </button>
                                                 </div>
                                                 
                                                 <div class="input-group">
                                                     <label class="col-5 col-form-label"><b>New Attachment(PDF)</b></label>
-                                                    <input class="col-7 form-control"  type="file" accept=".pdf" @change="onFileSelected">
+                                                    <input class="col-7 form-control"  type="file" accept=".pdf" @change="onFileSelected"  >
                                                 </div>
                                                 
                                                     
@@ -185,8 +225,11 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)" data-bs-dismiss="modal">Update Now</button>
-                                    <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button> 
+                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)" data-bs-dismiss="modal" :disabled="!passNewUpdateButtonIsDisabled(EachPass.passNumber, EachPass.passDesc, EachPass.poi, EachPass.poiUrl, EachPass.numGuests, EachPass.replacementFee, EachPass.passStatus, EachPass.isPhysical )">Update Now</button>
+                                    <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button>
+                                    <!--  -->
+                                    
+                                    <!--  -->
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialStateEachPass(EachPass.passId)">Cancel</button>
                                 </div>
                             </div>
@@ -194,105 +237,122 @@
                     </div>
                 </div>
 
-                </template>
+            </template>
+        <!-- ====================================Loop ends============================= -->
+        </div>
+        <!-- Add New Pass Form Modal-->
+        <div class="modal fade" data-bs-backdrop="static"  id="addNewPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Create new pass</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="initialState"></button>
+                    </div>
 
-                <!-- ====================================Loop ends============================= -->
+                    <div class="modal-body text-start">
+                        <form>
+                                <div class="row mb-3 d-flex justify-content-center">
+                                    <div v-if="localImageSrc">
+                                        <img :src="localImageSrc" class="mx-auto d-block img-thumbnail" height="200" width="300">
+                                    </div>
+                                    <div class="input-group mb w-75">
+                                        <label class="col-12 col-form-label text-center"><b>Insert image here(if any)</b></label>
+                                        <input class="col-8 col-md-5 form-control form-control"  type="file" accept="image/*" @change="onImageSelected" id="newImageUploadInput">
+                                        <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeImageSelect_newAndUpdatePass()">X</button>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="input-group mb-1 was-validated">
+                                    <label class="col-form-label col-12"><b>Pass Number</b></label> 
+                                    <div class="col-12">
+                                    <input type="number" min ="1" class="form-control col-12" required v-model="NEWpassNumber">
+                                        <div class="invalid-feedback text-black-50">Please enter pass numbers. e.g: 213750</div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-1 was-validated">
+                                    <label class="col-form-label col-12"><b>Description</b></label> 
+                                    <div class="col-12">
+                                        <input class="form-control col-12" required v-model="NEWpassDesc">
+                                            <div class="invalid-feedback text-black-50">Please enter pass descriptions. e.g: Take a break!</div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-1 was-validated">
+                                    <label class="col-form-label col-12"><b>Point of Interests</b></label>
+                                    <div class="col-12">
+                                        <input class="form-control col-12" required v-model="NEWpoi">
+                                            <div class="invalid-feedback text-black-50">Please enter place of interest(s). e.g: Singapore Zoo</div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3 was-validated">
+                                    <label class="col-form-label col-12"><b>Point of Interests Website</b></label>
+                                    <div class="col-12">
+                                        <input class="form-control" required v-model="NEWpoiUrl">
+                                        <div class="invalid-feedback text-black-50">Please enter website of place of interest(s). e.g: www.sportsschool.edu.sg</div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3 was-validated">
+                                    <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
+                                    <div class="col-7">
+                                        <input class="form-control" type="number" required v-model="NEWnumGuests">
+                                        <div class="invalid-feedback text-black-50">Please enter more than 1 guest(s). e.g: 5</div>
+                                    </div>
+                                </div>
+                                
 
-                <!-- Add New Pass Form Modal-->
-                <div class="modal fade" data-bs-backdrop="static"  id="addNewPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Create new pass</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="initialState"></button>
-                            </div>
-
-                            <div class="modal-body text-start">
-                                <form>
-                                        <div class="mb-3">
-                                            <div class="row mb-3 d-flex justify-content-center">
-                                                <div v-if="localImageSrc">
-                                                    <img :src="localImageSrc" class="mx-auto d-block img-thumbnail" height="200" width="300">
-                                                </div>
-                                                <div class="input-group mb w-75 ">
-                                                    <label class="col-12 col-form-label text-center"><b>Insert card image here(if any)</b></label>
-                                                    <input class="col-8 col-md-5 form-control form-control"  type="file" accept="image/*" @change="onImageSelected" id="newImageUploadInput">
-                                                    <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeImageSelect_newAndUpdatePass()">X</button>
-                                                </div>
-                                            </div>
-                                            <hr>
-                                            <label class="col-form-label"><b>Pass Number:</b></label> 
-                                            <input type="number"  class="form-control" required v-model="NEWpassNumber">
-                                            <label class="col-form-label"><b>Description:</b></label> 
-                                            <input class="form-control" required v-model="NEWpassDesc">
-                                            <label class="col-form-label"><b>Point of Interests:</b></label>
-                                            <input class="form-control" required v-model="NEWpoi">
-                                            <label class="col-form-label"><b>Point of Interests Website:</b></label>
-                                            <input class="form-control" required v-model="NEWpoiUrl">
+                                <div class="input-group mb-3 was-validated">
+                                    <label class="col-5 col-form-label"><b>Replacement Fee</b></label>
+                                    <div class="col-7">
+                                        <div class="input-group ">
+                                            <div class="input-group-text ">$</div>
+                                            <input type="number" class="form-control" required v-model="NEWreplacementFee">
+                                            <div class="invalid-feedback text-black-50">Please enter replacement fee. e.g: 15.50</div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Guests Numbers</b></label>
-                                            <div class="col-7">
-                                                <input type="number" class="form-control" required v-model="NEWnumGuests" min="1">
-                                            </div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3 was-validated">
+                                    <label class="col-5 col-form-label"><b>Status</b></label>
+                                    <div class="col-7">
+                                        <select class="form-select" required v-model="NEWpassStatus">
+                                            <option value="">Select Pass Status</option>
+                                            <option value="AVAILABLE">Available</option>
+                                            <option value="ONLOAN">On Loan</option>
+                                            <option value="UNRETURNED">Unreturned</option>
+                                        </select>
+                                        <div class="invalid-feedback text-black-50">Please select a valid pass status.</div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3 was-validated">
+                                    <label class="col-5 col-form-label"><b>Physical/Epass</b></label>
+                                    <div class="col-7">
+                                        <select class="form-select" required v-model="NEWisPhysical">
+                                            <option value="">Select Pass Type</option>
+                                            <option value="true">Epass</option>
+                                            <option value="false">Physical Pass</option>
+                                        </select>
+                                        <div class="invalid-feedback text-black-50">Please select a valid pass type.</div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="mb-3">
+                                    <h3>Atttachment information</h3>
+                                    <div class="row mb-3">
+                                        <div class="input-group mb-3">
+                                            <label class="col-12 col-md-5 col-form-label"><b>New Attachment(PDF)</b></label>
+                                            <input class="col-8 col-md-5 form-control"  type="file" accept=".pdf" @change="onFileSelected" ref="newFileUpload">
+                                            <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeFileSelect_addNewPass()">X</button>
                                         </div>
-                                        <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Replacement Fee</b></label>
-                                            <div class="col-7">
-                                                <div class="input-group">
-                                                    <div class="input-group-text">$</div>
-                                                    <input type="number" class="form-control" required v-model="NEWreplacementFee" min="0">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Status</b></label>
-                                            <div class="col-7">
-                                                <select class="form-select" v-model="NEWpassStatus">
-                                                    <option value="AVAILABLE">Available</option>
-                                                    <option value="ONLOAN">On Loan</option>
-                                                    <option value="UNRETURNED">Unreturned</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label class="col-5 col-form-label"><b>Physical?</b></label>
-                                            <div class="col-7">
-                                                <select class="form-select" v-model="NEWisPhysical">
-                                                    <option value="true">true</option>
-                                                    <option value="false">false</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="mb-3">
-                                            <h3>Atttachment information</h3>
-                                            
-                                            
-                                            <div class="row mb-3">
-                                                <div class="input-group mb-3">
-                                                    <label class="col-12 col-md-5 col-form-label"><b>New Attachment(PDF)</b></label>
-                                                    <input class="col-8 col-md-5 form-control form-control"  type="file" accept=".pdf" @change="onFileSelected" ref="newFileUpload">
-                                                    <button class="col-4 col-md-2 btn btn-outline-danger" type="button" @click="removeFileSelect_addNewPass()">X</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" @click="onUpload()" data-bs-dismiss="modal">Create Pass</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState">Close</button>
-                            </div>
-                        </div>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @click="onUpload()" data-bs-dismiss="modal" :disabled="!passNewUpdateButtonIsDisabled(NEWpassNumber, NEWpassDesc, NEWpoi, NEWpoiUrl, NEWnumGuests, NEWreplacementFee, NEWpassStatus, NEWisPhysical)">Create Pass</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState">Close</button>
                     </div>
                 </div>
             </div>
+        </div>
 
-
-
-
-        
-        
     </div>
         
 </template>
@@ -320,12 +380,13 @@ export default({
                 NEWpoi: null,
                 NEWpassNumber: null,
                 NEWpoiUrl: null,
-                NEWnumGuests: 1,
-                NEWreplacementFee: 0,
-                NEWpassStatus: "AVAILABLE",
-                NEWisPhysical: true,
+                NEWnumGuests: null,
+                NEWreplacementFee: null,
+                NEWpassStatus: "",
+                NEWisPhysical: "",
                 selectedImage: null,
-                localImageSrc: null
+                localImageSrc: null,
+            
             
             }
         },
@@ -427,7 +488,7 @@ export default({
                 downloadLink.download = fileName;
                 downloadLink.click();
             },
-            async deleteExistingPass(passID){
+            async deletePassMethod(passID){
                 const bearer_token = `Bearer ${localStorage.getItem("token")}`;
                 const config = {
                     headers: {
@@ -462,16 +523,30 @@ export default({
                     console.error(err);
                 }
             },
-            deletePassMethod(passID){
-                this.deleteExistingPass(passID)
-            },
-            closeButtonMethod(){
-                this.initialState()
+            async removeImageFromDB(passID){
+                const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+                const config = {
+                    headers: {
+                    Authorization: bearer_token,
+                    },
+                };
+                try{
+                    await axios.put(this.passURL+"/deletePassImage/"+passID, config)
+                    .then(response => {
+                        // this.$refs.updatePassAttachmentText.value = null;
+                        this.removeImageSelect_newAndUpdatePass(passID)
+                        this.$emit('getPassData')
+                        console.log(response);
+                    });
+                } catch(err){
+                    console.error(err);
+                }
             },
             removeFileSelect_addNewPass(){
                 this.selectedFile= null
                 this.selectedFileName= null
-                this.$refs.newFileUpload.value = null;
+                this.$refs.newFileUpload.value = null
+                console.log("ok")
             },
             removeImageSelect_newAndUpdatePass(passId){
                 var temp = "updateImageUploadInput"+passId
@@ -493,11 +568,11 @@ export default({
                 this.NEWpassDesc= null,
                 this.NEWpoi= null,
                 this.NEWpoiUrl= null,
-                this.NEWpassNumber
-                this.NEWnumGuests= 1,
-                this.NEWreplacementFee= 0,
-                this.NEWpassStatus= "AVAILABLE",
-                this.NEWisPhysical= true
+                this.NEWpassNumber= null,
+                this.NEWnumGuests= null,
+                this.NEWreplacementFee= null,
+                this.NEWpassStatus= "",
+                this.NEWisPhysical= ""
 
                 this.selectedImage= null
                 this.localImageSrc = null;
@@ -513,9 +588,9 @@ export default({
                 this.NEWpassDesc= null,
                 this.NEWpoi= null,
                 this.NEWpoiUrl= null,
-                this.NEWpassNumber
-                this.NEWnumGuests= 1,
-                this.NEWreplacementFee= 0,
+                this.NEWpassNumber= null,
+                this.NEWnumGuests= null,
+                this.NEWreplacementFee= null,
                 this.NEWpassStatus= "AVAILABLE",
                 this.NEWisPhysical= true
 
@@ -523,7 +598,23 @@ export default({
                 this.localImageSrc = null;
                 document.getElementById("newImageUploadInput").value = null;
                 
-            }
+            },
+            
+            passNewUpdateButtonIsDisabled(passNum, passDesc, passPoi, passUrl, passGuests, passReplacementFee, passStatus, isPhysical ){
+                return (passNum>0 && passDesc.length>0 && passPoi.length>0 && passUrl.length>0 && passGuests>0 && passReplacementFee>0 && passStatus!=="" && isPhysical!=="")
+            },
+            passFieldEmpty(value){
+                if(value instanceof String){
+                    return value.length==0
+                }
+                return (!value||value<1)
+            },
+            passFieldIsString(value){
+                if(value instanceof String){
+                    return true;
+                }
+            },
+            
         },
 
 })
@@ -535,5 +626,6 @@ export default({
     padding: 20px;
     font-size:30px;
 }
+
 
 </style>

@@ -32,28 +32,31 @@
         >
           <div v-if="!template.defunct">
             <!-- change here end -->
-            <div class="card mb-3 border-secondary">
-              <div class="card-header text-dark bg-light">
-                Template ID: {{template.templateId }}
-              </div>
-              <div class="card-header text-white bg-dark">
-                <h2>Template Name: {{ template.templateName }}</h2>
-              </div>
-              <div class="card-header text-white bg-secondary">
-                <h2>Template Subject: {{ template.templateSubject }}</h2>
-              </div>
+            <div class="card mb-3">
+              <ul class="list-group list-group-flush">
+                  <div class="container">
+                      <div class="row">
+                          <div class="col-12 border text-dark bg-light"><h2>Template ID {{template.templateId }}</h2></div>
+                          <div class="col-5 border"><h2><b>Template Name</b></h2></div>
+                          <div class="col-7 border"><h2>{{template.templateName }}</h2></div>
+                          <div class="col-5 border"><h2><b>Template Subject</b></h2></div>
+                          <div class="col-7 border"><h2>{{template.templateSubject }}</h2></div>
+                      </div>
+                  </div>
+              </ul>
+              
               <div class="card-body border-secondary">
                 <p class="text-start" v-html="template.templateData"></p>
               </div>
               <div class="card-footer border-secondary btn-group-vertical">
                 <button
                   type="button"
-                  class="btn btn-warning"
+                  class="btn btn-primary"
                   data-bs-toggle="modal"
                   :data-bs-target="`#emailModal` + template.templateId"
                   @click="backupContent(template.templateData)"
                 >
-                  Edit
+                  View
                 </button>
               </div>
             </div>
@@ -65,11 +68,11 @@
               tabindex="-1"
               aria-hidden="true"
             >
-              <div class="modal-dialog modal-xl">
+              <div class="modal-dialog modal-dialog-scrollable modal-xl">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
-                      Update {{ template.templetId }} information
+                      Update template {{ template.templateId }} information
                     </h5>
                     <button
                       type="button"
@@ -79,22 +82,27 @@
                       @click="cancelUpdate(template.templateId)"
                     ></button>
                   </div>
-                  <div class="modal-body">
+                  <div class="modal-body text-start">
+                      
+                    
                     <div class="mb-3">
                       <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
-                      <label class="col-form-label">Template Name:</label>
-                      <input
-                        class="form-control"
-                        required
-                        v-model="template.templateName"
-                      />
-                      <label class="col-form-label">Template Subject:</label>
-                      <input
-                        class="form-control"
-                        required
-                        v-model="template.templateSubject"
-                      />
-                      <label class="col-form-label">Template Data:</label>
+                      <label class=""><b class="col-form-label">Template ID: {{template.templateId}}</b></label><br>
+                      <div class="input-group mb-3 was-validated">
+                          <label class="col-form-label col-12"><b>Template Name</b></label>
+                          <div class="col-12">
+                              <input class="form-control" v-model ="template.templateName" required >
+                              <div class="invalid-feedback text-black-50">Please enter a valid template name. e.g: Account Management Template</div>
+                          </div>
+                      </div>
+                      <div class="input-group mb-3 was-validated">
+                          <label class="col-form-label col-12"><b>Template Subject</b></label>
+                          <div class="col-12">
+                              <input class="form-control" v-model ="template.templateSubject" required >
+                              <div class="invalid-feedback text-black-50">Please enter a valid template subject. e.g: Singapore Sport School - Corp Pass Account Registration</div>
+                          </div>
+                      </div>
+                      <label class="col-form-label col-12"><b>Template Data</b></label>
                       <QuillEditor
                         theme="snow"
                         toolbar="full"
@@ -110,6 +118,7 @@
                       class="btn btn-primary"
                       data-bs-dismiss="modal"
                       @click="updateTemplateMethod(template.templateId)"
+                      :disabled="!templateCreationUpdateDisable(template.templateName, template.templateSubject)"
                     >
                       Update Now
                     </button>
@@ -141,11 +150,12 @@
     <div
       class="modal fade"
       id="addNewEmailTemplate"
+      data-bs-backdrop="static"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
@@ -156,6 +166,7 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              @click="newTemplateInitialState()"
             ></button>
           </div>
 
@@ -163,20 +174,23 @@
             <form>
               <div class="mb-3">
                 <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
-                <label class="col-form-label">Template Name:</label>
-                <input
-                  class="form-control"
-                  required
-                  v-model="newTemplateName"
-                />
-                <label class="col-form-label">Template Subject:</label>
-                <input
-                  class="form-control"
-                  required
-                  v-model="newTemplateSubject"
-                />
+                <div class="input-group mb-3 was-validated">
+                    <label class="col-form-label col-12"><b>Template Name</b></label>
+                    <div class="col-12">
+                        <input class="form-control" v-model ="newTemplateName" required >
+                        <div class="invalid-feedback text-black-50">Please enter a valid template name. e.g: Account Management Template</div>
+                    </div>
+                </div>
+                <div class="input-group mb-3 was-validated">
+                    <label class="col-form-label col-12"><b>Template Subject</b></label>
+                    <div class="col-12">
+                        <input class="form-control" v-model ="newTemplateSubject" required >
+                        <div class="invalid-feedback text-black-50">Please enter a valid template subject. e.g: Singapore Sport School - Corp Pass Account Registration</div>
+                    </div>
+                </div>
                 <label class="col-form-label">Template Data:</label>
                 <QuillEditor
+                  ref="myVueContent"
                   theme="snow"
                   toolbar="full"
                   v-model:content="newTemplateData"
@@ -191,7 +205,7 @@
               type="button"
               class="btn btn-primary"
               @click="createTemplateMethod()"
-              data-bs-dismiss="modal"
+              data-bs-dismiss="modal" :disabled="!templateCreationUpdateDisable(newTemplateName, newTemplateSubject)"
             >
               Create Template
             </button>
@@ -199,6 +213,7 @@
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
+              @click="newTemplateInitialState"
             >
               Cancel
             </button>
@@ -262,7 +277,6 @@
         </div> -->
     <!-- <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[0]['templateDraft']" contentType="text">
           </QuillEditor>
-
           <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[1]['templateDraft']" contentType="text">
           </QuillEditor> -->
   </div>
@@ -301,20 +315,6 @@ export default {
     this.getEmailDatas();
   },
   created() {
-    // this.EmailTemplates = [
-    //     {
-    //       "templateName": "ePass",
-    //       "templateData": "<h1>Dear %s!!borrower's name!!,</h1><p>We are pleased to inform that your booking to %s!!attraction name!! is confirmed as follows:&nbsp;</p><p><br></p><p>Date of Visit :Saturday, 12 February 2022 (1 day only)</p><p>Membership ID :%d!!corp pass number!!</p><p><strong>&nbsp;</strong></p><p>For any change in visit date, you are required to cancel your booking (at least 1 day before) and to submit a new booking in the system.&nbsp;</p><p><br></p><p>Attached is the Corporate Membership letter to %s!!attraction name!!. Please check that the details are accurate.&nbsp;</p><p><br></p><p>Please take note of the following on the day of your visit to %s!!attraction name!!:</p><ul><li>Present this email, the attached corporate membership letter and your staff pass at the entrance of %s!!attraction name!!.&nbsp;</li><li>Entry is strictly based on your details in this email and corporate membership letter.</li><li>Your presence is required on the day of visit. Entry will be denied without staff's presence.&nbsp;</li><li>Your booking is non-transferable. Entry is strictly based on the details in this email and Corporate Membership letter.&nbsp;</li><li>Visit date is strictly based on the date stated in this email and Corporate Membership letter.&nbsp;</li><li>Staff found abusing the Corporate Membership letter will be subject to disciplinary actions.&nbsp;</li></ul><p>Enjoy your visit to %s!!attraction name!!!&nbsp;</p><p><br></p><p>Warm regards</p><p>HR Department </p>",
-    //       "defunct": false,
-    //       "id": 1,
-    //     },
-    //     {
-    //       "templateName": "physicalPass",
-    //       "templateData": "<h1>Dear %s!!borrower's name!!,</h1><p><br></p><p>We are pleased to inform that your booking to %s!!attraction name!! is confirmed as follows:&nbsp;</p><p><br></p><p>Date of Visit :Saturday, 12 February 2022 (1 day only)</p><p>Membership ID :%d!!corp pass number!!</p><p><strong>&nbsp;</strong></p><p>For any change in visit date, you are required to cancel your booking (at least 1 day before) and to submit a new booking in the system.&nbsp;</p><p><br></p><p>Attached is the authorisation letter to %s!!attraction name!!. Please check that the details are accurate.&nbsp;</p><p><br></p><p>Please take note of the following for your visit to %s!!attraction name!!:</p><ul><li>Present this email confirmation to the General Office to collect the membership card(s).</li><li>Collect the membership card(s) from the General Office one day before your visit date and return the membership card(s) by 9am the next working day after your visit.&nbsp;</li><li>Present the membership card(s), the authorisation letter and your staff pass at the entrance of %s!!attraction name!!.&nbsp;</li><li>Entry is strictly based on the membership card(s) and the authorisation letter.</li><li>Your presence is required on the day of visit. Entry will be denied without staff’s presence.&nbsp;</li><li>Your booking is non-transferable.&nbsp;</li><li>Visit date is strictly based on the date stated in this email and the authorisation letter.&nbsp;</li><li>Staff found abusing the membership(s) will be subject to disciplinary actions.&nbsp;</li></ul><p><br></p><p>Enjoy your visit to %s!!attraction name!!!&nbsp;</p><p><br></p><p>Warm regards</p><p>HR Department </p><p>",
-    //       "defunct": false,
-    //       "id": 2,
-    //     }
-    // ]
   },
   methods: {
     async getEmailDatas() {
@@ -377,9 +377,9 @@ export default {
         templateName: this.newTemplateName,
         templateData: this.newTemplateData,
         templateSubject: this.newTemplateSubject,
-
       };
       this.newTemplateName = ``;
+      this.newTemplateSubject = ``;
       this.newTemplateData = ``;
       this.PostTemplateMethod(temp);
     },
@@ -401,10 +401,6 @@ export default {
         console.error(err);
       }
     },
-    // saveContent(){
-    //   this.backupContentData = ``
-    //   console.log(this.EmailTemplates[1]["templateData"])
-    // },
     backupContent(draftToBackup) {
       console.log(draftToBackup);
       this.backupContentData = draftToBackup;
@@ -418,6 +414,15 @@ export default {
       }
       this.getEmailDatas();
     },
+    newTemplateInitialState(){
+      this.newTemplateName=``,
+      this.newTemplateSubject=``,
+      this.newTemplateData=``,
+      this.$refs.myVueContent.setHTML("")
+    },
+    templateCreationUpdateDisable(templateName, templateSubject){
+      return (templateName.length>0 && templateSubject.length>0)
+    }
   },
 };
 </script>
