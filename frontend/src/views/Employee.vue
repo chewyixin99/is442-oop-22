@@ -79,11 +79,13 @@
                     error: 'An error happened while fetching the data',
                     style: {
                         th: {
-                            'background-color': 'rgba(0, 0, 0, 0.1)',
+                            'background-color': 'var(--sss_orange)',
+                            'color': '#273746',
                             'text-align': 'center'
                         },
                         td: {
                             'text-align': 'center',
+                            'font-size': '0.9rem',
                         }
                     }
                 })
