@@ -16,9 +16,10 @@ public interface UserService {
     // User createUser(UserRequest userRequest); // Deprecated
     User updateUser(Integer userId, UserRequest userRequest) throws ResourceNotFoundException;
     User deleteUser(Integer userId) throws ResourceNotFoundException;
-
+    
     // All verification methods
-    public User registerUser(UserRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException;
+    User addUserForRegistration(UserRegisterWhitelistRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException;
+    public User registerUser(UserRegisterRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException;
     void saveVerificationTokenForUser(String token, User user);
     String validateVerificationToken(String token);
     VerificationToken generateNewVerificationToken(String oldToken);

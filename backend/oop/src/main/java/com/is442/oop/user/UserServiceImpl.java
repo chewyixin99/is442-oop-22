@@ -83,9 +83,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(UserRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException {
-        System.out.println("UserController: registerUser");
-
+    public User addUserForRegistration(UserRegisterWhitelistRequest userRequest) {
         User existingUser = null;
         existingUser = userRepository.findByUsername(userRequest.getUsername());
         if (existingUser instanceof User) {
@@ -102,12 +100,39 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userRequest.getEmail());
             user.setUsername(userRequest.getUsername());
             user.setUserType(userRequest.getUserType()); // can be dynamic later
-            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
             user.setContactNumber(userRequest.getContactNumber());
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new ActionNotExecutedException("addUserForRegistration", e);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User registerUser(UserRegisterRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException {
+        System.out.println("UserController: registerUser");
+        // Search for user and enabled false
+        User existingUser = null;
+
+        existingUser = userRepository.findByEmail(userRequest.getEmail());
+        if (existingUser == null) {
+            throw new IllegalArgumentException(String.format("User with email (%s) has not been added to registration whitelist.", userRequest.getEmail()));
+        }
+
+        if (existingUser.isEnabled()) {
+            throw new IllegalArgumentException(String.format("User with email (%s) has already has a validated account.", userRequest.getEmail()));
+        }
+
+        User user = new User();
+        try {
+            user.setEmail(userRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
             userRepository.save(user);
         } catch (Exception e) {
             throw new ActionNotExecutedException("registerUser", e);
         }
+    
         return user;
     }
 
