@@ -22,14 +22,11 @@ import com.is442.oop.user.UserRepository;
 @Service
 public class AuthServiceImpl implements AuthService{
 
-    private final JwtTokenService jwtTokenService;
+    @Autowired
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     UserRepository userRepository;
-
-    public AuthServiceImpl(JwtTokenService jwtTokenService) {
-        this.jwtTokenService = jwtTokenService;
-    }
 
     @Override
     public String getToken(User clientUser, HttpServletRequest request) {
