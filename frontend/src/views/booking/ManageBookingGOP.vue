@@ -76,6 +76,7 @@ import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/admin/CancelBookingModal.vue";
 import axios from "axios";
+import ENDPOINT from "../../constants"
 
 export default {
   name: "ManageBookingGOP",
@@ -142,13 +143,8 @@ export default {
             width: "30%",
           },
           {
-            // formatter: (cell, row) => {
-            //     return h('button', {
-            //         className: 'py-2 px-3 border rounded text-white bg-primary',
-            //         onClick: () => alert(`Editing "${row.cells[0].data}" "${row.cells[1].data}"`)
-            //     }, 'Edit');
-            // }
-
+            id: "status",
+            name: "Status",
             formatter: (cell, row) => {
               return h(
                 "select",
@@ -188,7 +184,7 @@ export default {
           },
         ],
         server: {
-          url: "http://localhost:8081/loan",
+          url: `${ENDPOINT}/loan`,
           headers: { Authorization: this.token },
           then: (data) =>
             data.data
@@ -207,7 +203,7 @@ export default {
                 (data) =>
                   data[2] > new Date().toISOString().replace(/T.*$/, "") &&
                   data[6] == false
-              ),
+              ).reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -326,7 +322,7 @@ export default {
           },
         ],
         server: {
-          url: "http://localhost:8081/loan",
+          url: `${ENDPOINT}/loan`,
           headers: { Authorization: this.token },
           then: (data) =>
             data.data
@@ -345,7 +341,7 @@ export default {
                 (data) =>
                   data[2] < new Date().toISOString().replace(/T.*$/, "") &&
                   data[6] == false
-              ),
+              ).reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -395,7 +391,7 @@ export default {
       const checkboxPlugin = this.currentGrid.config.plugin.get("employeeCheckBox");
 
       // subscribe to the store events
-      checkboxPlugin.props.store.on("updated", (state, prevState) => {
+      checkboxPlugin.props.store?.on("updated", (state, prevState) => {
         console.log("checkbox updated", state, prevState);
         this.recordsToDelete = state["rowIds"];
         this.filterSelected();
@@ -407,7 +403,7 @@ export default {
       const checkboxPlugin = this.pastGrid.config.plugin.get("employeeCheckBox");
 
       // subscribe to the store events
-      checkboxPlugin.props.store.on("updated", (state, prevState) => {
+      checkboxPlugin.props.store?.on("updated", (state, prevState) => {
         console.log("checkbox updated", state, prevState);
         this.recordsToDelete = state["rowIds"];
         this.filterSelected();
@@ -422,7 +418,7 @@ export default {
     };
 
     axios
-      .get("http://localhost:8081/loan", config)
+      .get(`${ENDPOINT}/loan`, config)
       .then((response) => {
         console.log(response);
         this.bookingData = response.data.data;
@@ -444,7 +440,7 @@ export default {
 
       axios
         .put(
-          "http://localhost:8081/loan/updateCompleted",
+          `${ENDPOINT}/loan/updateCompleted`,
           {
             loanId: rowData,
             gopId: 1,

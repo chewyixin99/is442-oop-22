@@ -1,15 +1,8 @@
 <template>
     <div id="dashboard">
         <h1 class="pt-3">Dashboard</h1>
-        <!-- ------------------------------------
-        <p>Admin functionalities:</p>
-        ------------------------------------
-        <p>1. Chart to show number of loans per month</p>
-        <p>2. Chart to show number of borrowers per month</p>
-        <p>3. Search function to show a specific employee's loan history - monthly, 6monthly, anually</p>
-        <p>4. Chart to show  number of loans per pass per month - optional</p> -->
         <div class="row justify-content-center ">
-          <div id="selectHolder">
+          <div id="selectHolder" class="d-flex">
             <select v-model="timeRange" class="form-select" aria-label="Default select example" @change="refreshCharts()">
               <option value=0 selected disabled>Filter by Time Range</option>
               <option value=1>Every 2 Weeks</option>
@@ -17,6 +10,7 @@
               <option value=3>Every 6 Months</option>
             </select>
           </div>
+          <input id="exportButton" type="button" class="btn btn-info" value='Export' @click="exportStatistics()"/>
         </div>
         <div class="row mt-5">
           <div class="col-lg-6">
@@ -33,14 +27,15 @@
 <script>
 import Chart from 'chart.js'
 import DashboardService from "@/api/services/DashboardService";
+import * as XLSX from 'xlsx/xlsx.mjs';
 
 export default {
     name: 'Dashboard',
     components: {
-
     },
     data(){
         return {
+          allLoans: [],
           charts: ["donut", "bar", "polar", "line"],
           timeRange: 0,
           fullDates: [],
@@ -48,7 +43,7 @@ export default {
           donut: {
             type: 'doughnut',
             data: {
-              labels: ['Available','On Loan', 'Overdue' ],
+              labels: ['Available','On Loan', 'Overdue'],
               datasets: [{
                 backgroundColor: ['rgb(255, 205, 86)', 'rgb(75, 192, 192)', 'rgb(255, 99, 132)'],
                 hoverOffset: 1,
@@ -185,6 +180,7 @@ export default {
         let loans = await DashboardService.getAllLoans();
         let poi = await DashboardService.getPoiBreakDown();
         let passBreakdown = await DashboardService.getPassBreakDown();
+        this.allLoans = loans;
 
         await this.donutChartCalculation(passBreakdown);
         this.lineChartCalculation(loans);
@@ -295,6 +291,53 @@ export default {
             break;
           }
         } 
+      },
+      exportStatistics(){ //https://stackoverflow.com/questions/39825069/node-xlsx-for-write-excel-file
+        //Can be customized accordingly when more requirements are needed
+        let workBook = XLSX.utils.book_new();
+
+        let loansData = [];
+        for (var loans of this.allLoans){
+          loansData.push({
+            "Loan Id": loans.loanId,
+            "Pass Id": loans.pass.passId,
+            "GOP Id": loans.gopId,
+            "User Id": loans.user.userId,
+            "Email": loans.user.email,
+            "Contact No.": loans.user.contactNumber,
+            "Guests": loans.pass.numGuests,
+            "Pass Number": loans.pass.passNumber,
+            "Place of Interest": loans.pass.poi,
+            "Start Date": loans.startDate,
+            "End Date": loans.endDate,
+            "URL": loans.pass.poiUrl,
+          });
+        }
+
+        const allLoans = XLSX.utils.json_to_sheet(loansData);
+        allLoans['!cols'] = [ {wch:6}, {wch:6}, {wch:6}, {wch:6}, {wch:15}, {wch:8}, {wch:12}, {wch:12}, {wch:20}, {wch:10}, {wch:10}, {wch:50}]; //https://stackoverflow.com/questions/24395693/how-to-set-cell-width-when-export-xlsx-files-with-js-xlsx
+        XLSX.utils.book_append_sheet(workBook, allLoans, `All Loans`);
+
+        let poiData = [
+          this.polar.data.labels, this.polar.data.datasets[0].data,  //row 1
+          [], ["No. of past loans by time range"].concat(this.bar.data.labels), [].concat(this.bar.data.datasets[0].data), //row 2
+          [], ["Type of passes loaned by time range"].concat(this.line.data.labels), ["Gardens By The Bay"].concat(this.line.data.datasets[0].data), ["Singapore Zoo"].concat(this.line.data.datasets[1].data) , ["Sea Aquarium"].concat(this.line.data.datasets[2].data)  //row 3
+        ]
+        const poiBreakdown = XLSX.utils.aoa_to_sheet(poiData);
+        poiBreakdown['!cols'] = this.fitToColumn(poiData);
+        XLSX.utils.book_append_sheet(workBook, poiBreakdown, `POI Breakdown`);
+
+        let passData = [this.donut.data.labels, this.donut.data.datasets[0].data];
+        const passBreakdown = XLSX.utils.aoa_to_sheet(passData);
+        passBreakdown['!cols'] = this.fitToColumn(passData);
+        XLSX.utils.book_append_sheet(workBook, passBreakdown, `Pass Breakdown`);
+
+        let exportFileName = `dashboard_analytics.xlsx`;
+        XLSX.writeFile(workBook, exportFileName);
+      },
+      fitToColumn(arrayOfArray) {
+          // get maximum character of each column
+          return arrayOfArray[0].map((a, i) => ({ wch: Math.max(...arrayOfArray.map(a2 => a2[i] ? a2[i].toString().length : 0)) }));
       }
     }
 }
@@ -306,6 +349,10 @@ export default {
 
   #selectHolder{
     width: 100%;
+  }
+
+  #exportButton{
+    width:75px;
   }
 
   .chart-container {

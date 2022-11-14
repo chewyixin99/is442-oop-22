@@ -1,7 +1,7 @@
 <template>
     <div id="employee" class="position-relative">
         <div v-if="loading" class="overlay">
-            <div class="spinner-border" role="status">
+            <div class="spinner-border-custom spinner-border" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
@@ -17,7 +17,7 @@
             <div id="buttonsHolder" class="d-flex">
 
                 <div>
-                    <input id="fileId" type="file" hidden/>
+                    <input id="fileId" type="file" accept=".txt,.xlsx,.csv" hidden/>
                     <input id="buttonId" type="button" class="importBtn funcBtn btn btn-info" value='Import' @click="openDialog"/>
                 </div>
                 <div class="px-3"><button type="button" class="newBtn funcBtn btn btn-warning" data-bs-toggle="modal" data-bs-target="#createModal">New</button></div>
@@ -79,11 +79,13 @@
                     error: 'An error happened while fetching the data',
                     style: {
                         th: {
-                            'background-color': 'rgba(0, 0, 0, 0.1)',
+                            'background-color': 'var(--sss_orange)',
+                            'color': '#273746',
                             'text-align': 'center'
                         },
                         td: {
                             'text-align': 'center',
+                            'font-size': '0.9rem',
                         }
                     }
                 })
@@ -91,22 +93,22 @@
         },
         async mounted() {
             await this.getAllEmployees();
-
             this.grid.render(document.getElementById("wrapper"));
+
             this.grid.on("ready", () => {
-                // find the plugin with the give plugin ID
-                const checkboxPlugin = this.grid.config.plugin.get("employeeCheckBox");
-                
-                // subscribe to the store events
-                checkboxPlugin.props.store.on("updated", (state) => {
-                    // console.log("checkbox updated", state, prevState);
-                    this.recordsToDelete = state["rowIds"];
+                    // find the plugin with the give plugin ID
+                    const checkboxPlugin = this.grid.config.plugin.get("employeeCheckBox");
+                    
+                    // subscribe to the store events
+                    checkboxPlugin.props.store?.on("updated", (state) => {
+                        // console.log("checkbox updated", state, prevState);
+                        this.recordsToDelete = state["rowIds"];
+                    });
+                })
+                this.grid.on('rowClick', (...args) => {
+                    let allArgs = args[1]["_cells"];
+                    this.selectedEmployeeToEdit = { "id": allArgs[1].data, "name": allArgs[2].data, "email": allArgs[3].data, "contactNumber": allArgs[4].data, "role": allArgs[5].data }
                 });
-            })
-            this.grid.on('rowClick', (...args) => {
-                let allArgs = args[1]["_cells"];
-                this.selectedEmployeeToEdit = { "id": allArgs[1].data, "name": allArgs[2].data, "email": allArgs[3].data, "contactNumber": allArgs[4].data, "role": allArgs[5].data }
-            });
 
             this.refreshTable();
         },
@@ -123,6 +125,7 @@
                     let gridJsEmployeeObject = { "id": e.userId, "name": e.username, "email": e.email, "contactNumber": e.contactNumber, "role": e.userType };
                     if (!e.defunct) { this.gridJsTableData.push(gridJsEmployeeObject); }
                 }  
+                
             },
             async createEmployee(details){
                 var row = Object.keys(details).map((key) => details[key]);
@@ -327,7 +330,7 @@
         filter: alpha(opacity=50);
     }
 
-    .spinner-border{
+    .spinner-border-custom{
         position: absolute;
         top: 50%;
         left: 45%;

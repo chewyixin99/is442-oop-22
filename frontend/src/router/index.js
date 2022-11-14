@@ -16,15 +16,14 @@ import Login from '../views/Login.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import page404 from '../views/page404.vue'
 
-import SidebarAdmin from '../components/SidebarAdmin.vue'
-import SidebarGOP from '../components/SidebarGOP.vue'
-import Sidebar from '../components/Sidebar.vue'
+import SidebarAdmin from '../components/admin/SidebarAdmin.vue'
+import SidebarGOP from '../components/gop/SidebarGOP.vue'
+import Sidebar from '../components/borrower/Sidebar.vue'
 
-// https://router.vuejs.org/guide/advanced/composition-api.html
 
 const routes = [
   {
-    path: '/login',
+    path: '/',
     name: 'Login',
     component: Login,
     meta: { requiredAuthorization: false }
@@ -36,18 +35,9 @@ const routes = [
     meta: { requiredAuthorization: false }
   },
   {
-    path: '',
+    path: '/staff',
     component: Sidebar,
-    children: [ // ALL ROUTES AFTER LOGIN
-      // {
-      //   path: '/',
-      //   name: 'Home',
-      //   component: Home,
-      //   meta: {
-      //     requiredAuthorization: true,
-      //     roles: ['GOP', 'BORROWER']
-      //   }
-      // },
+    children: [ 
       {
         path: '/booking/view',
         name: 'ViewBooking',
@@ -61,9 +51,9 @@ const routes = [
         path: '/passUser',
         name: 'PassUser',
         component: PassUser,
-        meta: { 
-          requiredAuthorization: true, 
-          roles: ['BORROWER'] 
+        meta: {
+          requiredAuthorization: true,
+          roles: ['BORROWER']
         }
       },
     ]
@@ -71,7 +61,7 @@ const routes = [
   {
     path: '/admin',
     component: SidebarAdmin,
-    children: [ // ALL ROUTES AFTER LOGIN
+    children: [ 
       {
         path: '',
         name: 'Dashboard',
@@ -131,7 +121,7 @@ const routes = [
   {
     path: '/gop',
     component: SidebarGOP,
-    children: [ // ALL ROUTES AFTER LOGIN
+    children: [ 
       {
         path: '/gop/booking/view',
         name: 'ViewBookingGOP',
@@ -154,9 +144,9 @@ const routes = [
         path: '/gop/passes',
         name: 'Passes',
         component: PassUser,
-        meta: { 
-          requiredAuthorization: true, 
-          roles: ['GOP'] 
+        meta: {
+          requiredAuthorization: true,
+          roles: ['GOP']
         }
       },
     ]
@@ -165,9 +155,9 @@ const routes = [
     path: '/:catchAll(.*)',
     name: 'page404',
     component: page404,
-    meta: { 
+    meta: {
       requiredAuthorization: true,
-      roles: ['GOP', 'BORROWER', 'NULL'] 
+      roles: ['GOP', 'BORROWER', 'NULL']
     }
   }
 
@@ -180,20 +170,23 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => { // This way, you don't need to write hook for each route
-  // get where user being stored ex:
-  // const user = store.getter('user') // assume user have a role with `user.role`
-  // const user = {role: 'ADMIN'}
+router.beforeEach((to, from, next) => { 
 
-
+  // check if the route requires authorization, if yes check if the user is logged in, else redirect to login page
   if (to.meta.requiredAuthorization) {
-    const token = localStorage.getItem('token') ? localStorage.getItem('token') : 'NULL' 
-    const decoded = jwt_decode(token);
-    if (to.meta?.roles?.includes(decoded.scope)) {
-      next()
-    } else {
-      next('/login')
+    const token = localStorage.getItem('token') ? localStorage.getItem('token') : 'NULL'
+    if (token != 'NULL'){
+      const decoded = jwt_decode(token);
+      if (to.meta?.roles?.includes(decoded.scope)) {
+        next()
+      } else {
+        next('/')
+      }
     }
+    else {
+      next('/')
+    }
+   
   } else {
     next()
   }
