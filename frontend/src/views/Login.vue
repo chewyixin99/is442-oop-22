@@ -260,6 +260,7 @@ import TheToastr from "@/components/TheToastr.vue";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import LoginService from "@/api/services/LoginService";
+import ENDPOINT from "../constants"
 
 // https://therichpost.com/vue-3-bootstrap-5-user-login-registration-forms-show-hide-on-button-click/
 
@@ -287,7 +288,7 @@ export default {
     login() {
 
       axios
-        .post("http://localhost:8081/login", {
+        .post(`${ENDPOINT}/login`, {
           email: this.email,
           password: this.password,
         })
@@ -301,7 +302,7 @@ export default {
               },
             };
             axios
-              .get("http://localhost:8081/users", config)
+              .get(`${ENDPOINT}/users`, config)
               .then((response2) => {
                 console.log(response2);
                 if (response2.status == 200) {

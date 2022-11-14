@@ -258,6 +258,7 @@
 <script>
 import BookingCalendar from "@/components/common/BookingCalendar.vue";
 import axios from "axios";
+import ENDPOINT from '../../constants'
 export default {
   name: "CreateBookingModal",
   props: {
@@ -354,7 +355,7 @@ export default {
       };
 
       axios
-        .post("http://localhost:8081/loan", this.retrievedData, config)
+        .post(`${ENDPOINT}/loan`, this.retrievedData, config)
         .then((response) => {
           console.log(response);
           setTimeout(() => {
@@ -380,7 +381,7 @@ export default {
         },
       };
       axios
-        .get("http://localhost:8081/passes",config)
+        .get(`${ENDPOINT}/passes`,config)
         .then((response) => {
           this.availablePasses = response.data.data;
         })

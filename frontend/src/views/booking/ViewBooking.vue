@@ -87,6 +87,7 @@ import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/borrower/CancelBookingModal.vue";
 import EditBookingModal from "@/components/borrower/EditBookingModal.vue";
+import ENDPOINT from "../../constants"
 
 // import axios from "axios";
 
@@ -211,7 +212,7 @@ export default {
           },
         ],
         server: {
-          url: "http://localhost:8081/loan",
+          url: `${ENDPOINT}/loan`,
           headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
@@ -290,7 +291,7 @@ export default {
           },                
         ],
         server: {
-          url: "http://localhost:8081/loan",
+          url: `${ENDPOINT}/loan`,
           headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
@@ -388,7 +389,7 @@ export default {
     //       }
     //   };
     //   axios
-    //     .get("http://localhost:8081/loan", config)
+    //     .get`(${ENDPOINT}/loan`, config)
     //     .then((response) => {
     //       let resList = [];
     //       console.log(response.data.data);
