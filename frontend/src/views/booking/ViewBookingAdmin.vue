@@ -87,6 +87,7 @@ import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/borrower/CancelBookingModal.vue";
 import EditBookingModal from "@/components/borrower/EditBookingModal.vue";
+import ENDPOINT from "../../constants"
 
 // import axios from "axios";
 
@@ -210,7 +211,7 @@ export default {
           },
         ],
         server: {
-          url: "http://localhost:8081/loan/byUserId/" + this.user.userId,
+          url: `${ENDPOINT}/loan/byUserId/${this.user.userId}`,
           headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
@@ -291,7 +292,7 @@ export default {
                    
         ],
         server: {
-          url: "http://localhost:8081/loan/byUserId/" + this.user.userId,
+          url: `${ENDPOINT}/loan/byUserId/${this.user.userId}`,
           headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
@@ -352,7 +353,7 @@ export default {
     this.pastBookingsGrid.render(document.getElementById("table2"));
     // this.getData();
     // axios
-    //   .get("http://localhost:8081/loan")
+    //   .get("${ENDPOINT}/loan")
     //   .then((response) => {
     //     console.log(response.data.data);
     //   })
@@ -388,7 +389,7 @@ export default {
     },
     // getData() {
     //   axios
-    //     .get("http://localhost:8081/loan")
+    //     .get("${ENDPOINT}/loan")
     //     .then((response) => {
     //       let resList = [];
     //       console.log(response.data.data);
