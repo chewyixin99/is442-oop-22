@@ -74,12 +74,13 @@ public class LoanServiceImpl implements LoanService{
         loanRepository.save(newLoan);
 
         // To uncomment for mail sending when user creation gets completed
-        // try {
-        //     int templateId = pass.getIsPhysical() ? 4 : 3;
-        //     emailService.sendLoanConfirmationEmail(newLoan, templateId);
-        // } catch (Exception e) {
-        //     throw new ActionNotExecutedException("sendLoanConfirmationEmail", e);
-        // }
+        try {
+            int templateId = pass.getIsPhysical() ? 4 : 3;
+            emailService.sendLoanConfirmationEmail(newLoan, templateId);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ActionNotExecutedException("sendLoanConfirmationEmail", e);
+        }
 
         return newLoan;
     }

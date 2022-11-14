@@ -61,6 +61,7 @@ public class EmailServiceImpl implements EmailService {
             DataSource attachment = new ByteArrayDataSource(attachmentStream, "application/octet-stream");
             this.sendAttachmentEmail(user.getEmail(), emailSubject, emailBody, pass.getPassAttachmentName(), attachment);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new ActionNotExecutedException("sendLoanConfirmationEmail", e);
         }
     };
