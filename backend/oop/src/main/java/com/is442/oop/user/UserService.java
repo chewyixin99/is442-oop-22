@@ -19,7 +19,8 @@ public interface UserService {
     
     // All verification methods
     User addUserForRegistration(UserRegisterWhitelistRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException;
-    public User registerUser(UserRegisterRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException;
+    User registerUser(UserRegisterRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException;
+    User registerUserOverride(UserRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException;
     void saveVerificationTokenForUser(String token, User user);
     String validateVerificationToken(String token);
     VerificationToken generateNewVerificationToken(String oldToken);

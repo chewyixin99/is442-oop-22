@@ -120,6 +120,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User registerUserOverride(UserRequest userRequest) throws IllegalArgumentException, ActionNotExecutedException {
+        // Search for user and enabled false
+        User existingUser = null;
+        existingUser = userRepository.findByUsername(userRequest.getUsername());
+        if (existingUser instanceof User) {
+            throw new IllegalArgumentException(String.format("User with username (%s) already exists.", userRequest.getUsername()));
+        }
+
+        existingUser = userRepository.findByEmail(userRequest.getEmail());
+        if (existingUser instanceof User) {
+            throw new IllegalArgumentException(String.format("User with email (%s) already exists.", userRequest.getEmail()));
+        }
+
+        User user = new User();
+        try {
+            user.setUsername(userRequest.getUsername());
+            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+            user.setEmail(userRequest.getEmail());
+            user.setContactNumber(userRequest.getContactNumber());
+            user.setUserType(userRequest.getUserType()); // can be dynamic later
+            userRepository.save(user);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ActionNotExecutedException("registerUser", e);
+        }
+        return user;
+    }
+
+    @Override
     public void saveVerificationTokenForUser(String token, User user) {
         VerificationToken verificationToken = new VerificationToken(user, token);
         
