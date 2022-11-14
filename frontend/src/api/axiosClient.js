@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { ENDPOINT } from '@/constants';
 
-const fallbackURL = "http://localhost:8081"
+const fallbackURL = ENDPOINT
 
 
 const axiosClient = axios.create({

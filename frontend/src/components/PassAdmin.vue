@@ -299,7 +299,7 @@
 
 <script>
 import axios from 'axios'
-
+import ENDPOINT from '../constants'
 
 export default({
 
@@ -312,7 +312,7 @@ export default({
         },
         data() {
         return {
-                passURL: "http://localhost:8081/passes",
+                passURL: `${ENDPOINT}/passes`,
                 passIDtoDelete: null,
                 selectedFile: null,
                 selectedFileName: null,
@@ -372,7 +372,7 @@ export default({
                 if(this.selectedImage!==null){
                     fd.append("passImage", this.selectedImage)
                 }
-                axios.post("http://localhost:8081/passes", fd, config)
+                axios.post(`${ENDPOINT}/passes`, fd, config)
                 .then(res=>{
                     console.log(res)
                     this.initialState()

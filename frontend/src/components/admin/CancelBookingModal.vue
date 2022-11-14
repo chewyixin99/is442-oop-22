@@ -99,6 +99,8 @@
 </template>
 <script>
 import axios from "axios";
+import ENDPOINT from '../../constants'
+
 export default {
   name: "CancelBookingModal",
   props: {
@@ -125,7 +127,7 @@ export default {
       this.isLoading = true;
       this.dataOfSelectedRow.map((data) => {
         axios
-          .delete(`http://localhost:8081/loan/${data.loanId}`,config)
+          .delete(`${ENDPOINT}/loan/${data.loanId}`,config)
           .then((res) => {
             console.log(res);
           })

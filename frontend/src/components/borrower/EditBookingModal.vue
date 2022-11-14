@@ -170,6 +170,7 @@
 <script>
 import BookingCalendar from "@/components/common/BookingCalendar.vue";
 import axios from "axios";
+import ENDPOINT from "../../constants"
 export default {
   name: "EditBookingModal",
   props: {
@@ -254,7 +255,7 @@ export default {
         },
       };
       axios
-        .put("http://localhost:8081/loan/update", this.retrievedData,config)
+        .put(`${ENDPOINT}/loan/update`, this.retrievedData, config)
         .then((response) => {
           console.log(response);
           if (response.status != 500) {
@@ -280,12 +281,12 @@ export default {
         },
       };
       axios
-        .get("http://localhost:8081/loan/" + this.rowData.id, config)
+        .get(`${ENDPOINT}/loan/${this.rowData.id}`, config)
         .then((response1) => {
           this.retrievedLoanData = response1.data.data
           console.log(response1);
           axios
-            .get("http://localhost:8081/passes/" + response1.data.data.pass.passId, config)
+            .get(`${ENDPOINT}/passes/${response1.data.data.pass.passId}`, config)
             .then((response2) => {
               console.log('response2', response2.data);
               setTimeout(() => {

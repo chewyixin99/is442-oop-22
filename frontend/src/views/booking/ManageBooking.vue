@@ -75,6 +75,7 @@ import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/admin/CancelBookingModal.vue";
 import axios from "axios";
+import ENDPOINT from "../../constants"
 
 export default {
   name: "ManageBooking",
@@ -182,7 +183,7 @@ export default {
           },
         ],
         server: {
-          url: "http://localhost:8081/loan",
+          url: `${ENDPOINT}/loan`,
           headers: { Authorization: this.token },
           then: (data) =>
             data.data
@@ -316,7 +317,7 @@ export default {
           },
         ],
         server: {
-          url: "http://localhost:8081/loan",
+          url: `${ENDPOINT}/loan`,
           headers: { Authorization: this.token },
           then: (data) =>
             data.data
@@ -415,7 +416,7 @@ export default {
     };
 
     axios
-      .get("http://localhost:8081/loan", config)
+      .get(`${ENDPOINT}/loan`, config)
       .then((response) => {
         console.log(response);
         this.bookingData = response.data.data;
@@ -437,7 +438,7 @@ export default {
 
       axios
         .put(
-          "http://localhost:8081/loan/updateCompleted",
+          `${ENDPOINT}/loan/updateCompleted`,
           {
             loanId: rowData,
             gopId: 1,
