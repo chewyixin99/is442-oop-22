@@ -1,41 +1,15 @@
 <template>
-    <!-- <div class="">
-        <h1>Pass</h1>
-        ------------------------------------
-        <p>Staff functionalities:</p>
-        ------------------------------------
-        <p>1. View all passes and their details - card UI</p>
-        ------------------------------------
-        <p>Admin functionalities:</p>
-        ------------------------------------
-        <p>1. View all passes and their details - card UI</p>
-        <p>2. Create new passes</p>
-        <p>3. Edit/delete passes</p>
-    </div> -->
     <div class="container">
-<!-- 
-        <div class="row">
-            <h1>Passes(staff view)</h1>
-        </div>
-        <div class="row ">
-            <PassStaff :PassStaff_PassesCategory="PassesCategory"/>
-        </div>
-
-        <br>
-        <hr>
-        <br> -->
 
         <div class="row">
             <h1>Passes(Admin view)</h1>
         </div>
         <div class="row">
-            <!-- <PassAdmin :PassAdmin_PassesCategory="PassesCategory"/> -->
             <PassAdmin :PassAdminPasses="passes.data" @getPassData="getAllPasses"/>
-
+            
         </div>
-
+        <TheToastr :toastrResponse="toastrResponse"></TheToastr>
     </div>
-    
 </template>
 
 <script>
@@ -45,15 +19,11 @@ import PassService from "@/api/services/PassService";
 export default {
     name: 'Pass',
     components: {
-        // PassStaff,
         PassAdmin,
     },
     data() {
         return {
-            // Capital for testing, small capital for database data
-            // Passes: [],
             passes: [],
-
         }
     },
     async mounted(){

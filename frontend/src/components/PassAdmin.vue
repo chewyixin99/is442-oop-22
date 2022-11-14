@@ -347,19 +347,20 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" @click="onUpload()" data-bs-dismiss="modal" :disabled="!passNewUpdateButtonIsDisabled(NEWpassNumber, NEWpassDesc, NEWpoi, NEWpoiUrl, NEWnumGuests, NEWreplacementFee, NEWpassStatus, NEWisPhysical)">Create Pass</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState()">Close</button>
                     </div>
                 </div>
             </div>
         </div>
-
+        <TheToastr :toastrResponse="toastrResponse"></TheToastr>
     </div>
         
 </template>
 
 <script>
 import axios from 'axios'
-
+import TheToastr from "@/components/TheToastr.vue";
+import { Toast } from "bootstrap";
 
 export default({
 
@@ -369,6 +370,7 @@ export default({
         },
         
         components: {
+            TheToastr
         },
         data() {
         return {
@@ -386,7 +388,9 @@ export default({
                 NEWisPhysical: "",
                 selectedImage: null,
                 localImageSrc: null,
-            
+
+
+                toastrResponse: "",
             
             }
         },
@@ -394,6 +398,10 @@ export default({
 
         },
         methods: {
+            showToast(){
+                var bsAlert = new Toast(document.getElementById('theToastr'));         
+                bsAlert.show();
+            },
             onFileSelected(event){
                 this.selectedFile = event.target.files[0]
                 this.selectedFileName = this.selectedFile.name
@@ -436,6 +444,8 @@ export default({
                 axios.post("http://localhost:8081/passes", fd, config)
                 .then(res=>{
                     console.log(res)
+                    this.toastrResponse = {status: "Success", msg: "New pass created!"};
+                    this.showToast(); 
                     this.initialState()
                     this.$emit('getPassData')
                 })
@@ -471,11 +481,15 @@ export default({
                     await axios.put(this.passURL+"/"+passID, UPDATEfd, config)
                     .then(response => {
                         this.selectedFile = null
+                        this.toastrResponse = {status: "Success", msg: "Pass updated!"};
+                        this.showToast();
                         this.$emit('getPassData')
                         console.log(response);
                     });
                 } catch(err){
                     console.error(err);
+                    this.toastrResponse = {status: "Error", msg: "Pass could not be updated!"};
+
                 }
             },
             downloadData(passID){
@@ -498,10 +512,14 @@ export default({
                 try{
                     await axios.delete(this.passURL+"/"+passID, config)
                     .then(response => {
+                        this.toastrResponse = {status: "Success", msg: "Pass deleted!"};
+                        this.showToast();
                         this.$emit('getPassData')
                         console.log(response);
                     });
                 } catch(err){
+                    this.toastrResponse = {status: "Error", msg: "Pass could not be deleted!"};
+                    this.showToast();
                     console.error(err);
                 }
             },
@@ -560,43 +578,46 @@ export default({
                 this.localImageSrc = null;
             },
             initialStateEachPass(PassId){
-                this.passIDtoDelete= null,
+                this.passIDtoDelete= null
                 
-                this.selectedFile= null,
-                this.selectedFileName= null,
+                this.selectedFile= null
+                this.selectedFileName= null
 
-                this.NEWpassDesc= null,
-                this.NEWpoi= null,
-                this.NEWpoiUrl= null,
-                this.NEWpassNumber= null,
-                this.NEWnumGuests= null,
-                this.NEWreplacementFee= null,
-                this.NEWpassStatus= "",
+                this.NEWpassDesc= null
+                this.NEWpoi= null
+                this.NEWpoiUrl= null
+                this.NEWpassNumber= null
+                this.NEWnumGuests= null
+                this.NEWreplacementFee= null
+                this.NEWpassStatus= ""
                 this.NEWisPhysical= ""
 
                 this.selectedImage= null
                 this.localImageSrc = null;
-                document.getElementById("newImageUploadInput").value = null;
-                this.removeImageSelect_newAndUpdatePass(PassId);
+                document.getElementById("newImageUploadInput").value = null
+                this.removeImageSelect_newAndUpdatePass(PassId)
+                this.$emit('getPassData')
+
             },
             initialState(){
-                this.passIDtoDelete= null,
+                this.passIDtoDelete= null
                 
-                this.selectedFile= null,
-                this.selectedFileName= null,
+                this.selectedFile= null
+                this.selectedFileName= null
 
-                this.NEWpassDesc= null,
-                this.NEWpoi= null,
-                this.NEWpoiUrl= null,
-                this.NEWpassNumber= null,
-                this.NEWnumGuests= null,
-                this.NEWreplacementFee= null,
-                this.NEWpassStatus= "AVAILABLE",
-                this.NEWisPhysical= true
+                this.NEWpassDesc= null
+                this.NEWpoi= null
+                this.NEWpoiUrl= null
+                this.NEWpassNumber= null
+                this.NEWnumGuests= null
+                this.NEWreplacementFee= null
+                this.NEWpassStatus= ""
+                this.NEWisPhysical= ""
 
                 this.selectedImage= null
-                this.localImageSrc = null;
-                document.getElementById("newImageUploadInput").value = null;
+                this.localImageSrc = null
+                document.getElementById("newImageUploadInput").value = null
+                this.$emit('getPassData')
                 
             },
             

@@ -36,11 +36,11 @@
               <ul class="list-group list-group-flush">
                   <div class="container">
                       <div class="row">
-                          <div class="col-12 border text-dark bg-light"><h2>Template ID {{template.templateId }}</h2></div>
-                          <div class="col-5 border"><h2><b>Template Name</b></h2></div>
-                          <div class="col-7 border"><h2>{{template.templateName }}</h2></div>
-                          <div class="col-5 border"><h2><b>Template Subject</b></h2></div>
-                          <div class="col-7 border"><h2>{{template.templateSubject }}</h2></div>
+                          <div class="col-12 border bg-info bg-gradient text-dark"><h2>Template ID {{template.templateId }}</h2></div>
+                          <div class="col-3 border"><h2 class="text-center"><b>Template Name</b></h2></div>
+                          <div class="col-9 border"><h2 class="text-center">{{template.templateName }}</h2></div>
+                          <div class="col-3 border"><h2 class="text-center"><b>Template Subject</b></h2></div>
+                          <div class="col-9 border"><h2 class="text-center">{{template.templateSubject }}</h2></div>
                       </div>
                   </div>
               </ul>
@@ -280,6 +280,7 @@
 
           <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[1]['templateDraft']" contentType="text">
           </QuillEditor> -->
+  <TheToastr :toastrResponse="toastrResponse"></TheToastr>
   </div>
 </template>
 
@@ -288,11 +289,15 @@ import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import EmailService from "@/api/services/EmailService";
 import axios from "axios";
+import TheToastr from "@/components/TheToastr.vue";
+import { Toast } from "bootstrap";
+
 
 export default {
   name: "Email",
   components: {
-    QuillEditor,
+    TheToastr,
+    QuillEditor
   },
   data() {
     return {
@@ -309,6 +314,7 @@ export default {
         templateSubject: "test1",
         templateData: "test1",
       },
+      toastrResponse: "",
     };
   },
   async mounted() {
@@ -317,6 +323,10 @@ export default {
   created() {
   },
   methods: {
+    showToast(){
+        var bsAlert = new Toast(document.getElementById('theToastr'));         
+        bsAlert.show();
+    },
     async getEmailDatas() {
       var tempEmailTemplates = await EmailService.getAllEmailTemplates();
       this.emailTemplates = tempEmailTemplates.data;
@@ -335,9 +345,13 @@ export default {
           .then((response) => {
             this.getEmailDatas();
             console.log(response);
+            this.toastrResponse = {status: "Success", msg: "Email Template has been deleted!"};
+            this.showToast(); 
           });
       } catch (err) {
         console.error(err);
+        this.toastrResponse = {status: "Error", msg: "Email Template could not be deleted!"};
+        this.showToast(); 
       }
     },
     updateTemplateMethod(templateID) {
@@ -352,6 +366,7 @@ export default {
         }
       }
       this.putTemplateMethod(templateID, temp);
+      
     },
     async putTemplateMethod(templateID, templateDATA) {
       const bearer_token = `Bearer ${localStorage.getItem("token")}`;
@@ -365,11 +380,15 @@ export default {
           .put(this.templateURL + "/" + templateID, templateDATA, config)
           .then((response) => {
             this.backupContentData = ``;
+            this.toastrResponse = {status: "Success", msg: "Email Template has been updated!"};
+            this.showToast(); 
             this.getEmailDatas();
             console.log(response);
           });
       } catch (err) {
         console.error(err);
+        this.toastrResponse = {status: "Error", msg: "Email Template could not be updated!"};
+        this.showToast(); 
       }
     },
     createTemplateMethod() {
@@ -396,10 +415,14 @@ export default {
           .post(this.templateURL, templateDATAToPost, config)
           .then((response) => {
             this.getEmailDatas();
+            this.toastrResponse = {status: "Success", msg: "Email Template has been created!"};
+            this.showToast(); 
             console.log(response);
           });
       } catch (err) {
         console.error(err);
+        this.toastrResponse = {status: "Error", msg: "Email Template could not be created!"};
+        this.showToast(); 
       }
     },
     backupContent(draftToBackup) {
