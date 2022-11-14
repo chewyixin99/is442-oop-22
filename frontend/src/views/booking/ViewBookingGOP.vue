@@ -82,12 +82,11 @@
 </template>
 <script>
 import { Grid, h } from "gridjs";
-import CreateBookingModal from "@/components/borrower/CreateBookingModal.vue";
+import CreateBookingModal from "@/components/employee/CreateBookingModal.vue";
 import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
-import CancelBookingModal from "@/components/borrower/CancelBookingModal.vue";
-import EditBookingModal from "@/components/borrower/EditBookingModal.vue";
-import ENDPOINT from "../../constants"
+import CancelBookingModal from "@/components/employee/CancelBookingModal.vue";
+import EditBookingModal from "@/components/employee/EditBookingModal.vue";
 
 // import axios from "axios";
 
@@ -211,7 +210,7 @@ export default {
           },
         ],
         server: {
-          url: `${ENDPOINT}/loan`,
+          url: "http://localhost:8081/loan",
           headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
@@ -228,7 +227,7 @@ export default {
               ])
               .filter(
                 (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
-              ).reverse(),
+              ),
           handle: (res) => {
             return res.json();
           },
@@ -292,7 +291,7 @@ export default {
                    
         ],
         server: {
-          url: `${ENDPOINT}/loan`,
+          url: "http://localhost:8081/loan",
           headers: { "Authorization" : this.token},
           then: (data) =>
             data.data
@@ -308,7 +307,7 @@ export default {
               ])
               .filter(
                 (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false) && (data[5] == this.user.userId)
-              ).reverse(),
+              ),
           handle: (res) => {
             return res.json();
           },
@@ -351,7 +350,7 @@ export default {
     this.pastBookingsGrid.render(document.getElementById("table2"));
     // this.getData();
     // axios
-    //   .get("${ENDPOINT}/loan")
+    //   .get("http://localhost:8081/loan")
     //   .then((response) => {
     //     console.log(response.data.data);
     //   })
@@ -387,7 +386,7 @@ export default {
     },
     // getData() {
     //   axios
-    //     .get("${ENDPOINT}/loan")
+    //     .get("http://localhost:8081/loan")
     //     .then((response) => {
     //       let resList = [];
     //       console.log(response.data.data);

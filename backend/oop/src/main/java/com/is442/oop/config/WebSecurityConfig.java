@@ -1,6 +1,5 @@
 package com.is442.oop.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -28,8 +27,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    @Autowired
-    private RsaKeyProperties rsaKeys;
+    private final RsaKeyProperties rsaKeys;
 
     private static final String[] WHITE_LIST_URLS = {
         "/**",
@@ -38,6 +36,10 @@ public class WebSecurityConfig {
         "/resendVerificationToken*",
         "/login*"
     };
+
+    public WebSecurityConfig(RsaKeyProperties rsaKeys) {
+        this.rsaKeys = rsaKeys;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

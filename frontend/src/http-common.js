@@ -1,8 +1,7 @@
 import axios from "axios";
-import ENDPOINT from "./constants";
 
 export default axios.create({
-    baseURL: ENDPOINT,
+    baseURL: "http://localhost:8081",
     headers: {
         "Content-type": "application/json"
     }

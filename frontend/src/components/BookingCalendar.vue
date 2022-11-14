@@ -29,7 +29,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 // import { INITIAL_EVENTS } from './event-utils'
 import axios from "axios";
-import ENDPOINT from "../../constants"
 
 export default {
   props: ["selectedPass", "selectedLoan", "isEdit"],
@@ -140,7 +139,7 @@ export default {
         },
       };
       axios
-        .get(`${ENDPOINT}/loan`, config)
+        .get("http://localhost:8081/loan", config)
         .then((response) => {
           console.log(response);
           this.selectedPassLoans = response.data.data.filter(

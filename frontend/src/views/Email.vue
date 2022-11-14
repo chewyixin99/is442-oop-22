@@ -273,7 +273,6 @@ import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import EmailService from "@/api/services/EmailService";
 import axios from "axios";
-import ENDPOINT from "../constants"
 
 export default {
   name: "Email",
@@ -282,7 +281,7 @@ export default {
   },
   data() {
     return {
-      templateURL: `${ENDPOINT}/templates`,
+      templateURL: "http://localhost:8081/templates",
       emailTemplates: [],
       newTemplateName: ``,
       newTemplateSubject: ``,

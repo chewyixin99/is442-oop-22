@@ -32,12 +32,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(Integer userId) throws ResourceNotFoundException {
         return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "User ID", userId));
-    }
+    };
 
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
-    }
+    };
+
+    // Deprecated
+    // @Override
+    // public User createUser(UserRequest userRequest) {
+    //     User user = new User();
+    //     user.setUsername(userRequest.getUsername());
+    //     user.setPassword(userRequest.getPassword());
+    //     user.setEmail(userRequest.getEmail());
+    //     user.setContactNumber(userRequest.getContactNumber());
+    //     user.setUserType(userRequest.getUserType());
+    //     userRepository.save(user);
+    //     return user;
+    // };
 
     @Override
     public User updateUser(Integer userId, UserRequest userRequest) throws ResourceNotFoundException {
@@ -54,7 +67,7 @@ public class UserServiceImpl implements UserService {
         user.setUserType(userRequest.getUserType());
         userRepository.save(user);
         return user;
-    }
+    };
 
     @Override
     public User deleteUser(Integer userId) throws ResourceNotFoundException {

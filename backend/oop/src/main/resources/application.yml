@@ -1,10 +1,8 @@
 server:
     port: 8081
 spring:
-# mysql://bb68b2ec90ccd3:09e8de7e@us-cdbr-east-06.cleardb.net/heroku_ad30dd59e74b08c?reconnect=true
     datasource:
         url: jdbc:mysql://localhost:3306/oop
-        # url: jdbc:mysql://us-cdbr-east-06.cleardb.net/heroku_ad30dd59e74b08c?reconnect=true
         username: root
         password: 
         driver-class-name: com.mysql.cj.jdbc.Driver

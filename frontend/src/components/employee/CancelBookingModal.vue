@@ -93,7 +93,6 @@
 
 <script>
 import axios from "axios";
-import ENDPOINT from '../../constants'
 
 export default {
   name: "CancelBookingModal",
@@ -237,7 +236,7 @@ export default {
         },
       };
       axios
-        .delete(`${ENDPOINT}/loan/${this.rowData.id,config}`)
+        .delete("http://localhost:8081/loan/" + this.rowData.id,config)
         .then((response) => {
           console.log(response);
           if (response.status != 500) {
