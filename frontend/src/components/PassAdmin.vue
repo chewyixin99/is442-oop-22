@@ -18,14 +18,14 @@
             <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId" >
                 <div v-if="EachPass.defunct=='0'">
 
-                    <div class="card border-secondary h-100" style="width: 25rem;">
+                    <div class="card border h-100" style="width: 25rem;">
                         <!-- Show Image here -->
                             
                             <template v-if="EachPass.passImage">
-                                <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2 border-secondary" height="250" width="375">
+                                <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2" height="250" width="375">
                             </template>
                             <template v-else>
-                                <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2 border-secondary" height="250" width="375">
+                                <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2" height="250" width="375">
                             </template>
                             <div class="card-body ">
                                 <b class="card-title">{{EachPass.passDesc}}
@@ -99,22 +99,22 @@
                                             <div class="row mb-3 d-flex justify-content-center">
                                                 <div>
                                                     <template v-if="localImageSrc">
-                                                        <img :src="localImageSrc" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                        <img :src="localImageSrc" class="mx-auto d-block border border-2" height="200" width="300">
                                                     </template>
                                                     <template v-else-if="EachPass.passImage">
-                                                        <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                        <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto d-block border border-2" height="200" width="300">
                                                     </template>
                                                     <template v-else>
-                                                        <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto d-block border border-2 border-secondary" height="200" width="300">
+                                                        <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto d-block border border-2 " height="200" width="300">
                                                     </template>
                                                 </div>
                                                 <div class="d-flex justify-content-center my-1">
-                                                    <button type="button" class="btn btn-outline-danger" @click="removeImageFromDB(EachPass.passId)">
+                                                    <button type="button" class="btn btn-outline-danger" @click="removeImageFromDB(EachPass.passId)" :disabled="!EachPass.passImage">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
                                                         <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
                                                         </svg>
-                                                        Remove Image
+                                                        Remove Image from Database
                                                     </button>
                                                 </div>
                                                 
@@ -125,7 +125,7 @@
                                                 </div>
                                             </div>
                                             <hr>
-                                            <label class="col-form-label"><b>ID: {{EachPass.passId}}</b></label><br>
+                                            <label class="col-form-label"><b>Pass ID: {{EachPass.passId}}</b></label><br>
                                             <div class="input-group mb-1 was-validated">
                                                 <label class="col-form-label col-12"><b>Pass Number</b></label> 
                                                 <div class="col-12">
@@ -205,7 +205,7 @@
                                                 <div class="input-group mb-3">
                                                     <label class="col-5 col-form-label"><b>Current Attachment(PDF)</b></label>
                                                     <input type="text" class="col-5 form-control" :placeholder="EachPass.passAttachmentName" ref="updatePassAttachmentText" disabled>
-                                                    <button type="button" class="btn btn-outline-danger" @click="removeFileFromDB(EachPass.passId)">
+                                                    <button type="button" class="btn btn-outline-danger" @click="removeFileFromDB(EachPass.passId)" :disabled="!EachPass.passAttachmentName">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
                                                         <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
@@ -534,6 +534,7 @@ export default({
                     await axios.put(this.passURL+"/deletePassImage/"+passID, config)
                     .then(response => {
                         // this.$refs.updatePassAttachmentText.value = null;
+                        this.removeImageSelect_newAndUpdatePass(passID)
                         this.$emit('getPassData')
                         console.log(response);
                     });
