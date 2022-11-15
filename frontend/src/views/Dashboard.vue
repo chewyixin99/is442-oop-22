@@ -1,7 +1,8 @@
 <template>
     <div id="dashboard">
-        <h1 class="pt-3">Dashboard</h1>
-        <div class="row justify-content-center ">
+        <h1 class="pt-4 mb-4 flex-column d-flex align-items-center">Dashboard</h1>
+        <div class="row justify-content-center">
+          <hr />
           <div id="selectHolder" class="d-flex">
             <select v-model="timeRange" class="form-select" aria-label="Default select example" @change="refreshCharts()">
               <option value=0 selected disabled>Filter by Time Range</option>
@@ -22,7 +23,7 @@
             <div id="lineHolder" class="my-5 chart-container"><canvas id="lineChart"></canvas></div>
           </div>
         </div>
-    </div>
+      </div>
 </template>
 <script>
 import Chart from 'chart.js'

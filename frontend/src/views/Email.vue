@@ -6,146 +6,154 @@
         ------------------------------------
         <p>1. Edit email template for the two types of email</p>
         <p>2. Settings for automated email</p> -->
-    <div class="row">
-      <h1>Email</h1>
-    </div>
-    <span >
-      <h2 class="d-inline p-2 mt-3">
-        View your email templates
-        <button
-          type="button"
-          class="btn btn-outline-success d-inline p-2"
-          data-bs-toggle="modal"
-          data-bs-target="#addNewEmailTemplate"
-        >
-          Add New Email Template
-          <i class="bi bi-plus-square"></i>
-        </button>
-      </h2>
-    </span>
-    <div class="container-fluid mt-3">
-      <div class="row row-cols-1 g-5">
-        <!-- change here start -->
-        <template
-          v-for="(template) in emailTemplates"
-          :key="template.templateId"
-        >
-          <div v-if="!template.defunct">
-            <!-- change here end -->
-            <div class="card mb-3">
-              <ul class="list-group list-group-flush">
-                  <div class="container">
-                      <div class="row">
-                          <div class="col-12 border text-dark bg-light"><h2>Template ID {{template.templateId }}</h2></div>
-                          <div class="col-5 border"><h2><b>Template Name</b></h2></div>
-                          <div class="col-7 border"><h2>{{template.templateName }}</h2></div>
-                          <div class="col-5 border"><h2><b>Template Subject</b></h2></div>
-                          <div class="col-7 border"><h2>{{template.templateSubject }}</h2></div>
-                      </div>
-                  </div>
-              </ul>
-              
-              <div class="card-body border-secondary">
-                <p class="text-start" v-html="template.templateData"></p>
-              </div>
-              <div class="card-footer border-secondary btn-group-vertical">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  :data-bs-target="`#emailModal` + template.templateId"
-                  @click="backupContent(template.templateData)"
-                >
-                  View
-                </button>
-              </div>
-            </div>
-            <!-- Update modal -->
-            <div
-              class="modal fade"
-              data-bs-backdrop="static"
-              :id="`emailModal` + template.templateId"
-              tabindex="-1"
-              aria-hidden="true"
+    <div class="flex-column d-flex align-items-center justify-content-center">
+      <h1 class="pt-4 mb-4">Email</h1>
+      <div class="tableBox position-relative">
+        <hr/>
+        <span>
+          <h3 class="py-3">
+            View your email templates
+            <button
+              type="button"
+              class="btn btn-outline-success d-inline"
+              data-bs-toggle="modal"
+              data-bs-target="#addNewEmailTemplate"
             >
-              <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      Update template {{ template.templateId }} information
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                      @click="cancelUpdate(template.templateId)"
-                    ></button>
-                  </div>
-                  <div class="modal-body text-start">
-                      
-                    
-                    <div class="mb-3">
-                      <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
-                      <label class=""><b class="col-form-label">Template ID: {{template.templateId}}</b></label><br>
-                      <div class="input-group mb-3 was-validated">
-                          <label class="col-form-label col-12"><b>Template Name</b></label>
-                          <div class="col-12">
-                              <input class="form-control" v-model ="template.templateName" required >
-                              <div class="invalid-feedback text-black-50">Please enter a valid template name. e.g: Account Management Template</div>
+              Add New Email Template
+              <i class="bi bi-plus-square"></i>
+            </button>
+          </h3>
+        </span>
+          
+        <div class="container-fluid mt-3">
+          <div class="row row-cols-1 g-5">
+            <!-- change here start -->
+            <template
+              v-for="(template) in emailTemplates"
+              :key="template.templateId"
+            >
+              <div v-if="!template.defunct">
+                <!-- change here end -->
+                <div class="card mb-3">
+                  <ul class="list-group list-group-flush">
+                      <div class="container">
+                          <div class="row">
+                              <div class="col-12 border text-dark bg-light"><h2>Template ID {{template.templateId }}</h2></div>
+                              <div class="col-5 border"><h2><b>Template Name</b></h2></div>
+                              <div class="col-7 border"><h2>{{template.templateName }}</h2></div>
+                              <div class="col-5 border"><h2><b>Template Subject</b></h2></div>
+                              <div class="col-7 border"><h2>{{template.templateSubject }}</h2></div>
                           </div>
                       </div>
-                      <div class="input-group mb-3 was-validated">
-                          <label class="col-form-label col-12"><b>Template Subject</b></label>
-                          <div class="col-12">
-                              <input class="form-control" v-model ="template.templateSubject" required >
-                              <div class="invalid-feedback text-black-50">Please enter a valid template subject. e.g: Singapore Sport School - Corp Pass Account Registration</div>
-                          </div>
-                      </div>
-                      <label class="col-form-label col-12"><b>Template Data</b></label>
-                      <QuillEditor
-                        theme="snow"
-                        toolbar="full"
-                        v-model:content="template.templateData"
-                        contentType="html"
-                      >
-                      </QuillEditor>
-                    </div>
+                  </ul>
+                  
+                  <div class="card-body border-secondary">
+                    <p class="text-start" v-html="template.templateData"></p>
                   </div>
-                  <div class="modal-footer">
+                  <div class="card-footer border-secondary btn-group-vertical">
                     <button
                       type="button"
                       class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      @click="updateTemplateMethod(template.templateId)"
-                      :disabled="!templateCreationUpdateDisable(template.templateName, template.templateSubject)"
+                      data-bs-toggle="modal"
+                      :data-bs-target="`#emailModal` + template.templateId"
+                      @click="backupContent(template.templateData)"
                     >
-                      Update Now
-                    </button>
-                    <button
-                      type="btn btn-danger"
-                      class="btn btn-danger"
-                      data-bs-dismiss="modal"
-                      @click="deleteTemplateMethod(template.templateId)"
-                    >
-                      Delete
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                      @click="cancelUpdate(template.templateId)"
-                    >
-                      Close
+                      View
                     </button>
                   </div>
                 </div>
+                <!-- Update modal -->
+                <div
+                  class="modal fade"
+                  data-bs-backdrop="static"
+                  :id="`emailModal` + template.templateId"
+                  tabindex="-1"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          Update template {{ template.templateId }} information
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                          @click="cancelUpdate(template.templateId)"
+                        ></button>
+                      </div>
+                      <div class="modal-body text-start">
+                          
+                        
+                        <div class="mb-3">
+                          <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
+                          <label class=""><b class="col-form-label">Template ID: {{template.templateId}}</b></label><br>
+                          <div class="input-group mb-3 was-validated">
+                              <label class="col-form-label col-12"><b>Template Name</b></label>
+                              <div class="col-12">
+                                  <input class="form-control" v-model ="template.templateName" required >
+                                  <div class="invalid-feedback text-black-50">Please enter a valid template name. e.g: Account Management Template</div>
+                              </div>
+                          </div>
+                          <div class="input-group mb-3 was-validated">
+                              <label class="col-form-label col-12"><b>Template Subject</b></label>
+                              <div class="col-12">
+                                  <input class="form-control" v-model ="template.templateSubject" required >
+                                  <div class="invalid-feedback text-black-50">Please enter a valid template subject. e.g: Singapore Sport School - Corp Pass Account Registration</div>
+                              </div>
+                          </div>
+                          <label class="col-form-label col-12"><b>Template Data</b></label>
+                          <QuillEditor
+                            theme="snow"
+                            toolbar="full"
+                            v-model:content="template.templateData"
+                            contentType="html"
+                          >
+                          </QuillEditor>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-dismiss="modal"
+                          @click="updateTemplateMethod(template.templateId)"
+                          :disabled="!templateCreationUpdateDisable(template.templateName, template.templateSubject)"
+                        >
+                          Update Now
+                        </button>
+                        <button
+                          type="btn btn-danger"
+                          class="btn btn-danger"
+                          data-bs-dismiss="modal"
+                          @click="deleteTemplateMethod(template.templateId)"
+                        >
+                          Delete
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                          @click="cancelUpdate(template.templateId)"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </template>
           </div>
-        </template>
+        </div>
+
       </div>
     </div>
+    <!-- <div class="row">
+      <h1>Email</h1>
+    </div> -->
     <!-- Add Pass Modal Start -->
     <div
       class="modal fade"

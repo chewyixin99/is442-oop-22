@@ -5,25 +5,24 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-        <h1 class="pt-3">Employee</h1>
-        ------------------------------------
-        <p>Admin functionalities:</p>
-        ------------------------------------
-        <p>1. Table that displays all employee details with edit/delete functionalities</p>
-        <p>2. Search function tied to the table</p>
-        <p>3. Upload of CSV file</p>
 
-        <div id="tableBox">
-            <div id="buttonsHolder" class="d-flex">
-
-                <div>
-                    <input id="fileId" type="file" accept=".txt,.xlsx,.csv" hidden/>
-                    <input id="buttonId" type="button" class="importBtn funcBtn btn btn-info" value='Import' @click="openDialog"/>
+        <div class="container-fluid">
+            <div class="flex-column d-flex align-items-center justify-content-center">
+                <h1 class="pt-4 mb-4">Employee</h1>
+                <div class="container">
+                    <div id="tableBox">
+                        <hr/>
+                        <div id="buttonsHolder" class="d-flex">
+                            <div>
+                                <input id="fileId" type="file" accept=".txt,.xlsx,.csv" hidden/>
+                                <input id="buttonId" type="button" class="importBtn funcBtn btn btn-info" value='Import' @click="openDialog"/>
+                            </div>
+                            <div class="px-3"><button type="button" class="newBtn funcBtn btn btn-warning" data-bs-toggle="modal" data-bs-target="#createModal">New</button></div>
+                            <div><button type="button" class="delBtn funcBtn btn btn-danger" @click="deleteRecords()">Delete</button></div>
+                        </div>
+                        <div id="wrapper"></div>
+                    </div>
                 </div>
-                <div class="px-3"><button type="button" class="newBtn funcBtn btn btn-warning" data-bs-toggle="modal" data-bs-target="#createModal">New</button></div>
-                <div><button type="button" class="delBtn funcBtn btn btn-danger" @click="deleteRecords()">Delete</button></div>
-            </div>
-            <div id="wrapper">
             </div>
         </div>
         <EmployeeModal id="createModal" modalType="create" @createEmployee="createEmployee"></EmployeeModal>

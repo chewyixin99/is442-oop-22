@@ -12,7 +12,7 @@
         <p>2. Create new passes</p>
         <p>3. Edit/delete passes</p>
     </div> -->
-    <div class="container">
+    <div class="container-fluid">
 <!-- 
         <div class="row">
             <h1>Passes(staff view)</h1>
@@ -24,14 +24,16 @@
         <br>
         <hr>
         <br> -->
-
-        <div class="row">
-            <h1>Passes(Admin view)</h1>
-        </div>
-        <div class="row">
-            <!-- <PassAdmin :PassAdmin_PassesCategory="PassesCategory"/> -->
-            <PassAdmin :PassAdminPasses="passes.data" @getPassData="getAllPasses"/>
-
+        <div class="flex-column d-flex align-items-center justify-content-center">
+            <h1 class="pt-4 mb-4">Passes (Admin view)</h1>
+            <div class="tableBox position-relative">
+                <div class="container">
+                    <div class="row">
+                        <!-- <PassAdmin :PassAdmin_PassesCategory="PassesCategory"/> -->
+                        <PassAdmin :PassAdminPasses="passes.data" @getPassData="getAllPasses"/>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>

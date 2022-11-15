@@ -1,19 +1,17 @@
 <template>
-
-    <div class="container">
-        <span>
-            <h2 class="d-inline p-2 ">
+    <hr/>
+    <div class="container mt-3">
+        
+        <span class="">
+            <h3 class="d-inline">
                 Select Your Pass
-                <button  type="button" class="btn btn-outline-success d-inline p-2" data-bs-toggle="modal" data-bs-target="#addNewPass">
+                <button  type="button" class="btn btn-outline-success d-inline" data-bs-toggle="modal" data-bs-target="#addNewPass">
                     Add New Pass
                     <i class="bi bi-plus-square"></i>
                 </button>
-            </h2>
-            
+            </h3>
         </span>
-
-
-        <div class="row row-cols-auto g-5 my-2">
+        <div class="row row-cols-auto g-4 mt-2 mb-5">
                 <!-- Passes 'Card' -->
             <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId" >
                 <div v-if="EachPass.defunct=='0'">
@@ -24,29 +22,33 @@
                             <template v-if="EachPass.passImage">
                                 <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2" height="250" width="375">
                             </template>
+
                             <template v-else>
                                 <img src="../assets/PassAssets/noImageAvailable.jpg" class="mx-auto mt-2 d-block border border-2" height="250" width="375">
                             </template>
-                            <div class="card-body ">
+
+                            <div class="card-body">
                                 <b class="card-title">{{EachPass.passDesc}}
                                 </b>
-                                
                             </div>
-                            <ul class="list-group list-group-flush">
+
+                            <ul class="px-3 py-2 list-group list-group-flush">
                                 <span><b>Point of Interests </b></span>
                                 <div class="text-wrap w-90 justify-content-center">
                                     <span>{{EachPass.poi}}</span>
                                 </div>
                             </ul>
-                            <ul class="list-group list-group-flush">
+
+                            <ul class="px-3 py-2 list-group list-group-flush">
                                 <span><b>Point of Interests URL</b></span>
                                 <div class="text-wrap w-90 justify-content-center">
                                     <span>{{EachPass.poiUrl}}</span>
                                 </div>
                             </ul>
+
                             <ul class="list-group list-group-flush">
                                 <div class="container">
-                                    <div class="row">
+                                    <div class="p-1 row">
                                         <div class="col-5 border"><b>ID</b></div>
                                         <div class="col-7 border">{{EachPass.passId}}</div>
                                         <div class="col-5 border"><b>Pass Number</b></div>
@@ -57,22 +59,24 @@
                                         <div class="col-7 border">${{EachPass.replacementFee}}</div>
                                         <div class="col-5 border"><b>Status</b></div>
                                         <div class="col-7 border">{{EachPass.passStatus}}</div>
-                                        <div class="col-5 border"><b>Physical/EPass</b></div>
+                                        <div class="col-5 border"><b>Physical / EPass</b></div>
                                         <template v-if="EachPass.isPhysical==true">
                                             <div class="col-7 border">Physical Pass</div>
                                         </template>
                                         <template v-else>
                                             <div class="col-7 border">EPass</div>
                                         </template>
-                                        
-                                            <div class="col-12"><b>Attachment(PDF)</b></div>
-                                                <template v-if="EachPass.passAttachment">
-                                                    <div class="col-12"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
-                                                </template>
-                                                <template v-else>
-                                                    <div class="col-12"><button class="btn btn-success mb-1" disabled>No File Attached</button></div>
-                                                </template>
                                     </div>
+
+                                    <div class="px-1 py-2 col-12"><b>Attachment(PDF)</b></div>
+
+                                    <template v-if="EachPass.passAttachment">
+                                        <div class="col-12 py-2"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
+                                    </template>
+
+                                    <template v-else>
+                                        <div class="col-12"><button class="btn btn-success mb-1" disabled>No File Attached</button></div>
+                                    </template>
                                 </div>
                             </ul>
                             
@@ -81,7 +85,6 @@
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#viewUM`+EachPass.passId">
                                     View
                                 </button> 
-                                
                             </div>
                     </div>
                     <!-- Pass update modal -->

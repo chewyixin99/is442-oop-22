@@ -242,10 +242,10 @@ export default {
   },
   data() {
     return {
-      username: "test",
-      email: "leeroy2@mailinator.com",
-      password: "123",
-      contactNumber: "91234567",
+      username: "",
+      email: "",
+      password: "",
+      contactNumber: "",
       userlogin: true,
       userregister: false,
       userforgotpassword: false,
