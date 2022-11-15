@@ -38,6 +38,24 @@
                   </option>
                 </select>
               </div>
+               <div class="mb-3 has-validation">
+                <label for="passType" class="col-form-label">Pass Type</label>
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  @change="selectPass($event)"
+                  id="passType"
+                >
+                  <option>Choose Pass</option>
+                  <option
+                    v-for="availablePass in availablePasses"
+                    :key="availablePass"
+                    :value="availablePass.passId"
+                  >
+                    {{ availablePass.poi }}
+                  </option>
+                </select>
+              </div>
             </div>
             <div class="p-4">
               <BookingCalendar
@@ -262,6 +280,8 @@
 import BookingCalendar from "@/components/common/BookingCalendar.vue";
 import axios from "axios";
 import ENDPOINT from '../../constants';
+
+
 export default {
   name: "CreateBookingModal",
   props: {
@@ -287,6 +307,7 @@ export default {
       selectedPassId: null,
       selectedPass: null,
       isLoading: false,
+
       numPass: 2,
       componentKey: 0,
       availablePasses: [],
@@ -299,17 +320,6 @@ export default {
     };
   },
   methods: {
-    removeGuest(e, index) {
-      console.log(index);
-      this.bookingGuestDetails.splice(index, 1);
-    },
-    addNewGuest() {
-      this.bookingGuestDetails.push({
-        name: "",
-        email: "",
-        contact: "",
-      });
-    },
     selectedData($event) {
       this.retrievedData = {
         passID: $event.passID.toString(),

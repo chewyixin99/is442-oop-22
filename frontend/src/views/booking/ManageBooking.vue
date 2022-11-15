@@ -75,7 +75,9 @@ import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/admin/CancelBookingModal.vue";
 import axios from "axios";
-import ENDPOINT from "../../constants"
+import ENDPOINT from "../../constants";
+
+import LoanService from "@/api/services/LoanService";
 
 export default {
   name: "ManageBooking",
@@ -428,47 +430,26 @@ export default {
       });
   },
   methods: {
-    updatestatus(rowData) {
-      console.log(rowData);
-
-      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
-      const config = {
-        headers: {
-          Authorization: bearer_token,
-        },
+    async updatestatus(rowData) {
+      let body = {
+        loanId: rowData,
+        gopId: JSON.parse(localStorage.getItem("user")).userId,
       };
-
-      axios
-        .put(
-          `${ENDPOINT}/loan/updateCompleted`,
-          {
-            loanId: rowData,
-            gopId: 1,
-          },
-          config
-        )
-        .then((response) => {
-          console.log(response);
-          if (response.status == 200) {
-            this.currentGrid.forceRender();
-            this.updateToastrMsg({ status: "Success", msg: "Status Updated" });
-            var bsAlert = new Toast(document.getElementById("theToastr"));
-            bsAlert.show();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
+      let response = await LoanService.updateLoanStatus(body);
+      if (response.status == 200) {
+        this.currentGrid.forceRender();
+        this.updateToastrMsg({
+          status: "Success",
+          msg: "Status update was successful!",
         });
-    },
-    processDate(date) {
-      let split = date.split("/");
-      return new Date(
-        parseInt(split[2]),
-        parseInt(split[1]) - 1,
-        parseInt(split[0])
-      )
-        .toISOString()
-        .replace(/T.*$/, "");
+      } else {
+        this.updateToastrMsg({
+          status: "Failed",
+          msg: "Status update was not successful!",
+        });
+      }
+      var bsAlert = new Toast(document.getElementById("theToastr"));
+      bsAlert.show();
     },
     filterSelected() {
       this.dataOfSelectedRow = this.bookingData.filter((row) => {
@@ -521,7 +502,6 @@ export default {
 .btnHover:hover {
   color: var(--sss_orange) !important;
 }
-
 
 .btnHover {
   cursor: pointer;

@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="" v-if="selectedPass != null">
       <h1>{{ selectedPass.poi }}</h1>
-      <FullCalendar id="calendar" :options="calendarOptions" :key="componentKey" />
+      <FullCalendar id="calendar" :options="calendarOptions" />
       <br />
       <div class="row">
         <div class="col d-flex">
@@ -99,13 +99,13 @@ export default {
           alert("There is already a loan on this date!");
         } else {
           calendarApi.addEvent({
-            id: this.componentKey.toString(),
+            id: "3",
             title: this.user.username,
             date: arg.dateStr,
             allDay: true,
             color: "#18c200",
           });
-          this.clickedEventId = this.componentKey.toString();
+          this.clickedEventId = "3";
           this.$emit("selectedData", this.selectedData);
           console.log(this.selectedData);
         }
@@ -129,6 +129,7 @@ export default {
       let eventId = clickInfo.event.id;
       console.log(eventId);
     },
+
     // retrieve data, process it, and set it as the events source
     async getData(selectedPass) {
       this.selectedPassLoans = await LoanService.getLoansByPassId(selectedPass);
@@ -178,8 +179,6 @@ export default {
   // this is for creation of new booking as selectedPass is based on user input
   watch: {
     selectedPass: function () {
-      this.forceRerender();
-      this.clickedEventId = "";
       this.selectedData.passId = this.selectedPass.passId;
       this.selectedData.userId = this.userId;
       this.getData(this.selectedData);
@@ -191,8 +190,10 @@ export default {
         this.getData();
         this.selectedData.passID = this.selectedPass.passId;
         this.selectedData.userID = this.userId;
-
       }
+    },
+    beforeCreate() {
+      this.user = JSON.parse(localStorage.getItem("user"));
     },
   },
 };

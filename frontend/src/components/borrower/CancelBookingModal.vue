@@ -92,8 +92,7 @@
 </template>
 
 <script>
-import axios from "axios";
-import ENDPOINT from '../../constants'
+import LoanService from "@/api/services/LoanService";
 
 export default {
   name: "CancelBookingModal",
@@ -108,45 +107,9 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      isChecked: false,
       selectedPassId: null,
       selectedPass: null,
       isLoading: false,
-      numOfGuest: 1,
-      numPass: 2,
-      componentKey: 0,
-      availablePasses: [
-        {
-          id: "1",
-          title: "Zoo 1",
-          selected: false,
-        },
-        {
-          id: "2",
-          title: "Zoo 2",
-          selected: false,
-        },
-        {
-          id: "3",
-          title: "Zoo 3",
-          selected: false,
-        },
-        {
-          id: "4",
-          title: "Safari 1",
-          selected: false,
-        },
-        {
-          id: "5",
-          title: "Safari 2",
-          selected: false,
-        },
-        {
-          id: "6",
-          title: "Gardens By The Bay",
-          selected: false,
-        },
-      ],
       retrievedData: {
         passId: null,
         passTitle: "",
@@ -174,73 +137,11 @@ export default {
         (pass) => pass.id === this.selectedPassId
       );
 
-      console.log(this.selectedPass);
-    },
-    forceRerender() {
-      this.componentKey += 1;
-    },
-
-    // fixed events
-    passFn(id) {
-      if (id == "1") {
-        return {
-          title: "Zoo 1",
-          id: "1",
-          events: [
-            {
-              id: 1,
-              title: "Team 1",
-              start: new Date(2022, 8, 29).toISOString().replace(/T.*$/, ""),
-            },
-            {
-              id: 2,
-              title: "Team 3",
-              start: new Date(2022, 8, 30).toISOString().replace(/T.*$/, ""),
-            },
-          ],
-        };
-      } else if (id == "2") {
-        return {
-          title: "Zoo 2",
-          id: "2",
-          events: [
-            {
-              id: 1,
-              title: "Finance Dept",
-              start: new Date(2022, 8, 24).toISOString().replace(/T.*$/, ""),
-            },
-            {
-              id: 2,
-              title: "Teaching Dept",
-              start: new Date(2022, 8, 26).toISOString().replace(/T.*$/, ""),
-            },
-          ],
-        };
-      } else if (id == "5") {
-        return {
-          title: "Safari 2",
-          id: "5",
-        };
-      } else if (id == "6") {
-        return {
-          title: "Gardens By The Bay",
-          id: "6",
-        };
-      }
     },
     async cancelBooking() {
       this.isLoading = true;
-      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
-      const config = {
-        headers: {
-          Authorization: bearer_token,
-        },
-      };
-      axios
-        .delete(`${ENDPOINT}/loan/${this.rowData.id,config}`)
-        .then((response) => {
-          console.log(response);
-          if (response.status != 500) {
+      const response = await LoanService.cancelLoan(this.rowData.id)
+       if (response.status != 500) {
             this.isLoading = false;
             document.getElementById("cancel-close-btn").click();
             this.$emit("cancelSubmitted", true);
@@ -249,28 +150,9 @@ export default {
               msg: "Cancellation is successful!",
             });
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      // setTimeout(() => {
-      //   document.getElementById("cancel-close-btn").click();
-      //   this.$emit("cancelSubmitted", true);
-      //   this.$emit("toastrMsg", {
-      //     status: "Success",
-      //     msg: "Cancellation is successful!",
-      //   });
-      // }, 1000);
-      // var bsAlert = new Toast(document.getElementById("theToastr")); //inizialize it
-      // this.$emit("toastrMsg", "New employee has been created!");
-      // bsAlert.show();
     },
   },
 };
 </script>
 <style>
-.modal-content {
-  /* width: 60% !important; */
-}
 </style>

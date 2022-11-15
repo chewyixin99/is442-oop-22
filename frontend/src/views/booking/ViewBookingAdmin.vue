@@ -8,23 +8,26 @@
           <div class="row">
             <div class="col-10 text-start">
               <h4 class="pt-4">Current Bookings</h4>
-              <p class="text-muted fs-7">You have 2 loans left this month</p>
+              <p class="text-muted fs-7">
+                You have {{ loansLeftPerMonth }} / {{maxLoansPerMonth}} loans left this month
+              </p>
             </div>
-            <div
-              class="col d-flex align-items-end justify-content-end"
-              data-bs-toggle="modal"
-              data-bs-target="#createModal"
-            >
-              <i
-                class="bi bi-calendar-plus fs-2 btnHover"
-                data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
-                title="Add New Booking"
-              ></i>
+            <div class="col d-flex align-items-end justify-content-end">
+              <button
+                class="border-0 bg-transparent"
+                @click="clickModal"
+              >
+                <i
+                  class="bi bi-calendar-plus fs-2 btnHover"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="bottom"
+                  title="Add New Booking"
+                ></i>
+              </button>
             </div>
           </div>
         </div>
-        
+
         <!-- current bookings table -->
         <div id="table1"></div>
         <hr />
@@ -73,7 +76,7 @@
       id="openCreateModal"
     ></div>
 
-        <div
+    <div
       data-bs-toggle="modal"
       data-bs-target="#editModal"
       id="openEditModal"
@@ -87,7 +90,9 @@ import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/borrower/CancelBookingModal.vue";
 import EditBookingModal from "@/components/borrower/EditBookingModal.vue";
-import ENDPOINT from "../../constants"
+import ENDPOINT from "../../constants";
+
+import LoanService from "@/api/services/LoanService";
 
 // import axios from "axios";
 
@@ -117,6 +122,8 @@ export default {
       successFlag: false,
       retrievedData: [],
       bookingDetails: {},
+      maxLoansPerMonth: 2,
+      loansLeftPerMonth: 0,
       currentBookingsGrid: new Grid({
         resizable: true,
         columns: [
@@ -151,7 +158,7 @@ export default {
             name: "Edit",
             formatter: (cell, row) => {
               return h(
-               "i",
+                "i",
                 {
                   class: "bi bi-pencil-fill fs-5 btnHover",
                   // style: {
@@ -212,7 +219,7 @@ export default {
         ],
         server: {
           url: `${ENDPOINT}/loan/byUserId/${this.user.userId}`,
-          headers: { "Authorization" : this.token},
+          headers: { Authorization: this.token },
           then: (data) =>
             data.data
               .map((data) => [
@@ -224,11 +231,14 @@ export default {
                   ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
                   : "N/A",
                 data.user.userId,
-                data.defunct
+                data.defunct,
               ])
               .filter(
-                (data) => (data[2] >= new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false)
-              ).reverse(),
+                (data) =>
+                  data[2] >= new Date().toISOString().replace(/T.*$/, "") &&
+                  data[6] == false
+              )
+              .reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -282,18 +292,16 @@ export default {
             id: "endDate",
             name: "End",
             width: "10%",
-          }, 
+          },
           {
             id: "previous",
             name: "Previous",
             width: "30%",
           },
-
-                   
         ],
         server: {
           url: `${ENDPOINT}/loan/byUserId/${this.user.userId}`,
-          headers: { "Authorization" : this.token},
+          headers: { Authorization: this.token },
           then: (data) =>
             data.data
               .map((data) => [
@@ -305,11 +313,14 @@ export default {
                   ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
                   : "N/A",
                 data.user.userId,
-                data.defunct
+                data.defunct,
               ])
               .filter(
-                (data) => (data[2] < new Date().toISOString().replace(/T.*$/, "")) && (data[6] == false)
-              ).reverse(),
+                (data) =>
+                  data[2] < new Date().toISOString().replace(/T.*$/, "") &&
+                  data[6] == false
+              )
+              .reverse(),
           handle: (res) => {
             return res.json();
           },
@@ -343,9 +354,9 @@ export default {
       }),
     };
   },
-  beforeCreate(){
+  beforeCreate() {
     const getToken = localStorage.getItem("token");
-    this.token = `Bearer ${getToken}`
+    this.token = `Bearer ${getToken}`;
     this.user = JSON.parse(localStorage.getItem("user"));
   },
   mounted() {
@@ -353,21 +364,28 @@ export default {
     document.getElementById("table2").innerHTML = "";
     this.currentBookingsGrid.render(document.getElementById("table1"));
     this.pastBookingsGrid.render(document.getElementById("table2"));
-    // this.getData();
-    // axios
-    //   .get("${ENDPOINT}/loan")
-    //   .then((response) => {
-    //     console.log(response.data.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    this.getLoansPerMonth();
+
   },
   methods: {
-    processDate(date){
-      let split = date.split("/")
-      return new Date(parseInt(split[2]), parseInt(split[1])-1, parseInt(split[0])).toISOString().replace(/T.*$/, "")
+    clickModal(){
+      if (this.loansLeftPerMonth != 0 ){
+        document.getElementById("openCreateModal").click();
+      }
+      else {
+        alert("You have reached your monthly limit of 2 bookings. Please cancel a booking to make a new one.")
+      }
+    
     },
+
+    async getLoansPerMonth() {
+      let loansPerMonth = await LoanService.getLoansPerMonth(
+        JSON.parse(localStorage.getItem("user")).userId
+      );
+
+      this.loansLeftPerMonth = this.maxLoansPerMonth-loansPerMonth < 0 ? 0 : this.maxLoansPerMonth-loansPerMonth;
+    },
+
     retrieveCancelData(data) {
       this.currentCancelData = data;
     },
@@ -389,52 +407,17 @@ export default {
     updateToastrMsg(res) {
       this.toastrResponse = res;
     },
-    // getData() {
-    //   axios
-    //     .get("${ENDPOINT}/loan")
-    //     .then((response) => {
-    //       let resList = [];
-    //       console.log(response.data.data);
-    //       console.log(this.selectedPass);
-    //       resList = response.data.data.filter((pass) => pass.userId == this.user.userId);
 
-    //       // loop through resList
-    //       for (let i = 0; i < resList.length; i++) {
-    //         let passTitle = resList[i].passId;
-    //         let id = resList[i].loanId;
-    //         let startDate = resList[i].startDate;
-    //         let endDate = resList[i].endDate;
-    //         let previous = "N.A.";
-    //         let following = "N.A.";
-    //         console.log(             id,
-    //           passTitle,
-    //           startDate,
-    //           endDate,
-    //           previous,
-    //           following);
-    //         this.currentBookingsGrid.data.push([
-    //           id,
-    //           passTitle,
-    //           startDate,
-    //           endDate,
-    //           previous,
-    //           following,
-    //         ]);
-    //       }
-    //       console.log(this.data);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
     bookingSubmitted(data) {
       console.log(data);
+      this.getLoansPerMonth();
       this.currentBookingsGrid.forceRender();
       this.forceRerender();
       var bsAlert = new Toast(document.getElementById("theToastr"));
       bsAlert.show();
     },
     cancelSubmitted() {
+      this.getLoansPerMonth();
       this.$emit("reloadComponent", true);
       this.currentBookingsGrid.forceRender();
       var bsAlert = new Toast(document.getElementById("theToastr"));
@@ -452,7 +435,7 @@ export default {
   width: 70vw;
 }
 
-.gridjs-table{
+.gridjs-table {
   width: 100% !important;
 }
 
