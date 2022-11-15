@@ -1,18 +1,20 @@
 <template>
-    <div class="container-fluid">
+    <div class="container">
         <div class="flex-column d-flex align-items-center justify-content-center">
             <h1 class="pt-4 mb-4">Passes (User)</h1>
             <div class="tableBox position-relative">
                 <hr/>
-                <span>
-                    <h3 class="p-2">View Passes</h3>
-                </span>
 
                 <div class="row row-cols-auto g-4 mt-2 mb-5">
                     <template v-for="EachPass in userPasses" :key="EachPass.passId" >
                         <div v-if="EachPass.defunct=='0'">
-                            <div class="card border-secondary h-100" style="width: 25rem;">
-
+                                <div class="card text-center border h-100" style="width: 25rem;">
+                                    <div class="card-header" style="background-color: var(--sss_orange); color: #273746;">
+                                    <div>
+                                        <h4><strong>Card ID - {{EachPass.passId}}</strong></h4>
+                                    </div>
+                                    
+                                </div>
                                 <template v-if="EachPass.passImage">
                                     <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2 border-secondary" height="250" width="375">
                                 </template>
@@ -40,8 +42,6 @@
                                 <ul class="list-group list-group-flush">
                                     <div class="container">
                                         <div class="p-1 row">
-                                            <div class="col-5 border"><b>ID</b></div>
-                                            <div class="col-7 border">{{EachPass.passId}}</div>
                                             <div class="col-5 border"><b>Pass Number</b></div>
                                             <div class="col-7 border">{{EachPass.passNumber}}</div>
                                             <div class="col-5 border"><b>Guests Numbers</b></div>
@@ -160,9 +160,5 @@ export default {
 </script>
 
 <style scoped>
-.header {
-    text-align: center;
-    padding: 20px;
-    font-size:30px;
-}
+
 </style>

@@ -6,10 +6,9 @@
             </h1>
         </div>
         <hr>
-
             <div class="d-flex aligns-items-center justify-content-center">
                 <span>
-                    <button  type="button" class="btn btn-outline-success d-inline p-2" data-bs-toggle="modal" data-bs-target="#addNewPass">
+                    <button type="button" class="btn btn-outline-success d-inline p-2" data-bs-toggle="modal" data-bs-target="#addNewPass">
                         Add New Pass
                         <i class="bi bi-plus-square"></i>
                     </button>
@@ -22,7 +21,11 @@
 
                     <div class="card text-center border h-100" style="width: 25rem;">
                         <!-- Show Image here -->
-                            
+                            <div class="card-header" style="background-color: var(--sss_orange); color: #273746;">
+                                <div>
+                                    <h4><strong>Card ID - {{EachPass.passId}}</strong></h4>
+                                </div>
+                            </div>
                             <template v-if="EachPass.passImage">
                                 <img v-bind:src="`data:image/*;base64,${EachPass.passImage}`" class="mx-auto mt-2 d-block border border-2" height="250" width="375">
                             </template>
@@ -53,8 +56,6 @@
                             <ul class="list-group list-group-flush">
                                 <div class="container">
                                     <div class="p-1 row">
-                                        <div class="col-5 border"><b>ID</b></div>
-                                        <div class="col-7 border">{{EachPass.passId}}</div>
                                         <div class="col-5 border"><b>Pass Number</b></div>
                                         <div class="col-7 border">{{EachPass.passNumber}}</div>
                                         <div class="col-5 border"><b>Guests Numbers</b></div>
@@ -71,9 +72,7 @@
                                             <div class="col-7 border">EPass</div>
                                         </template>
                                     </div>
-
                                         <div class="px-1 py-2 col-12 d-flex justify-content-center"><b>Attachment(PDF)</b></div>
-
                                         <template v-if="EachPass.passAttachment">
                                             <div class="col-12 d-flex justify-content-center"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
                                         </template>
@@ -81,13 +80,12 @@
                                         <template v-else>
                                             <div class="col-12 py-2 d-flex justify-content-center"><button class="btn btn-success mb-1" disabled>No File Attached</button></div>
                                         </template>
-                                    
                                 </div>
                             </ul>
                             
-                            <div class="card-footer btn-group-vertical">
+                            <div class="card-footer btn-group-vertical" style="background-color: var(--sss_orange); color: #273746;">
                                 <!-- View button prompt Passes update modal -->
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" :data-bs-target="`#viewUM`+EachPass.passId">
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal" :data-bs-target="`#viewUM`+EachPass.passId">
                                     View
                                 </button> 
                             </div>
@@ -233,7 +231,7 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" @click="updatePassMethod(EachPass.passId)" data-bs-dismiss="modal" :disabled="!passNewUpdateButtonIsDisabled(EachPass.passNumber, EachPass.passDesc, EachPass.poi, EachPass.poiUrl, EachPass.numGuests, EachPass.replacementFee, EachPass.passStatus, EachPass.isPhysical )">Update Now</button>
+                                    <button type="button" class="btn btn-info" @click="updatePassMethod(EachPass.passId)" data-bs-dismiss="modal" :disabled="!passNewUpdateButtonIsDisabled(EachPass.passNumber, EachPass.passDesc, EachPass.poi, EachPass.poiUrl, EachPass.numGuests, EachPass.replacementFee, EachPass.passStatus, EachPass.isPhysical )">Update Now</button>
                                     <button type="button" class="btn btn-danger" @click="deletePassMethod(EachPass.passId)" data-bs-dismiss="modal">Delete</button>
                                     <!--  -->
                                     
@@ -305,8 +303,6 @@
                                         <div class="invalid-feedback text-black-50">Please enter more than 1 guest(s). e.g: 5</div>
                                     </div>
                                 </div>
-                                
-
                                 <div class="input-group mb-3 was-validated">
                                     <label class="col-5 col-form-label"><b>Replacement Fee</b></label>
                                     <div class="col-7">
@@ -354,7 +350,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click="onUpload()" data-bs-dismiss="modal" :disabled="!passNewUpdateButtonIsDisabled(NEWpassNumber, NEWpassDesc, NEWpoi, NEWpoiUrl, NEWnumGuests, NEWreplacementFee, NEWpassStatus, NEWisPhysical)">Create Pass</button>
+                        <button type="button" class="btn btn-info" @click="onUpload()" data-bs-dismiss="modal" :disabled="!passNewUpdateButtonIsDisabled(NEWpassNumber, NEWpassDesc, NEWpoi, NEWpoiUrl, NEWnumGuests, NEWreplacementFee, NEWpassStatus, NEWisPhysical)">Create Pass</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="initialState">Close</button>
                     </div>
                 </div>
@@ -362,7 +358,6 @@
         </div>
         <TheToastr :toastrResponse="toastrResponse"></TheToastr>
     </div>
-        
 </template>
 
 <script>
@@ -372,19 +367,16 @@ import TheToastr from "@/components/TheToastr.vue";
 import { Toast } from "bootstrap";
 
 export default({
-
     name: 'PassAdmin',
         props: {
             PassAdminPasses: Array,
-        },
-        
+        },  
         components: {
             TheToastr
         },
         data() {
         return {
                 passURL: `${ENDPOINT}/passes`,
-                passIDtoDelete: null,
                 selectedFile: null,
                 selectedFileName: null,
                 NEWpassDesc: null,
@@ -397,12 +389,11 @@ export default({
                 NEWisPhysical: "",
                 selectedImage: null,
                 localImageSrc: null,
-            
+
                 toastrResponse: "",
             }
         },
         mounted(){
-
         },
         methods: {
             showToast(){
@@ -477,7 +468,6 @@ export default({
                 if(this.selectedImage!==null){
                     UPDATEfd.append("passImage", this.selectedImage)
                 }
-                
                 try{
                     await axios.put(this.passURL+"/"+passID, UPDATEfd, config)
                     .then(response => {
@@ -551,7 +541,6 @@ export default({
                 try{
                     await axios.put(this.passURL+"/deletePassImage/"+passID, config)
                     .then(response => {
-                        // this.$refs.updatePassAttachmentText.value = null;
                         this.removeImageSelect_newAndUpdatePass(passID)
                         this.$emit('getPassData')
                         console.log(response);
@@ -576,9 +565,7 @@ export default({
                 this.selectedImage= null
                 this.localImageSrc = null;
             },
-            initialStateEachPass(PassId){
-                this.passIDtoDelete= null,
-                
+            initialState(){                
                 this.selectedFile= null,
                 this.selectedFileName= null,
 
@@ -594,55 +581,25 @@ export default({
                 this.selectedImage= null
                 this.localImageSrc = null;
                 document.getElementById("newImageUploadInput").value = null;
+            },
+            initialStateEachPass(PassId){
+                this.initialState()
                 this.removeImageSelect_newAndUpdatePass(PassId);
             },
-            initialState(){
-                this.passIDtoDelete= null,
-                
-                this.selectedFile= null,
-                this.selectedFileName= null,
-
-                this.NEWpassDesc= null,
-                this.NEWpoi= null,
-                this.NEWpoiUrl= null,
-                this.NEWpassNumber= null,
-                this.NEWnumGuests= null,
-                this.NEWreplacementFee= null,
-                this.NEWpassStatus= "AVAILABLE",
-                this.NEWisPhysical= true
-
-                this.selectedImage= null
-                this.localImageSrc = null;
-                document.getElementById("newImageUploadInput").value = null;
-                
-            },
-            
             passNewUpdateButtonIsDisabled(passNum, passDesc, passPoi, passUrl, passGuests, passReplacementFee, passStatus, isPhysical ){
-                return (passNum>0 && passDesc.length>0 && passPoi.length>0 && passUrl.length>0 && passGuests>0 && passReplacementFee>0 && passStatus!=="" && isPhysical!=="")
+                return (passNum>0 && passDesc!==null && passPoi!==null && passUrl!==null && passGuests>0 && passReplacementFee>0 && passStatus!=="" && isPhysical!=="")
             },
-            passFieldEmpty(value){
-                if(value instanceof String){
-                    return value.length==0
-                }
-                return (!value||value<1)
-            },
-            passFieldIsString(value){
-                if(value instanceof String){
-                    return true;
-                }
-            },
-            
         },
 
 })
 
 </script>
-<style scoped>
-.header {
-    text-align: center;
-    padding: 20px;
-    font-size:30px;
-}
+<style>
+    .passHeader {
+        background-color: var(--sss_orange);
+        color: #273746;
+        text-align: center;
+    }
 
 
 </style>

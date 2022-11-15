@@ -6,12 +6,7 @@
         <hr/>
         <div class="d-flex mb-5 aligns-items-center justify-content-center">
           <span>
-              <button
-                type="button"
-                class="btn btn-outline-success d-inline p-2"
-                data-bs-toggle="modal"
-                data-bs-target="#addNewEmailTemplate"
-              >
+              <button type="button" class="btn btn-outline-success d-inline p-2" data-bs-toggle="modal" data-bs-target="#addNewEmailTemplate">
                 Add New Email Template
                 <i class="bi bi-plus-square"></i>
               </button>
@@ -21,17 +16,18 @@
         <div class="container-fluid mt-3">
           <div class="row row-cols-1 g-5">
             <!-- change here start -->
-            <template
-              v-for="(template) in emailTemplates"
-              :key="template.templateId"
-            >
+            <template v-for="(template) in emailTemplates" :key="template.templateId">
               <div v-if="!template.defunct">
                 <!-- change here end -->
-                <div class="card mb-3">
+                <div class="card text-center mb-3">
+                  <div class="card-header" style="background-color: var(--sss_orange); color: #273746;">
+                    <div>
+                      <h1><strong>Template ID - {{template.templateId }}</strong></h1>
+                    </div>
+                  </div>
                   <ul class="list-group list-group-flush">
                       <div class="container">
                           <div class="row">
-                            <div class="col-12 py-2 border templateHeader"><h1 class="text-center">Template ID {{template.templateId }}</h1></div>
                             <div class="col-4 border"><h2 class="text-center"><b>Template Name</b></h2></div>
                             <div class="col-8 border"><h2 class="text-center">{{template.templateName }}</h2></div>
                             <div class="col-4 border"><h2 class="text-center"><b>Template Subject</b></h2></div>
@@ -43,13 +39,8 @@
                   <div class="card-body border-secondary">
                     <p class="text-start" v-html="template.templateData"></p>
                   </div>
-                  <div class="card-footer border-secondary btn-group-vertical">
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-toggle="modal"
-                      :data-bs-target="`#emailModal` + template.templateId"
-                      @click="backupContent(template.templateData)"
+                  <div class="card-footer border-secondary btn-group-vertical" style="background-color: var(--sss_orange); color: #273746;">
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" :data-bs-target="`#emailModal` + template.templateId" @click="backupContent(template.templateData)"
                     >
                       View
                     </button>
@@ -78,10 +69,7 @@
                         ></button>
                       </div>
                       <div class="modal-body text-start">
-                          
-                        
                         <div class="mb-3">
-                          <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
                           <label class=""><b class="col-form-label">Template ID: {{template.templateId}}</b></label><br>
                           <div class="input-group mb-3 was-validated">
                               <label class="col-form-label col-12"><b>Template Name</b></label>
@@ -98,39 +86,18 @@
                               </div>
                           </div>
                           <label class="col-form-label col-12"><b>Template Data</b></label>
-                          <QuillEditor
-                            theme="snow"
-                            toolbar="full"
-                            v-model:content="template.templateData"
-                            contentType="html"
-                          >
+                          <QuillEditor theme="snow" toolbar="full" v-model:content="template.templateData" contentType="html">
                           </QuillEditor>
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          data-bs-dismiss="modal"
-                          @click="updateTemplateMethod(template.templateId)"
-                          :disabled="!templateCreationUpdateDisable(template.templateName, template.templateSubject)"
-                        >
+                        <button type="button" class="btn btn-info" data-bs-dismiss="modal" @click="updateTemplateMethod(template.templateId)" :disabled="!templateCreationUpdateDisable(template.templateName, template.templateSubject)">
                           Update Now
                         </button>
-                        <button
-                          type="btn btn-danger"
-                          class="btn btn-danger"
-                          data-bs-dismiss="modal"
-                          @click="deleteTemplateMethod(template.templateId)"
-                        >
+                        <button type="btn" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteTemplateMethod(template.templateId)">
                           Delete
                         </button>
-                        <button
-                          type="button"
-                          class="btn btn-secondary"
-                          data-bs-dismiss="modal"
-                          @click="cancelUpdate(template.templateId)"
-                        >
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancelUpdate(template.templateId)">
                           Close
                         </button>
                       </div>
@@ -141,40 +108,24 @@
             </template>
           </div>
         </div>
-
       </div>
     </div>
-    <!-- <div class="row">
-      <h1>Email</h1>
-    </div> -->
-    <!-- Add Pass Modal Start -->
-    <div
-      class="modal fade"
-      id="addNewEmailTemplate"
-      data-bs-backdrop="static"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
+
+    <!-- Add Email Modal Below -->
+    <div class="modal fade" id="addNewEmailTemplate" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
               Create new template
             </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              @click="newTemplateInitialState()"
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="newTemplateInitialState()"
             ></button>
           </div>
 
           <div class="modal-body text-start">
             <form>
               <div class="mb-3">
-                <!-- <label class="col-form-label"><b>ID:</b>5</label><br> -->
                 <div class="input-group mb-3 was-validated">
                     <label class="col-form-label col-12"><b>Template Name</b></label>
                     <div class="col-12">
@@ -190,39 +141,23 @@
                     </div>
                 </div>
                 <label class="col-form-label">Template Data:</label>
-                <QuillEditor
-                  ref="myVueContent"
-                  theme="snow"
-                  toolbar="full"
-                  v-model:content="newTemplateData"
-                  contentType="html"
-                >
+                <QuillEditor ref="myVueContent" theme="snow" toolbar="full" v-model:content="newTemplateData" contentType="html">
                 </QuillEditor>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="createTemplateMethod()"
-              data-bs-dismiss="modal" :disabled="!templateCreationUpdateDisable(newTemplateName, newTemplateSubject)"
-            >
+            <button type="button" class="btn btn-info" @click="createTemplateMethod()" data-bs-dismiss="modal" :disabled="!templateCreationUpdateDisable(newTemplateName, newTemplateSubject)">
               Create Template
             </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              @click="newTemplateInitialState"
-            >
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="newTemplateInitialState">
               Cancel
             </button>
           </div>
         </div>
       </div>
     </div>
-          <TheToastr :toastrResponse="toastrResponse"></TheToastr>
+    <TheToastr :toastrResponse="toastrResponse"></TheToastr>
   </div>
 </template>
 
@@ -248,14 +183,7 @@ export default {
       newTemplateName: ``,
       newTemplateSubject: ``,
       newTemplateData: ``,
-      EmailTemplates: [],
-      vueContent: ``,
       backupContentData: ``,
-      templateDataToUpdate: {
-        templateName: "test1",
-        templateSubject: "test1",
-        templateData: "test1",
-      },
       toastrResponse: "",
     };
   },
@@ -388,7 +316,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .break-text p {
   word-wrap: break-word;
 }
@@ -396,6 +324,6 @@ export default {
 .templateHeader {
   background-color: var(--sss_orange);
   color: #273746;
-  text-align: cente;
+  text-align: center;
 }
 </style>
