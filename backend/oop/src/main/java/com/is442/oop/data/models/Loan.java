@@ -58,5 +58,9 @@ public class Loan {
     @Column(name = "defunct", nullable = false)
     @Value("false") // Default value
     private boolean defunct;
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "primary_loan_id", nullable = true)
+    private Loan primaryLoan;
 }
 

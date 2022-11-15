@@ -17,6 +17,8 @@ public class LoanRequest {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    private Integer secondaryPassID;
+
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -49,4 +51,11 @@ public class LoanRequest {
         this.passID = passID;
     }
 
+    public Integer getSecondaryPassID() {
+        return secondaryPassID;
+    }
+
+    public void setSecondaryPassID(Integer secondaryPassID) {
+        this.secondaryPassID = secondaryPassID;
+    }
 }

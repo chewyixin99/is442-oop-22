@@ -90,13 +90,15 @@ public class LoanController {
     // Done
     @PostMapping("")
     public ResponseEntity<DataResponse> createLoan(@RequestBody LoanRequest createLoanRequest){
-        Loan newLoan = loanService.createLoan(createLoanRequest);
+        Loan newLoan = null; 
         try {
-            
+            newLoan = loanService.createLoan(createLoanRequest);           
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
-            return new ResponseEntity<>(new DataResponse(newLoan, "Loan"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new DataResponse(newLoan, "Loan"), HttpStatus.CREATED);
     }
@@ -169,6 +171,21 @@ public class LoanController {
 
         try {
             results = loanService.getNumLoansGroupedByMonth();
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<DataResponse>(new DataResponse(results, e), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<DataResponse>(new DataResponse(results, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new DataResponse(results, "Loan"), HttpStatus.OK);
+    }
+
+    @GetMapping("/getNumLoansGroupedeByMonthByUserId/{userId}")
+    public ResponseEntity<DataResponse> getNumLoansGroupedeByMonthByUserId(@PathVariable("userId") Integer userId) {
+        Map<YearMonth, Integer> results = null;
+
+        try {
+            results = loanService.getNumLoansGroupedByMonthByUserId(userId);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<DataResponse>(new DataResponse(results, e), HttpStatus.NOT_FOUND);
         } catch (Exception e) {

@@ -75,6 +75,7 @@ create table if not exists `loan` (
 `defunct` bit not null,
 `start_date` date,
 `end_date` date,
+`primary_loan_id` int,
 primary key (`loan_id`,`user_id`,`pass_id`),
 foreign key (`user_id`) references `user` (`user_id`),
 foreign key (`gop_id`) references `user` (`user_id`),

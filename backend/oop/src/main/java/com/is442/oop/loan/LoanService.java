@@ -24,4 +24,5 @@ public interface LoanService {
     List<Loan> getLoanByDate(LocalDate date) throws ResourceNotFoundException;
     Map<YearMonth, List<Loan>> getAllLoansGroupedByMonth () throws ResourceNotFoundException, ActionNotExecutedException;
     Map<YearMonth, Integer> getNumLoansGroupedByMonth() throws ResourceNotFoundException, ActionNotExecutedException;
+    Map<YearMonth, Integer> getNumLoansGroupedByMonthByUserId(Integer userId) throws ResourceNotFoundException, ActionNotExecutedException;
 }

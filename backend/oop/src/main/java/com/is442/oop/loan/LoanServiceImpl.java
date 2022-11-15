@@ -39,17 +39,38 @@ public class LoanServiceImpl implements LoanService{
     public List<Loan> getAllLoan() {
         return loanRepository.findAll();
     }
+
+    public boolean checkUserLoanable(Integer userId, YearMonth loanDate) {
+        Map<YearMonth, Integer> numLoansPerMonth = getNumLoansGroupedByMonthByUserId(userId);
+        Integer numLoans = 0;
+        if (numLoansPerMonth.containsKey(loanDate)) {
+            numLoans = numLoansPerMonth.get(loanDate);
+        }
+
+        if (numLoans == 2) {
+            return false;
+        }
+
+        return true;
+    }
+
     // Done
     @Transactional
     @Override
     public Loan createLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException {
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
+        boolean loanable = this.checkUserLoanable(loanRequest.getUserID(), YearMonth.from(loanRequest.getStartDate()));
+
+        if (!loanable) {
+            throw new IllegalArgumentException("User already encountered limit of 2 loans per month.");
+        }
+        
         Integer passID = loanRequest.getPassID();
         Pass pass = null;
         try {
             pass = passService.getPass(passID);
         } catch (Exception e) {
-            throw new ResourceNotFoundException("User", "User Id", loanRequest.getUserID());
+            throw new ResourceNotFoundException("Pass", "passId", passID);
         }
 
         LocalDate startDate = loanRequest.getStartDate();
@@ -59,7 +80,15 @@ public class LoanServiceImpl implements LoanService{
                 throw new ActionNotExecutedException("Loan", "Pass is already loaned for the day");
             }
         }
+
+        List<Loan> secondaryLoans = this.getLoanByPassID(loanRequest.getSecondaryPassID());
+        for (Loan l: secondaryLoans){
+            if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
+                throw new ActionNotExecutedException("Loan", "Seconary pass is already loaned for the day");
+            }
+        }
         
+        // Get user
         User user = null;
         try {
             user = userService.getUser(loanRequest.getUserID());
@@ -67,6 +96,7 @@ public class LoanServiceImpl implements LoanService{
             throw new ResourceNotFoundException("User", "User Id", loanRequest.getUserID());
         }
 
+        // First loan to first pass
         Loan newLoan = new Loan();
         newLoan.setUser(user);
         newLoan.setPass(pass);
@@ -75,10 +105,38 @@ public class LoanServiceImpl implements LoanService{
         newLoan.setGopId(1);
         loanRepository.save(newLoan);
 
-        // To uncomment for mail sending when user creation gets completed
+        Integer secondaryPassID = loanRequest.getSecondaryPassID();
+        Pass secondaryPass = null;
+        Loan secondaryLoan = null;
+
+        if (secondaryPassID != null) {
+            try {
+                secondaryPass = passService.getPass(secondaryPassID);
+            } catch (Exception e) {
+                throw new ResourceNotFoundException("Pass", "secondaryPassID", secondaryPassID);
+            }
+
+            // Second loan to second pass
+            secondaryLoan = new Loan();
+            secondaryLoan.setUser(user);
+            secondaryLoan.setPass(secondaryPass);
+            secondaryLoan.setStartDate(loanRequest.getStartDate());
+            secondaryLoan.setEndDate(loanRequest.getEndDate());
+            secondaryLoan.setGopId(1);
+            secondaryLoan.setPrimaryLoan(newLoan); // Set reference to main loan
+            loanRepository.save(secondaryLoan);    
+        }
+
+        // Send email for passes
         try {
             int templateId = pass.getIsPhysical() ? 4 : 3;
             emailService.sendLoanConfirmationEmail(newLoan, templateId);
+            
+            if (secondaryPass != null) {
+                templateId = secondaryPass.getIsPhysical() ? 4 : 3;
+                emailService.sendLoanConfirmationEmail(newLoan, templateId);
+                return secondaryLoan;
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ActionNotExecutedException("sendLoanConfirmationEmail", e);
@@ -223,7 +281,7 @@ public class LoanServiceImpl implements LoanService{
 
     @Override
     public Map<YearMonth, List<Loan>> getAllLoansGroupedByMonth() throws ResourceNotFoundException, ActionNotExecutedException {
-        List<Loan> allLoans = this.getAllLoan();
+        List<Loan> allLoans = loanRepository.findAllByDefunctFalse();
 
         if (allLoans == null) {
             throw new ResourceNotFoundException("Loan", "getAllLoansGroupedByMonth", allLoans);
@@ -268,6 +326,48 @@ public class LoanServiceImpl implements LoanService{
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new ActionNotExecutedException("getNumLoansGroupedByMonth", e);
+        }
+
+        return results;
+    }
+
+    @Override
+    public Map<YearMonth, Integer> getNumLoansGroupedByMonthByUserId(Integer userId) throws ResourceNotFoundException, ActionNotExecutedException {
+        User user = null;
+
+        try {
+            user = userService.getUser(userId);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("User", "userId", userId);
+        }
+
+        List<Loan> allLoans = loanRepository.findAllByUserAndDefunctFalse(user);
+
+        if (allLoans == null) {
+            throw new ResourceNotFoundException("Loan", "findAllByUserAndDefunctFalse", allLoans);
+        }
+
+        Map<YearMonth, Integer> results = new TreeMap<>();
+
+        try {
+            for (Loan loan: allLoans) {
+                if (loan.getPrimaryLoan() != null) {
+                    continue;
+                }
+
+                YearMonth loanYearMonth = YearMonth.from(loan.getStartDate());
+                Integer loansInYearMonth = 0;
+    
+                if (results.containsKey(loanYearMonth)) {
+                    loansInYearMonth = results.get(loanYearMonth);
+                }
+    
+                loansInYearMonth++ ;
+                results.put(loanYearMonth, loansInYearMonth);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ActionNotExecutedException("findAllByUserAndDefunctFalse", e);
         }
 
         return results;

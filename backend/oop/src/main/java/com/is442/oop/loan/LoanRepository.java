@@ -1,5 +1,6 @@
 package com.is442.oop.loan;
 import com.is442.oop.data.models.Loan;
+import com.is442.oop.data.models.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,5 +19,9 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     @Query(value = "select * from loan l where l.start_date < :queryDate and pass_id = :passId order by start_date desc limit 1", nativeQuery = true)
     Optional<Loan> getLoanForPassByDate(
         @Param("queryDate") LocalDate queryDate,
-        @Param("passId") Integer passId);
+        @Param("passId") Integer passId
+    );
+
+    List<Loan> findAllByDefunctFalse();
+    List<Loan> findAllByUserAndDefunctFalse(User user);
 }
