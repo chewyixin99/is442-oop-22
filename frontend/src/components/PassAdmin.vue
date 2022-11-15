@@ -1,17 +1,21 @@
 <template>
-    <hr/>
-    <div class="container mt-3">
-        
-        <span class="">
-            <h3 class="d-inline">
-                Select Your Pass
-                <button  type="button" class="btn btn-outline-success d-inline" data-bs-toggle="modal" data-bs-target="#addNewPass">
-                    Add New Pass
-                    <i class="bi bi-plus-square"></i>
-                </button>
-            </h3>
-        </span>
-        <div class="row row-cols-auto g-4 mt-2 mb-5">
+    <div class="container">
+        <div class="row">
+            <h1 class="d-inline pt-4 mb-4 text-center">
+                Pass
+            </h1>
+        </div>
+        <hr>
+
+            <div class="d-flex aligns-items-center justify-content-center">
+                <span>
+                    <button  type="button" class="btn btn-outline-success d-inline p-2" data-bs-toggle="modal" data-bs-target="#addNewPass">
+                        Add New Pass
+                        <i class="bi bi-plus-square"></i>
+                    </button>
+                </span>
+            </div>
+        <div class="row row-cols-auto g-5 my-2">
                 <!-- Passes 'Card' -->
             <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId" >
                 <div v-if="EachPass.defunct=='0'">
@@ -68,15 +72,16 @@
                                         </template>
                                     </div>
 
-                                    <div class="px-1 py-2 col-12"><b>Attachment(PDF)</b></div>
+                                        <div class="px-1 py-2 col-12 d-flex justify-content-center"><b>Attachment(PDF)</b></div>
 
-                                    <template v-if="EachPass.passAttachment">
-                                        <div class="col-12 py-2"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
-                                    </template>
+                                        <template v-if="EachPass.passAttachment">
+                                            <div class="col-12 d-flex justify-content-center"><button class="btn btn-success mb-1" @click="downloadData(EachPass.passId)">{{EachPass.passAttachmentName}}</button></div>
+                                        </template>
 
-                                    <template v-else>
-                                        <div class="col-12"><button class="btn btn-success mb-1" disabled>No File Attached</button></div>
-                                    </template>
+                                        <template v-else>
+                                            <div class="col-12 py-2 d-flex justify-content-center"><button class="btn btn-success mb-1" disabled>No File Attached</button></div>
+                                        </template>
+                                    
                                 </div>
                             </ul>
                             
@@ -355,7 +360,7 @@
                 </div>
             </div>
         </div>
-
+        <TheToastr :toastrResponse="toastrResponse"></TheToastr>
     </div>
         
 </template>
@@ -363,6 +368,8 @@
 <script>
 import axios from 'axios'
 import ENDPOINT from '../constants'
+import TheToastr from "@/components/TheToastr.vue";
+import { Toast } from "bootstrap";
 
 export default({
 
@@ -372,6 +379,7 @@ export default({
         },
         
         components: {
+            TheToastr
         },
         data() {
         return {
@@ -390,13 +398,17 @@ export default({
                 selectedImage: null,
                 localImageSrc: null,
             
-            
+                toastrResponse: "",
             }
         },
         mounted(){
 
         },
         methods: {
+            showToast(){
+                var bsAlert = new Toast(document.getElementById('theToastr'));         
+                bsAlert.show();
+            },
             onFileSelected(event){
                 this.selectedFile = event.target.files[0]
                 this.selectedFileName = this.selectedFile.name
@@ -404,16 +416,13 @@ export default({
                     this.selectedFile = null
                     return
                 }
-                console.log(this.selectedFile)
             },
             onImageSelected(event){
                 this.selectedImage = event.target.files[0]
-                this.localImageSrc = URL.createObjectURL(this.selectedImage) // for local preview image 
-                console.log(this.selectedImage)
-                console.log(this.localImageSrc)
+                this.localImageSrc = URL.createObjectURL(this.selectedImage) 
                 
             },
-            onUpload(){ //This function POST new data information into DB
+            onUpload(){ 
                 const bearer_token = `Bearer ${localStorage.getItem("token")}`;
                 const config = {
                     headers: {
@@ -439,13 +448,13 @@ export default({
                 axios.post(`${ENDPOINT}/passes`, fd, config)
                 .then(res=>{
                     console.log(res)
+                    this.toastrResponse = {status: "Success", msg: "New pass created!"};
+                    this.showToast(); 
                     this.initialState()
                     this.$emit('getPassData')
                 })
             },
             async updatePassMethod(passID){
-                console.log(this.PassAdminPasses[passID-1].passDesc)
-                console.log(this.PassAdminPasses[passID-1].poiUrl)
                 const bearer_token = `Bearer ${localStorage.getItem("token")}`;
                 const config = {
                     headers: {
@@ -469,21 +478,23 @@ export default({
                     UPDATEfd.append("passImage", this.selectedImage)
                 }
                 
-                console.log(UPDATEfd)
                 try{
                     await axios.put(this.passURL+"/"+passID, UPDATEfd, config)
                     .then(response => {
                         this.selectedFile = null
+                        this.toastrResponse = {status: "Success", msg: "Pass updated!"};
+                        this.showToast();
                         this.$emit('getPassData')
                         console.log(response);
                     });
                 } catch(err){
                     console.error(err);
+                    this.toastrResponse = {status: "Error", msg: "Pass could not be updated!"};
+                    this.showToast();
                 }
             },
             downloadData(passID){
                 const data = this.PassAdminPasses[passID-1].passAttachment
-                console.log(data)
                 const linkSource = `data:application/pdf;base64,${data}`;
                 const downloadLink = document.createElement("a");
                 const fileName = this.PassAdminPasses[passID-1].passAttachmentName;
@@ -501,10 +512,14 @@ export default({
                 try{
                     await axios.delete(this.passURL+"/"+passID, config)
                     .then(response => {
+                        this.toastrResponse = {status: "Success", msg: "Pass deleted!"};
+                        this.showToast();
                         this.$emit('getPassData')
                         console.log(response);
                     });
                 } catch(err){
+                    this.toastrResponse = {status: "Error", msg: "Pass could not be deleted!"};
+                    this.showToast();
                     console.error(err);
                 }
             },
@@ -549,7 +564,6 @@ export default({
                 this.selectedFile= null
                 this.selectedFileName= null
                 this.$refs.newFileUpload.value = null
-                console.log("ok")
             },
             removeImageSelect_newAndUpdatePass(passId){
                 var temp = "updateImageUploadInput"+passId

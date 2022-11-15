@@ -1,29 +1,22 @@
 <template>
   <div class="container">
-    <!-- <h1>Email</h1>
-        ------------------------------------
-        <p>Admin functionalities:</p>
-        ------------------------------------
-        <p>1. Edit email template for the two types of email</p>
-        <p>2. Settings for automated email</p> -->
     <div class="flex-column d-flex align-items-center justify-content-center">
       <h1 class="pt-4 mb-4">Email</h1>
       <div class="tableBox position-relative">
         <hr/>
-        <span>
-          <h3 class="py-3">
-            View your email templates
-            <button
-              type="button"
-              class="btn btn-outline-success d-inline"
-              data-bs-toggle="modal"
-              data-bs-target="#addNewEmailTemplate"
-            >
-              Add New Email Template
-              <i class="bi bi-plus-square"></i>
-            </button>
-          </h3>
-        </span>
+        <div class="d-flex mb-5 aligns-items-center justify-content-center">
+          <span>
+              <button
+                type="button"
+                class="btn btn-outline-success d-inline p-2"
+                data-bs-toggle="modal"
+                data-bs-target="#addNewEmailTemplate"
+              >
+                Add New Email Template
+                <i class="bi bi-plus-square"></i>
+              </button>
+          </span>
+        </div>
           
         <div class="container-fluid mt-3">
           <div class="row row-cols-1 g-5">
@@ -229,64 +222,7 @@
         </div>
       </div>
     </div>
-    <!-- Add Pass Modal End -->
-    <!-- 
-        <hr>
-        <hr> -->
-
-    <!-- <h2>Emails Editor Test</h2> -->
-    <!-- <div class="container" id="vueQuillEditor_1">
-          <QuillEditor v-model:content="content_1" contentType="text" theme="snow" toolbar="#custom-toolbar_1">
-            <template #toolbar>
-              <div id="custom-toolbar_1">
-                <select class="ql-size">
-                  <option value="small"></option>
-                  <option selected></option>
-                  <option value="large"></option>
-                  <option value="huge"></option>
-                </select>
-                <select class="ql-header">
-                  <option :value="1"></option>
-                  <option :value="2"></option>
-                  <option :value="3"></option>
-                  <option :value="4"></option>
-                  <option :value="5"></option>
-                  <option :value="6"></option>
-                  <option selected></option>
-                </select>
-                <button class="ql-bold"></button>
-                <button class="ql-italic"></button>
-                <button class="ql-underline"></button>
-                <button class="ql-strike"></button>
-                <button class="ql-script" value="sub"></button>
-                <button class="ql-script" value="super"></button>
-                <select class="ql-align">
-                  <option selected></option>
-                  <option value="center"></option>
-                  <option value="right"></option>
-                  <option value="justify"></option>
-                </select>
-                <button class="ql-list" value="ordered"></button>
-                <button class="ql-list" value="bullet"></button>
-                <button class="ql-blockquote"></button>
-                <button class="ql-code-block"></button>
-                <button class="ql-link"></button>
-                <button class="ql-image"></button>
-                <button id="saveButton"  @click="saveContent()"></button>
-              
-              </div>
-            </template>
-          </QuillEditor>
-        </div> -->
-    <!-- <div class="container" id="vueQuillEditor_TemplateTest">
-          <QuillEditor theme="snow" toolbar="full" v-model:content="vueContent" contentType="html">
-          </QuillEditor>
-          <button type="button" class="btn btn-warning" @click="saveContentTest()">Save</button>
-        </div> -->
-    <!-- <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[0]['templateDraft']" contentType="text">
-          </QuillEditor>
-          <QuillEditor theme="snow" toolbar="full" v-model:content="EmailTemplates[1]['templateDraft']" contentType="text">
-          </QuillEditor> -->
+          <TheToastr :toastrResponse="toastrResponse"></TheToastr>
   </div>
 </template>
 
@@ -296,10 +232,13 @@ import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import EmailService from "@/api/services/EmailService";
 import axios from "axios";
 import ENDPOINT from "../constants"
+import TheToastr from "@/components/TheToastr.vue";
+import { Toast } from "bootstrap";
 
 export default {
   name: "Email",
   components: {
+    TheToastr,
     QuillEditor,
   },
   data() {
@@ -317,6 +256,7 @@ export default {
         templateSubject: "test1",
         templateData: "test1",
       },
+      toastrResponse: "",
     };
   },
   async mounted() {
@@ -325,10 +265,13 @@ export default {
   created() {
   },
   methods: {
+    showToast(){
+        var bsAlert = new Toast(document.getElementById('theToastr'));         
+        bsAlert.show();
+    },
     async getEmailDatas() {
       var tempEmailTemplates = await EmailService.getAllEmailTemplates();
       this.emailTemplates = tempEmailTemplates.data;
-      console.log(this.emailTemplates);
     },
     async deleteTemplateMethod(templateID) {
       const bearer_token = `Bearer ${localStorage.getItem("token")}`;
@@ -343,9 +286,13 @@ export default {
           .then((response) => {
             this.getEmailDatas();
             console.log(response);
+            this.toastrResponse = {status: "Success", msg: "Email Template has been deleted!"};
+            this.showToast(); 
           });
       } catch (err) {
         console.error(err);
+        this.toastrResponse = {status: "Error", msg: "Email Template could not be deleted!"};
+        this.showToast(); 
       }
     },
     updateTemplateMethod(templateID) {
@@ -373,11 +320,15 @@ export default {
           .put(this.templateURL + "/" + templateID, templateDATA, config)
           .then((response) => {
             this.backupContentData = ``;
+            this.toastrResponse = {status: "Success", msg: "Email Template has been updated!"};
+            this.showToast(); 
             this.getEmailDatas();
             console.log(response);
           });
       } catch (err) {
         console.error(err);
+        this.toastrResponse = {status: "Error", msg: "Email Template could not be updated!"};
+        this.showToast(); 
       }
     },
     createTemplateMethod() {
@@ -403,19 +354,21 @@ export default {
           .post(this.templateURL, templateDATAToPost, config)
           .then((response) => {
             this.getEmailDatas();
+            this.toastrResponse = {status: "Success", msg: "Email Template has been created!"};
+            this.showToast(); 
             console.log(response);
           });
       } catch (err) {
         console.error(err);
+        this.toastrResponse = {status: "Error", msg: "Email Template could not be created!"};
+        this.showToast(); 
       }
     },
     backupContent(draftToBackup) {
-      console.log(draftToBackup);
       this.backupContentData = draftToBackup;
     },
     cancelUpdate(templateID) {
       for (let i = 0; i < this.emailTemplates.length; i++) {
-        // console.log(this.EmailTemplates[i]["templateName"])
         if (this.emailTemplates[i]["templateId"] == templateID) {
           this.emailTemplates[i]["templateData"] = this.backupContentData;
         }
