@@ -380,6 +380,8 @@ export default {
   },
 
   mounted() {
+    document.getElementById("table1").innerHTML = "";
+    document.getElementById("table2").innerHTML = "";
     this.currentGrid.render(document.getElementById("table1"));
     this.pastGrid.render(document.getElementById("table2"));
 

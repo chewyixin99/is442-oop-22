@@ -104,10 +104,10 @@
                         this.recordsToDelete = state["rowIds"];
                     });
                 })
-                this.grid.on('rowClick', (...args) => {
-                    let allArgs = args[1]["_cells"];
-                    this.selectedEmployeeToEdit = { "id": allArgs[1].data, "name": allArgs[2].data, "email": allArgs[3].data, "contactNumber": allArgs[4].data, "role": allArgs[5].data }
-                });
+            this.grid.on('rowClick', (...args) => {
+                let allArgs = args[1]["_cells"];
+                this.selectedEmployeeToEdit = { "id": allArgs[1].data, "name": allArgs[2].data, "email": allArgs[3].data, "contactNumber": allArgs[4].data, "role": allArgs[5].data }
+            });
 
             this.refreshTable();
         },

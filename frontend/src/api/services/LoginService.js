@@ -31,6 +31,16 @@ class LoginService extends BaseApiService {
             return this.handleError(error);
         }
     }
+    
+    async verifyRegistration(token) {
+        try {
+            let register = await axiosClient.get("/verifyRegistration", {params: {"token": token}});
+            return register.data
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
 }
 
 export default new LoginService();

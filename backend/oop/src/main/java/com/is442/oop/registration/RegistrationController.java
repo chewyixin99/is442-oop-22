@@ -78,7 +78,8 @@ public class RegistrationController {
         try {
             String token = UUID.randomUUID().toString();
             userService.saveVerificationTokenForUser(token, user);
-            url = this.applicationUrl(request) + "/verifyRegistration?token=" + token;
+            // url = this.applicationUrl(request) + "/verifyRegistration?token=" + token;
+            url = "http://localhost:8888?token=" + token;
         } catch (Exception e) {
             return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -111,7 +112,8 @@ public class RegistrationController {
         try {
             String token = UUID.randomUUID().toString();
             userService.saveVerificationTokenForUser(token, user);
-            url = this.applicationUrl(request) + "/verifyRegistration?token=" + token;
+            // url = this.applicationUrl(request) + "/verifyRegistration?token=" + token;
+            url = "http://localhost:8888?token=" + token;
         } catch (Exception e) {
             return new ResponseEntity<>(new DataResponse(user, e), HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -349,6 +349,8 @@ export default {
     this.user = JSON.parse(localStorage.getItem("user"));
   },
   mounted() {
+    document.getElementById("table1").innerHTML = "";
+    document.getElementById("table2").innerHTML = "";
     this.currentBookingsGrid.render(document.getElementById("table1"));
     this.pastBookingsGrid.render(document.getElementById("table2"));
     // this.getData();

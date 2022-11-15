@@ -40,17 +40,6 @@
                 <div class="text-sm text-end">
                   <a @click="user_forgotpassword()">Forgot password?</a>
                 </div>
-                <div class="form-check mb-3">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="remember"
-                    id="remember"
-                  />
-                  <label class="form-check-label d-flex ms-1" for="remember"
-                    >Remember me</label
-                  >
-                </div>
                 <button
                   class="btn btn-primary"
                   type="button"
@@ -233,6 +222,7 @@ import jwt_decode from "jwt-decode";
 import LoginService from "@/api/services/LoginService";
 import ENDPOINT from "../constants"
 
+
 // https://therichpost.com/vue-3-bootstrap-5-user-login-registration-forms-show-hide-on-button-click/
 
 export default {
@@ -255,9 +245,24 @@ export default {
       isRegisterButtonClicked: false,
     };
   },
+  async mounted(){
+    if (this.$route.query.token){
+      try {
+        await LoginService.verifyRegistration(this.$route.query.token);
+        this.toastrResponse = {status: "Success", msg: "You have been successfully verified! Go ahead and to log in~"};    
+
+      } catch (e){
+        this.toastrResponse = {status: "Error", msg: "Something went wrong with the verification process.."};    
+
+      } finally{
+        var bsAlert = new Toast(document.getElementById("theToastr"));
+        bsAlert.show();
+      }
+
+    }
+  },
   methods: {
     login() {
-
       axios
         .post(`${ENDPOINT}/login`, {
           email: this.email,
