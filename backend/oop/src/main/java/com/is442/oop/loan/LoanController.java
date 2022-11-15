@@ -2,10 +2,8 @@ package com.is442.oop.loan;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.time.YearMonth;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -130,10 +128,10 @@ public class LoanController {
         Loan deletedLoan = null;
         try{
             deletedLoan = loanService.deleteLoan(loanId);
-            return new ResponseEntity<>(new DataResponse(deletedLoan, "Loan"), HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(new DataResponse(deletedLoan, e) ,HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(new DataResponse(deletedLoan, "Loan"), HttpStatus.OK);
     }
 
     @GetMapping("/forPassByDateBefore/{queryDate}/{passId}")
@@ -148,6 +146,36 @@ public class LoanController {
             );
         }
         return new ResponseEntity<>(new DataResponse(loan.get(), "Loan"), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllLoansGroupedByMonth")
+    public ResponseEntity<DataResponse> getAllLoansGroupedByMonth() {
+        Map<YearMonth, List<Loan>> results = null;
+
+        try {
+            results = loanService.getAllLoansGroupedByMonth();
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<DataResponse>(new DataResponse(results, e), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<DataResponse>(new DataResponse(results, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new DataResponse(results, "Loan"), HttpStatus.OK);
+    }
+
+    @GetMapping("/getNumLoansGroupedByMonth")
+    public ResponseEntity<DataResponse> getNumLoansGroupedByMonth() {
+        Map<YearMonth, Integer> results = null;
+
+        try {
+            results = loanService.getNumLoansGroupedByMonth();
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<DataResponse>(new DataResponse(results, e), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<DataResponse>(new DataResponse(results, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new DataResponse(results, "Loan"), HttpStatus.OK);
     }
 }
 

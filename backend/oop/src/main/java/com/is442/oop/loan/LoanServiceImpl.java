@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import javax.transaction.Transactional;
 
@@ -41,7 +44,6 @@ public class LoanServiceImpl implements LoanService{
     @Override
     public Loan createLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException {
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
-
         Integer passID = loanRequest.getPassID();
         Pass pass = null;
         try {
@@ -219,4 +221,55 @@ public class LoanServiceImpl implements LoanService{
         return toReturn;
     }
 
+    @Override
+    public Map<YearMonth, List<Loan>> getAllLoansGroupedByMonth() throws ResourceNotFoundException, ActionNotExecutedException {
+        List<Loan> allLoans = this.getAllLoan();
+
+        if (allLoans == null) {
+            throw new ResourceNotFoundException("Loan", "getAllLoansGroupedByMonth", allLoans);
+        }
+
+        Map<YearMonth, List<Loan>> results = new TreeMap<>();
+
+        try {
+            for (Loan loan: allLoans) {
+                YearMonth loanYearMonth = YearMonth.from(loan.getStartDate());
+                List<Loan> loansInYearMonth = new ArrayList<>();
+    
+                if (results.containsKey(loanYearMonth)) {
+                    loansInYearMonth = results.get(loanYearMonth);
+                }
+    
+                loansInYearMonth.add(loan);
+                results.put(loanYearMonth, loansInYearMonth);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ActionNotExecutedException("getAllLoansGroupedByMonth", e);
+        }
+
+        return results;
+    }
+
+    @Override
+    public Map<YearMonth, Integer> getNumLoansGroupedByMonth() throws ResourceNotFoundException, ActionNotExecutedException {
+        Map<YearMonth, List<Loan>> allLoansByMonth = this.getAllLoansGroupedByMonth();
+
+        if (allLoansByMonth == null) {
+            throw new ResourceNotFoundException("Loan", "getAllLoansGroupedByMonth", allLoansByMonth);
+        }
+
+        Map<YearMonth, Integer> results = new TreeMap<>();
+
+        try {
+            for (Map.Entry<YearMonth, List<Loan>> entries: allLoansByMonth.entrySet()) {
+                results.put(entries.getKey(), entries.getValue().size());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ActionNotExecutedException("getNumLoansGroupedByMonth", e);
+        }
+
+        return results;
+    }
 }

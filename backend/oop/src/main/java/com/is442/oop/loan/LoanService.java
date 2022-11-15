@@ -1,6 +1,7 @@
 package com.is442.oop.loan;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.*;
 
 import org.springframework.stereotype.Component;
@@ -21,4 +22,6 @@ public interface LoanService {
     Loan updateLoan(UpdateLoanRequest updateLoanRequest) throws RuntimeException;
     Optional<Loan> getLoanForPassByDateBefore(LocalDate queryDate, Integer passId) throws ActionNotExecutedException;
     List<Loan> getLoanByDate(LocalDate date) throws ResourceNotFoundException;
+    Map<YearMonth, List<Loan>> getAllLoansGroupedByMonth () throws ResourceNotFoundException, ActionNotExecutedException;
+    Map<YearMonth, Integer> getNumLoansGroupedByMonth() throws ResourceNotFoundException, ActionNotExecutedException;
 }
