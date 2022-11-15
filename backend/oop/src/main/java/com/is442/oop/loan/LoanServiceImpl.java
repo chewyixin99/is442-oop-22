@@ -66,6 +66,7 @@ public class LoanServiceImpl implements LoanService{
         }
         
         Integer passID = loanRequest.getPassID();
+        Integer secondaryPassID = loanRequest.getSecondaryPassID();
         Pass pass = null;
         try {
             pass = passService.getPass(passID);
@@ -81,10 +82,12 @@ public class LoanServiceImpl implements LoanService{
             }
         }
 
-        List<Loan> secondaryLoans = this.getLoanByPassID(loanRequest.getSecondaryPassID());
-        for (Loan l: secondaryLoans){
-            if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
-                throw new ActionNotExecutedException("Loan", "Seconary pass is already loaned for the day");
+        if (secondaryPassID != null) {
+            List<Loan> secondaryLoans = this.getLoanByPassID(secondaryPassID);
+            for (Loan l: secondaryLoans){
+                if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
+                    throw new ActionNotExecutedException("Loan", "Seconary pass is already loaned for the day");
+                }
             }
         }
         
@@ -105,10 +108,8 @@ public class LoanServiceImpl implements LoanService{
         newLoan.setGopId(1);
         loanRepository.save(newLoan);
 
-        Integer secondaryPassID = loanRequest.getSecondaryPassID();
         Pass secondaryPass = null;
         Loan secondaryLoan = null;
-
         if (secondaryPassID != null) {
             try {
                 secondaryPass = passService.getPass(secondaryPassID);
