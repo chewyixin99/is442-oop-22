@@ -13,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.is442.oop.data.models.User;
 import com.is442.oop.data.payloads.response.DataResponse;
+import com.is442.oop.exception.ResourceNotFoundException;
 import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserService;
 
@@ -28,15 +29,25 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<DataResponse> loginEmail(@RequestBody UserRequest userRequest) {
         User user = userService.findUserByEmail(userRequest.getEmail());
+
         if (user == null) {
-            return new ResponseEntity<>(new DataResponse(userRequest.getEmail(), "Invalid email. Unable to find user."),
-                    HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new DataResponse(
+                userRequest.getEmail(),
+                new ResourceNotFoundException("login", "email", userRequest.getEmail()) 
+            ), HttpStatus.NOT_FOUND);
         }
+
         if (!(user.isEnabled())) {
             return new ResponseEntity<>(
-                    new DataResponse(userRequest.getEmail(), "Invalid user. User has not been activated."),
-                    HttpStatus.UNAUTHORIZED);
+                new DataResponse(userRequest.getEmail(), new IllegalArgumentException("Invalid user. User has not been activated.")),
+                HttpStatus.UNAUTHORIZED);
         }
+
+        if (user.isDefunct()) {
+            return new ResponseEntity<>(new DataResponse(userRequest.getEmail(), new IllegalArgumentException("Invalid user. User has been deactivated.")),
+                HttpStatus.FORBIDDEN);
+        }
+
         boolean isPasswordMatch = userService.checkIfValidOldPassword(user, userRequest.getPassword());
         if (!(isPasswordMatch)) {
             return new ResponseEntity<>(new DataResponse(user.getEmail(), "Invalid password, please try again"),
