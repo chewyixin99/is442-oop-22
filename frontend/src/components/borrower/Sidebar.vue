@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row flex-nowrap">
-      <div class="col-auto col-md-3 col-xl-2 px-sm-4 px-0 bg-dark">
+      <div class="col-auto col-md-3 col-xl-2 px-sm-4 px-0 sidebar-body">
         <div
           class="
             d-flex
@@ -14,6 +14,14 @@
             sticky-top
           "
         >
+          <div class="d-flex justify-content-center pt-4">
+            <img
+              class="img-fluid mb-4 logo"
+              width="200"
+              src="../../assets/SSS_logo.png"
+              alt=""
+            />
+          </div>
           <a
             href="#"
             class="
@@ -22,10 +30,11 @@
               pb-3
               mb-md-0
               me-md-auto
-              text-white text-decoration-none
+              text-white
+              text-decoration-none
             "
           >
-            <span class="fs-5 d-none d-sm-inline">Pass Booking System</span>
+            <span class="fs-5 d-none d-sm-inline text-dark">Pass Booking System</span>
           </a>
           <ul
             class="
@@ -54,10 +63,10 @@
               </a>
             </li> -->
             <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
+              <a href="#" class="nav-link link-dark px-0 align-middle text-decoration-none">
                 <router-link to="/booking/view" class="text-decoration-none">
-                  <i class="fs-4 bi-calendar-week me-1"></i>
-                  <span class="d-none d-sm-inline ms-3">Booking</span>
+                  <i class="fs-4 bi-calendar-week me-1 sidebar-text"></i>
+                  <span class="d-none d-sm-inline ms-3 sidebar-text">Booking</span>
                 </router-link>
               </a>
             </li>
@@ -86,10 +95,10 @@
               </a>
             </li> -->
             <li class="nav-item">
-              <a href="#" class="nav-link link-dark px-0 align-middle">
+              <a href="#" class="nav-link link-dark px-0 align-middle text-decoration-none">
                 <router-link to="/passUser" class="text-decoration-none">
-                  <i class="fs-4 bi bi-pass"></i>
-                  <span class="ms-1 d-none d-sm-inline ms-3">PassUser</span>
+                  <i class="fs-4 bi bi-pass sidebar-text"></i>
+                  <span class="ms-1 d-none d-sm-inline ms-3 sidebar-text">Passes</span>
                 </router-link>
               </a>
             </li>
@@ -125,17 +134,19 @@
               />
               <span class="d-none d-sm-inline mx-1">{{ user }}</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-              <li><a class="dropdown-item" href="#">New project...</a></li>
-              <li><a class="dropdown-item" href="#">Settings</a></li>
-              <li><a class="dropdown-item" href="#">Profile</a></li>
+            <ul class="dropdown-menu dropdown-menu-light text-small shadow">
+              <li>
+                <a class="dropdown-item text-decoration-none text-dark" href="#">
+                  <i class="bi bi-gear-fill me-2"></i>Settings
+                </a>
+              </li>
               <li>
                 <hr class="dropdown-divider" />
               </li>
               <li @click="logout">
-                <a class="dropdown-item" href="#">
-                  <router-link to="/" class="text-decoration-none">
-                    Sign out
+                <a class="dropdown-item text-decoration-none text-dark" href="#">
+                  <router-link to="/" class="text-decoration-none text-dark">
+                    <i class="bi bi-box-arrow-right me-2"></i>Sign out
                   </router-link>
                 </a>
               </li>
@@ -246,11 +257,30 @@ main {
   overflow-y: auto;
 } */
 
+.sidebar-body {
+  background-color: var(--sss_red);
+}
+
+.sidebar-text {
+  color: aliceblue;
+  font-weight: 500;
+}
+
 .col {
   padding: 0 !important;
 }
 .router-outlet {
   background-color: aliceblue;
   min-height: 100vh;
+}
+
+.nav-item:hover{
+  transform: scale(1.1);
+}
+
+@media screen and (max-width: 575px) {
+  .logo {
+    display: none;
+  }
 }
 </style>
