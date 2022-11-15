@@ -31,11 +31,11 @@
                   <ul class="list-group list-group-flush">
                       <div class="container">
                           <div class="row">
-                              <div class="col-12 border text-dark bg-light"><h2>Template ID {{template.templateId }}</h2></div>
-                              <div class="col-5 border"><h2><b>Template Name</b></h2></div>
-                              <div class="col-7 border"><h2>{{template.templateName }}</h2></div>
-                              <div class="col-5 border"><h2><b>Template Subject</b></h2></div>
-                              <div class="col-7 border"><h2>{{template.templateSubject }}</h2></div>
+                            <div class="col-12 py-2 border templateHeader"><h1 class="text-center">Template ID {{template.templateId }}</h1></div>
+                            <div class="col-4 border"><h2 class="text-center"><b>Template Name</b></h2></div>
+                            <div class="col-8 border"><h2 class="text-center">{{template.templateName }}</h2></div>
+                            <div class="col-4 border"><h2 class="text-center"><b>Template Subject</b></h2></div>
+                            <div class="col-8 border"><h2 class="text-center">{{template.templateSubject }}</h2></div>
                           </div>
                       </div>
                   </ul>
@@ -391,5 +391,11 @@ export default {
 <style scoped>
 .break-text p {
   word-wrap: break-word;
+}
+
+.templateHeader {
+  background-color: var(--sss_orange);
+  color: #273746;
+  text-align: cente;
 }
 </style>

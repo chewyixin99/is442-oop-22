@@ -20,7 +20,7 @@
             <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId" >
                 <div v-if="EachPass.defunct=='0'">
 
-                    <div class="card border h-100" style="width: 25rem;">
+                    <div class="card text-center border h-100" style="width: 25rem;">
                         <!-- Show Image here -->
                             
                             <template v-if="EachPass.passImage">
