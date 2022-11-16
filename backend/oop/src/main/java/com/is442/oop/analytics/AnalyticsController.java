@@ -17,6 +17,9 @@ import com.is442.oop.data.payloads.response.DataResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping("/analytics")
@@ -24,7 +27,10 @@ public class AnalyticsController {
     @Autowired
     AnalyticsService analyticsService;
 
-    @Operation(summary="Gets all loans placed for the month", description="Gets all loans placed by month")
+    @Operation(summary="Gets all loans placed for the month", description="Gets all loans placed by month", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "404", description = "No loans found for the month" ,content = @Content),
+    })
     @GetMapping("/getLoansForMonth/{month}")
     public ResponseEntity<DataResponse> getLoansForMonth(@PathVariable("month") Integer month ){
         List<Loan> loans = null;
@@ -36,7 +42,10 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(loans, "AnalyticsService"), HttpStatus.OK);
     }
 
-    @Operation(summary="Gets all loans placed by user ID", description="Gets all loans placed by user ID")
+    @Operation(summary="Gets all loans placed by user ID", description="Gets all loans placed by user ID", reqsponses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "404", description = "No loans found for the user" ,content = @Content),
+    })
     @GetMapping("/getLoansPerUserId/{userId}")
     public ResponseEntity<DataResponse> getLoanByUserID(@PathVariable("userId") Integer userId) {
         List<Loan> loans = null;
@@ -48,7 +57,10 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(loans, "AnalyticsService"), HttpStatus.OK);
     }
 
-    @Operation(summary="Gets all loans placed by place of interest by month", description="Gets all loans placed by place of interest by month")
+    @Operation(summary="Gets all loans placed by place of interest by month", description="Gets all loans placed by place of interest by month", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AnalyticsPoiBreakdownDTO.class))),
+        @ApiResponse(responseCode = "404", description = "No loans booked by the user for the month" ,content = @Content),
+    })
     @GetMapping("/getLoansPerUserPerMonth/{userId}/{month}")
     public ResponseEntity<DataResponse> getLoansPerUserPerMonth(@PathVariable Integer userId, @PathVariable Integer month) {
         List<Loan> loans = null;
@@ -60,7 +72,10 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(loans, "AnalyticsService"), HttpStatus.OK);
     }
 
-    @Operation(summary="Gets all pass breakdown", description="Obtains the loan breakdown by status. e.g. Available Onloan Unreturned")
+    @Operation(summary="Gets all pass breakdown", description="Obtains the loan breakdown by status. e.g. Available Onloan Unreturned", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AnalyticsPassBreakdownDTO.class))),
+        @ApiResponse(responseCode = "404", description = "No loans found" ,content = @Content),
+    })
     @GetMapping("/getPassBreakdown")
     public ResponseEntity<DataResponse> getPassBreakdown() {
         AnalyticsPassBreakdownDTO passBreakdown = null;
@@ -72,7 +87,11 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(passBreakdown, "AnalyticsService"), HttpStatus.OK);
     }
 
-    @Operation(summary="Gets all place of interest breakdown", description="Obtains the breakdown of number of loans placed by place of interest")
+    @Operation(summary="Gets all place of interest breakdown", description="Obtains the breakdown of number of loans placed by place of interest", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AnalyticsPoiBreakdownDTO.class))),
+        @ApiResponse(responseCode = "404", description = "No passes found" ,content = @Content),
+        @ApiResponse(responseCode = "500", description = "Internal server error" ,content = @Content),
+    })
     @GetMapping("/getPoiBreakdown")
     public ResponseEntity<DataResponse> getPoiBreakdown() {
         List<AnalyticsPoiBreakdownDTO> poiBreakdown = null;

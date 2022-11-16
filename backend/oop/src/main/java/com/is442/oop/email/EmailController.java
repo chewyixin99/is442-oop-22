@@ -13,6 +13,9 @@ import com.is442.oop.data.payloads.response.DataResponse;
 import com.is442.oop.loan.LoanService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * EmailController to test EmailService independently
@@ -26,7 +29,10 @@ public class EmailController {
     @Autowired
     EmailService emailService;
 
-    @Operation(summary="Send email to user", description="Sends email to user. This function is used for testing only")
+    @Operation(summary="Send email to user", description="Sends email to user. This function is used for testing only", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Bad Request" ,content = @Content)
+    })
     @GetMapping("/sendLoanConfirmationEmail/{loanId}")
     public ResponseEntity<DataResponse> sendLoanConfirmationEmail(@PathVariable("loanId") Integer loanId) {
         try {

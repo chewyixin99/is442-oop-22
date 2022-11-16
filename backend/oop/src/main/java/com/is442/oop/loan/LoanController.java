@@ -129,7 +129,10 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(newLoan, "Loan"), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Create loans for admins", description = "Admin loan creation (w/o 2x loan/month, 2x booking/loan validations)")
+    @Operation(summary = "Create loans for admins", description = "Admin loan creation (w/o 2x loan/month, 2x booking/loan validations)", responses={
+        @ApiResponse(responseCode = "201", description = "Created", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content=@Content)
+    })
     @PostMapping("/adminCreateLoan")
     public ResponseEntity<DataResponse> admingCreateLoan(@RequestBody LoanRequest createLoanRequest){
         Loan newLoan = null; 
@@ -145,7 +148,10 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(newLoan, "Loan"), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Update loan", description = "Update loan to completed. This means the user has returned the pass to the office")
+    @Operation(summary = "Update loan", description = "Update loan to completed. This means the user has returned the pass to the office", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Loan not found", content=@Content)
+    })
     @PutMapping("/updateCompleted")
     public ResponseEntity<DataResponse> updateLoanToCompleted(@RequestBody UpdateLoantoCompletedRequest updateLoanRequest){
         Loan updatedLoan = null;
@@ -157,7 +163,10 @@ public class LoanController {
         }
     }
 
-    @Operation(summary = "Update loan", description = "Updates a loan based on the specified parameters")
+    @Operation(summary = "Update loan", description = "Updates a loan based on the specified parameters", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Loan not found", content=@Content)
+    })
     @PutMapping("/update")
     public ResponseEntity<DataResponse> updateLoan(@RequestBody UpdateLoanRequest updateLoanRequest){
         Loan updatedLoan = null;
@@ -169,7 +178,10 @@ public class LoanController {
         }
     }
 
-    @Operation(summary = "Delete loan", description = "Delete loan by id")
+    @Operation(summary = "Delete loan", description = "Delete loan by id", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Loan not found", content=@Content)
+    })
     @DeleteMapping("/{loanId}")
     public ResponseEntity<DataResponse> deleteLoan(@PathVariable("loanId")Integer loanId){
         Loan deletedLoan = null;
@@ -181,7 +193,10 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(deletedLoan, "Loan"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get loan by pass and date", description = "Get all loans for a pass that were made before the specified date")
+    @Operation(summary = "Get loan by pass and date", description = "Get all loans for a pass that were made before the specified date", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Loan not found", content=@Content)
+    })
     @GetMapping("/forPassByDateBefore/{queryDate}/{passId}")
     public ResponseEntity<DataResponse> getLoanForPassByDateBefore(
         @PathVariable("queryDate") String queryDate,
@@ -196,7 +211,11 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(loan.get(), "Loan"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get loans by month", description = "Gets all loans made in the specified month")
+    @Operation(summary = "Get loans by month", description = "Gets all loans made in the specified month", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Loan not found", content=@Content), 
+        @ApiResponse(responseCode ="500", description="Internal Server Error", content=@Content)
+    })
     @GetMapping("/getAllLoansGroupedByMonth")
     public ResponseEntity<DataResponse> getAllLoansGroupedByMonth() {
         Map<YearMonth, List<Loan>> results = null;
@@ -212,7 +231,11 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(results, "Loan"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get number of loans grouped by month", description = "Gets number of loans made in the specified month")
+    @Operation(summary = "Get number of loans grouped by month", description = "Gets number of loans made in the specified month", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Loan not found", content=@Content), 
+        @ApiResponse(responseCode ="500", description="Internal Server Error", content=@Content)
+    })
     @GetMapping("/getNumLoansGroupedByMonth")
     public ResponseEntity<DataResponse> getNumLoansGroupedByMonth() {
         Map<YearMonth, Integer> results = null;
@@ -228,7 +251,11 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(results, "Loan"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get number of loans grouped by Month and UserID", description = "Gets number of loans made by the specified user in the specified month")
+    @Operation(summary = "Get number of loans grouped by Month and UserID", description = "Gets number of loans made by the specified user in the specified month", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Loan not found", content=@Content), 
+        @ApiResponse(responseCode ="500", description="Internal Server Error", content=@Content)
+    })
     @GetMapping("/getNumLoansGroupedeByMonthByUserId/{userId}")
     public ResponseEntity<DataResponse> getNumLoansGroupedeByMonthByUserId(@PathVariable("userId") Integer userId) {
         Map<YearMonth, Integer> results = null;

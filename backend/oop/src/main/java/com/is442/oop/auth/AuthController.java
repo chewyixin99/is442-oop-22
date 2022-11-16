@@ -18,6 +18,9 @@ import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 public class AuthController {
@@ -28,7 +31,12 @@ public class AuthController {
     @Autowired
     AuthService authService;
 
-    @Operation(summary="Login", description="Login")
+    @Operation(summary="Login", description="Login", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode = "401", description = "Unauthorized. User not activated yet", content=@Content), 
+        @ApiResponse(responseCode="403", description="Forbidden. Invalid email", content=@Content),
+        @ApiResponse(responseCode = "404", description = "User not found", content=@Content)
+    })
     @PostMapping("/login")
     public ResponseEntity<DataResponse> loginEmail(@RequestBody UserRequest userRequest) {
         User user = userService.findUserByEmail(userRequest.getEmail());

@@ -28,6 +28,9 @@ import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -62,7 +65,11 @@ public class RegistrationController {
     // }
 
     @PostMapping("/registerOverride")
-    @Operation(summary = "Register a user with without a whitelist" , description="Register a user with without a whitelist. This function is used for testing purposes")
+    @Operation(summary = "Register a user with without a whitelist" , description="Register a user with without a whitelist. This function is used for testing purposes", responses={
+        @ApiResponse(responseCode = "200", description = "User registered", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode="406", description="Illegal Argument Exception", content=@Content), 
+        @ApiResponse(responseCode="500", description="Internal server error", content=@Content)
+    })
     @Transactional
     public ResponseEntity<DataResponse> registerOverride(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
         System.out.println("RegistrationController: registerOverride");
@@ -97,7 +104,11 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "Register user", description = "Registers a user and sends them an email with a confirmation link")
+    @Operation(summary = "Register user", description = "Registers a user and sends them an email with a confirmation link", responses={
+        @ApiResponse(responseCode = "200", description = "User registered", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode="406", description="Illegal Argument Exception", content=@Content),
+        @ApiResponse(responseCode="500", description="Internal server error", content=@Content)
+    })
     @Transactional
     public ResponseEntity<DataResponse> registerUser(@RequestBody UserRegisterRequest userRequest, final HttpServletRequest request) {
         System.out.println("RegistrationController: registerUser");
@@ -131,7 +142,12 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
     }
 
-    @Operation(summary="Whitelists a user", description="Whitelists a user so that they can register to use the application. If the user is not whitelisted, they cannot register for the application")
+    @Operation(summary="Whitelists a user", description="Whitelists a user so that they can register to use the application. If the user is not whitelisted, they cannot register for the application", responses={
+        @ApiResponse(responseCode = "200", description = "User whitelisted", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content),
+        @ApiResponse(responseCode="406", description="Illegal Argument Exception", content=@Content),
+        @ApiResponse(responseCode="500", description="Internal server error", content=@Content)
+    })
     @PostMapping("/whitelist")
     public ResponseEntity<DataResponse> whitelistUser(@RequestBody UserRegisterWhitelistRequest userRequest) {
         User user = null;            
@@ -146,7 +162,10 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(user, "User successfully whitelisted"), HttpStatus.OK);
     }
 
-    @Operation(summary="Verifies the user registration", description="Verifies the user registration")
+    @Operation(summary="Verifies the user registration", description="Verifies the user registration", responses={
+        @ApiResponse(responseCode = "200", description = "User registration verified", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode="401", description="Unauthorized", content=@Content),
+    })
     @GetMapping("/verifyRegistration")
     public ResponseEntity<DataResponse> verifyRegistration(@RequestParam("token") String token) {
         String result = userService.validateVerificationToken(token);
@@ -156,7 +175,10 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(result, "User verification failed, bad user, token is " + result), HttpStatus.UNAUTHORIZED);
     }
 
-    @Operation(summary="Resends the user registration email", description="Resends the user registration email")
+    @Operation(summary="Resends the user registration email", description="Resends the user registration email", responses={
+        @ApiResponse(responseCode = "200", description = "User registration email resent", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode="404", description="Old token is not found", content=@Content),
+    })
     @GetMapping("/resendVerificationToken")
     public ResponseEntity<DataResponse> resentVerificationToken(
         @RequestParam("token") String oldToken,
@@ -175,7 +197,10 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(user, "Resend verification token"), HttpStatus.OK);
     }
 
-    @Operation(summary="Changes a user password", description="Change a user password")
+    @Operation(summary="Changes a user password", description="Change a user password", responses={
+        @ApiResponse(responseCode = "200", description = "User password successfully changed", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode="404", description="Email is invalid", content=@Content)
+    })
     @PostMapping("/resetPassword")
     public ResponseEntity<DataResponse> resetPassword(@RequestBody PasswordRequest passwordRequest, HttpServletRequest request) {
         User user = userService.findUserByEmail(passwordRequest.getEmail());
@@ -190,7 +215,11 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(passwordRequest.getEmail(), "Password reset failed, email is invalid: " + passwordRequest.getEmail()), HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary="Changes a user password", description="Changes a user password")
+    @Operation(summary="Changes a user password", description="Changes a user password", responses={
+        @ApiResponse(responseCode = "200", description = "User password successfully changed", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode="401", description="Password save failed. Unauthorized.", content=@Content),
+        @ApiResponse(responseCode="404", description="Token is invalid", content=@Content)
+    })
     @PostMapping("/savePassword")
     public ResponseEntity<DataResponse> savePassword(
         @RequestParam("token") String token,
@@ -209,7 +238,11 @@ public class RegistrationController {
         }
     }
 
-    @Operation(summary="Changes a user password", description="Changes a user password")
+    @Operation(summary="Changes a user password", description="Changes a user password", responses={
+        @ApiResponse(responseCode="200", description="User password successfully changed", content=@Content(schema=@Schema(implementation = DataResponse.class))),
+        @ApiResponse(responseCode="401", description="Unauthorized. Invalid old password", content=@Content),
+        @ApiResponse(responseCode="404", description="User not found", content=@Content), 
+    })
     @PostMapping("/changePassword")
     public ResponseEntity<DataResponse> changePassword(@RequestBody PasswordRequest passwordRequest) {
         User user = userService.findUserByEmail(passwordRequest.getEmail()); // handle exception: null pointer exception if user does not exist

@@ -14,6 +14,9 @@ import com.is442.oop.data.models.Pass;
 import com.is442.oop.data.payloads.response.DataResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 
 @RestController
@@ -22,7 +25,10 @@ public class ScheduledController {
     @Autowired
     ScheduledService scheduledService;
 
-    @Operation(summary="Updates passes to unreturned", description="At the end of the day, if the passes have not been returned to the office, the function will run and update the status of the pass to unreturned. Used for testing purposes.")
+    @Operation(summary="Updates passes to unreturned", description="At the end of the day, if the passes have not been returned to the office, the function will run and update the status of the pass to unreturned. Used for testing purposes.", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class))),
+        @ApiResponse(responseCode = "500", description = "Internal Server error" ,content = @Content)
+    })
     @GetMapping("/updatePassesToUnreturned")
     public ResponseEntity<DataResponse> updatePassesToUnreturned() {
         List<Pass> unreturnedPasses = null;
