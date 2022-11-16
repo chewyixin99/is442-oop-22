@@ -96,12 +96,28 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(loans, "Loan"), HttpStatus.OK);
     }
     
-    @Operation(summary = "Get loan by pass id and date", description = "Get loan by pass id and date")
-    @PostMapping("")
-    public ResponseEntity<DataResponse> createLoan(@RequestBody LoanRequest createLoanRequest){
+    @Operation(summary = "Create loans for users", description = "User loan creation (w/ 2x loan/month, 2x booking/loan validations)")
+    @PostMapping("/userCreateLoan")
+    public ResponseEntity<DataResponse> userCreateLoan(@RequestBody LoanRequest createLoanRequest){
         Loan newLoan = null; 
         try {
-            newLoan = loanService.createLoan(createLoanRequest);           
+            newLoan = loanService.userCreateLoan(createLoanRequest);           
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new DataResponse(newLoan, "Loan"), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Create loans for admins", description = "Admin loan creation (w/o 2x loan/month, 2x booking/loan validations)")
+    @PostMapping("/adminCreateLoan")
+    public ResponseEntity<DataResponse> admingCreateLoan(@RequestBody LoanRequest createLoanRequest){
+        Loan newLoan = null; 
+        try {
+            newLoan = loanService.adminCreateLoan(createLoanRequest);           
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {

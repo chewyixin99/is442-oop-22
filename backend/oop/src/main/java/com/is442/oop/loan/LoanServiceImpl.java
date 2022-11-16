@@ -40,6 +40,12 @@ public class LoanServiceImpl implements LoanService{
         return loanRepository.findAll();
     }
 
+    /**
+     * Checks for whether user has reached 2 loans/month
+     * @param   userId
+     * @param   loanDate
+     * @return  boolean
+     */
     public boolean checkUserLoanable(Integer userId, YearMonth loanDate) {
         Map<YearMonth, Integer> numLoansPerMonth = getNumLoansGroupedByMonthByUserId(userId);
         Integer numLoans = 0;
@@ -47,17 +53,16 @@ public class LoanServiceImpl implements LoanService{
             numLoans = numLoansPerMonth.get(loanDate);
         }
 
-        if (numLoans == 2) {
+        if (numLoans >= 2) {
             return false;
         }
 
         return true;
     }
-
-    // Done
+    
     @Transactional
     @Override
-    public Loan createLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException {
+    public Loan userCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException {
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
         boolean loanable = this.checkUserLoanable(loanRequest.getUserID(), YearMonth.from(loanRequest.getStartDate()));
 
@@ -65,6 +70,90 @@ public class LoanServiceImpl implements LoanService{
             throw new IllegalArgumentException("User already encountered limit of 2 loans per month.");
         }
         
+        Integer passID = loanRequest.getPassID();
+        Integer secondaryPassID = loanRequest.getSecondaryPassID();
+        Pass pass = null;
+        try {
+            pass = passService.getPass(passID);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Pass", "passId", passID);
+        }
+
+        LocalDate startDate = loanRequest.getStartDate();
+        List<Loan> loans = this.getLoanByPassID(passID);
+        for (Loan l: loans){
+            if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
+                throw new ActionNotExecutedException("Loan", "Pass is already loaned for the day");
+            }
+        }
+
+        if (secondaryPassID != null) {
+            List<Loan> secondaryLoans = this.getLoanByPassID(secondaryPassID);
+            for (Loan l: secondaryLoans){
+                if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
+                    throw new ActionNotExecutedException("Loan", "Seconary pass is already loaned for the day");
+                }
+            }
+        }
+        
+        // Get user
+        User user = null;
+        try {
+            user = userService.getUser(loanRequest.getUserID());
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("User", "User Id", loanRequest.getUserID());
+        }
+
+        // First loan to first pass
+        Loan newLoan = new Loan();
+        newLoan.setUser(user);
+        newLoan.setPass(pass);
+        newLoan.setStartDate(loanRequest.getStartDate());
+        newLoan.setEndDate(loanRequest.getEndDate());
+        newLoan.setGopId(1);
+        loanRepository.save(newLoan);
+
+        Pass secondaryPass = null;
+        Loan secondaryLoan = null;
+        if (secondaryPassID != null) {
+            try {
+                secondaryPass = passService.getPass(secondaryPassID);
+            } catch (Exception e) {
+                throw new ResourceNotFoundException("Pass", "secondaryPassID", secondaryPassID);
+            }
+
+            // Second loan to second pass
+            secondaryLoan = new Loan();
+            secondaryLoan.setUser(user);
+            secondaryLoan.setPass(secondaryPass);
+            secondaryLoan.setStartDate(loanRequest.getStartDate());
+            secondaryLoan.setEndDate(loanRequest.getEndDate());
+            secondaryLoan.setGopId(1);
+            secondaryLoan.setPrimaryLoan(newLoan); // Set reference to main loan
+            loanRepository.save(secondaryLoan);    
+        }
+
+        // Send email for passes
+        try {
+            int templateId = pass.getIsPhysical() ? 4 : 3;
+            emailService.sendLoanConfirmationEmail(newLoan, templateId);
+            
+            if (secondaryPass != null) {
+                templateId = secondaryPass.getIsPhysical() ? 4 : 3;
+                emailService.sendLoanConfirmationEmail(newLoan, templateId);
+                return secondaryLoan;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ActionNotExecutedException("sendLoanConfirmationEmail", e);
+        }
+
+        return newLoan;
+    }
+
+    @Transactional
+    @Override
+    public Loan adminCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException {
         Integer passID = loanRequest.getPassID();
         Integer secondaryPassID = loanRequest.getSecondaryPassID();
         Pass pass = null;

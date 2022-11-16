@@ -19,7 +19,7 @@ public class PassServiceImpl implements PassService {
 
     @Override
     public Pass getPass(Integer passId) throws ResourceNotFoundException {
-        return passRepository.findById(passId).orElseThrow(() -> new ResourceNotFoundException("Pass", "Pass ID", passId));
+        return passRepository.findByPassIdAndDefunctFalse(passId).orElseThrow(() -> new ResourceNotFoundException("Pass", "Pass ID", passId));
     }
 
     @Override

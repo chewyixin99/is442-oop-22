@@ -131,7 +131,7 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
     }
 
-    @Operation(summary="whitelists a user", description="whitelists a user so that they can register to use the application. If the user is not whitelisted, they cannot register for the application")
+    @Operation(summary="Whitelists a user", description="Whitelists a user so that they can register to use the application. If the user is not whitelisted, they cannot register for the application")
     @PostMapping("/whitelist")
     public ResponseEntity<DataResponse> whitelistUser(@RequestBody UserRegisterWhitelistRequest userRequest) {
         User user = null;            
@@ -175,7 +175,7 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(user, "Resend verification token"), HttpStatus.OK);
     }
 
-    @Operation(summary="changes a user password", description="change a user password")
+    @Operation(summary="Changes a user password", description="Change a user password")
     @PostMapping("/resetPassword")
     public ResponseEntity<DataResponse> resetPassword(@RequestBody PasswordRequest passwordRequest, HttpServletRequest request) {
         User user = userService.findUserByEmail(passwordRequest.getEmail());
@@ -190,7 +190,7 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(passwordRequest.getEmail(), "Password reset failed, email is invalid: " + passwordRequest.getEmail()), HttpStatus.NOT_FOUND);
     }
 
-    @Operation(summary="changes a user password", description="changes a user password")
+    @Operation(summary="Changes a user password", description="Changes a user password")
     @PostMapping("/savePassword")
     public ResponseEntity<DataResponse> savePassword(
         @RequestParam("token") String token,
@@ -209,7 +209,7 @@ public class RegistrationController {
         }
     }
 
-    @Operation(summary="changes a user password", description="changes a user password")
+    @Operation(summary="Changes a user password", description="Changes a user password")
     @PostMapping("/changePassword")
     public ResponseEntity<DataResponse> changePassword(@RequestBody PasswordRequest passwordRequest) {
         User user = userService.findUserByEmail(passwordRequest.getEmail()); // handle exception: null pointer exception if user does not exist
