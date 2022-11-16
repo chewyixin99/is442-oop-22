@@ -13,6 +13,7 @@ class LoanService extends BaseApiService {
             return response
 
         } catch (error) {
+            console.log('error: ', error)
             return this.handleError(error);
         }
     }

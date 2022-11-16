@@ -202,7 +202,7 @@ export default {
               ])
               .filter(
                 (data) =>
-                  data[2] > new Date().toISOString().replace(/T.*$/, "") &&
+                  data[2] >= new Date().toISOString().replace(/T.*$/, "") &&
                   data[6] == false
               )
               .reverse(),
