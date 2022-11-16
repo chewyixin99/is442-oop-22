@@ -9,7 +9,7 @@ class LoanService extends BaseApiService {
             headers: { Authorization: bearer_token },
         };
         try {
-            let response = await axiosClient.post("/loan", data, config);
+            let response = await axiosClient.post("/loan/userCreateLoan", data, config);
             return response
 
         } catch (error) {
@@ -17,14 +17,29 @@ class LoanService extends BaseApiService {
         }
     }
 
-    async getLoan(id) {
+    async adminCreateLoan(data) {
+        // no limit to number of creations
         const bearer_token = `Bearer ${localStorage.getItem("token")}`;
         const config = {
             headers: { Authorization: bearer_token },
         };
         try {
-            let loans = await axiosClient.get("/loan" + id, config);
-            return loans.data
+            let response = await axiosClient.post("/loan/adminCreateLoan", data, config);
+            return response
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+    
+    async getLoanByLoanId(id) {
+        const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+        const config = {
+            headers: { Authorization: bearer_token },
+        };
+        try {
+            let response = await axiosClient.get("/loan/" + id, config);
+            return response
 
         } catch (error) {
             return this.handleError(error);
@@ -45,17 +60,18 @@ class LoanService extends BaseApiService {
         }
     }
 
-    async getLoansByPassId(selectedPass) {
-        console.log(selectedPass);
+    async getLoansByPassId(passId) {
         const bearer_token = `Bearer ${localStorage.getItem("token")}`;
         const config = {
             headers: { Authorization: bearer_token },
         };
+        console.log("1");
+
         try {
             let loans = await axiosClient.get("/loan", config);
             return loans.data.data.filter(
                 (pass) =>
-                    pass.pass.passId == selectedPass.passId &&
+                    pass.pass.passId == passId &&
                     pass.defunct == false
             );
 
@@ -94,14 +110,10 @@ class LoanService extends BaseApiService {
                 (loan) =>
                     loan.startDate == primaryPassStartDate && loan.defunct == false
             );
-
             console.log(conflictLoans);
             return conflictLoans.length > 0;
-
-
-
         } catch (error) {
-            return this.handleError(error);
+            return false;
         }
     }
 
@@ -149,6 +161,21 @@ class LoanService extends BaseApiService {
             return this.handleError(error);
         }
     }
+
+    async editLoan(data) {
+        const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+        const config = {
+            headers: { Authorization: bearer_token },
+        };
+        try {
+            let response = await axiosClient.put("/loan/update", data, config);
+            return response
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+
 
 }
 

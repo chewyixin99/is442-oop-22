@@ -74,7 +74,7 @@ import CreateBookingModal from "@/components/admin/CreateBookingModal.vue";
 import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
 import CancelBookingModal from "@/components/admin/CancelBookingModal.vue";
-import axios from "axios";
+
 import ENDPOINT from "../../constants";
 
 import LoanService from "@/api/services/LoanService";
@@ -381,7 +381,7 @@ export default {
     this.token = `Bearer ${getToken}`;
   },
 
-  mounted() {
+  async mounted() {
     document.getElementById("table1").innerHTML = "";
     document.getElementById("table2").innerHTML = "";
     this.currentGrid.render(document.getElementById("table1"));
@@ -411,23 +411,10 @@ export default {
         this.filterSelected();
       });
     });
+    
+    const response = await LoanService.getAllLoans();
+    this.bookingData = response.data
 
-    const bearer_token = `Bearer ${localStorage.getItem("token")}`;
-    const config = {
-      headers: {
-        Authorization: bearer_token,
-      },
-    };
-
-    axios
-      .get(`${ENDPOINT}/loan`, config)
-      .then((response) => {
-        console.log(response);
-        this.bookingData = response.data.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   },
   methods: {
     async updatestatus(rowData) {
@@ -455,7 +442,6 @@ export default {
       this.dataOfSelectedRow = this.bookingData.filter((row) => {
         return this.recordsToDelete.includes(row.loanId);
       });
-      console.log(this.dataOfSelectedRow);
     },
     cancelSubmitted() {
       this.dataOfSelectedRow = [{}];

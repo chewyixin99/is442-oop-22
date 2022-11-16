@@ -9,14 +9,12 @@
             <div class="col-10 text-start">
               <h4 class="pt-4">Current Bookings</h4>
               <p class="text-muted fs-7">
-                You have {{ loansLeftPerMonth }} / {{maxLoansPerMonth}} loans left this month
+                You have {{ loansLeftPerMonth }} / {{ maxLoansPerMonth }} loans
+                left this month
               </p>
             </div>
             <div class="col d-flex align-items-end justify-content-end">
-              <button
-                class="border-0 bg-transparent"
-                @click="clickModal"
-              >
+              <button class="border-0 bg-transparent" @click="clickModal">
                 <i
                   class="bi bi-calendar-plus fs-2 btnHover"
                   data-bs-toggle="tooltip"
@@ -32,10 +30,11 @@
         <div id="table1"></div>
         <hr />
         <div class="text-start">
-          <h4 class="pt-4 ps-4">Past Bookings</h4>
+          <h4 class="pt-4 ps-4">Completed/Past Bookings</h4>
         </div>
         <!-- past bookings table -->
         <div id="table2"></div>
+
       </div>
     </div>
 
@@ -85,11 +84,14 @@
 </template>
 <script>
 import { Grid, h } from "gridjs";
-import CreateBookingModal from "@/components/borrower/CreateBookingModal.vue";
 import { Toast } from "bootstrap";
 import TheToastr from "@/components/TheToastr.vue";
+
+// import components from borrowers because viewbooking is borrower access level
+import CreateBookingModal from "@/components/borrower/CreateBookingModal.vue";
 import CancelBookingModal from "@/components/borrower/CancelBookingModal.vue";
 import EditBookingModal from "@/components/borrower/EditBookingModal.vue";
+
 import ENDPOINT from "../../constants";
 
 import LoanService from "@/api/services/LoanService";
@@ -130,12 +132,17 @@ export default {
           {
             id: "id",
             name: "ID",
-            width: "10%",
+            width: "5%",
+          },
+          {
+            id: "passId",
+            name: "PID",
+            width: "7%",
           },
           {
             id: "passTitle",
             name: "Pass Title",
-            width: "20%",
+            width: "13%",
           },
           {
             id: "startDate",
@@ -161,20 +168,13 @@ export default {
                 "i",
                 {
                   class: "bi bi-pencil-fill fs-5 btnHover",
-                  // style: {
-                  //   border: "1px solid #0d6efd",
-                  //   color: "#0d6efd",
-                  //   backgroundColor: "#fff",
-                  //   padding: "5px",
-                  //   "border-radius": "5px",
-                  //   "text-align": "center",
-                  // },
                   onClick: () => {
                     this.retrieveEditData({
                       id: row.cells[0].data,
-                      poi: row.cells[1].data,
-                      startDate: row.cells[2].data,
-                      endDate: row.cells[3].data,
+                      passId: row.cells[1].data,
+                      poi: row.cells[2].data,
+                      startDate: row.cells[3].data,
+                      endDate: row.cells[4].data,
                     });
                     document.getElementById("openEditModal").click();
                   },
@@ -193,14 +193,6 @@ export default {
                 "i",
                 {
                   class: "bi bi-trash-fill fs-4 btnHover",
-                  // style: {
-                  //   border: "1px solid #0d6efd",
-                  //   color: "#0d6efd",
-                  //   backgroundColor: "#fff",
-                  //   padding: "5px",
-                  //   "border-radius": "5px",
-                  //   "text-align": "center",
-                  // },
                   onClick: () => {
                     this.retrieveCancelData({
                       id: row.cells[0].data,
@@ -224,6 +216,7 @@ export default {
             data.data
               .map((data) => [
                 data.loanId,
+                data.pass.passId,
                 data.pass.poi,
                 data.startDate,
                 data.endDate,
@@ -232,11 +225,13 @@ export default {
                   : "N/A",
                 data.user.userId,
                 data.defunct,
+                data.completed,
               ])
               .filter(
                 (data) =>
-                  data[2] >= new Date().toISOString().replace(/T.*$/, "") &&
-                  data[6] == false
+                  data[3] >= new Date().toISOString().replace(/T.*$/, "") &&
+                  data[7] == false &&
+                  data[8] == false
               )
               .reverse(),
           handle: (res) => {
@@ -276,12 +271,17 @@ export default {
           {
             id: "id",
             name: "ID",
-            width: "10%",
+            width: "5%",
+          },
+          {
+            id: "passId",
+            name: "PID",
+            width: "7%",
           },
           {
             id: "passTitle",
             name: "Pass Title",
-            width: "20%",
+            width: "13%",
           },
           {
             id: "startDate",
@@ -296,7 +296,22 @@ export default {
           {
             id: "previous",
             name: "Previous",
-            width: "30%",
+            width: "15%",
+          },
+          {
+            id: "status",
+            sort: false,
+            name: "Status",
+            formatter: (cell, row) => {
+              return h(
+                "i",
+                {
+                  class: `bi ${row.cells[6] ? "bi-check-lg text-success" : "bi bi-x-lg text-danger"} fs-4 `,
+                },
+                ""
+              );
+            },
+            width: "10%",
           },
         ],
         server: {
@@ -306,19 +321,21 @@ export default {
             data.data
               .map((data) => [
                 data.loanId,
+                data.pass.passId,
                 data.pass.poi,
                 data.startDate,
                 data.endDate,
                 data.prevUser
                   ? data.prevUser?.email + ", " + data.prevUser?.contactNumber
                   : "N/A",
+                data.completed,
                 data.user.userId,
                 data.defunct,
               ])
               .filter(
                 (data) =>
-                  data[2] < new Date().toISOString().replace(/T.*$/, "") &&
-                  data[6] == false
+                  (data[3] < new Date().toISOString().replace(/T.*$/, "") || data[6] == true) &&
+                  data[8] == false
               )
               .reverse(),
           handle: (res) => {
@@ -360,22 +377,19 @@ export default {
     this.user = JSON.parse(localStorage.getItem("user"));
   },
   mounted() {
-    document.getElementById("table1").innerHTML = "";
-    document.getElementById("table2").innerHTML = "";
     this.currentBookingsGrid.render(document.getElementById("table1"));
     this.pastBookingsGrid.render(document.getElementById("table2"));
     this.getLoansPerMonth();
-
   },
   methods: {
-    clickModal(){
-      if (this.loansLeftPerMonth != 0 ){
+    clickModal() {
+      if (this.loansLeftPerMonth != 0) {
         document.getElementById("openCreateModal").click();
+      } else {
+        alert(
+          "You have reached your monthly limit of 2 bookings. Please cancel a booking to make a new one."
+        );
       }
-      else {
-        alert("You have reached your monthly limit of 2 bookings. Please cancel a booking to make a new one.")
-      }
-    
     },
 
     async getLoansPerMonth() {
@@ -383,7 +397,10 @@ export default {
         JSON.parse(localStorage.getItem("user")).userId
       );
 
-      this.loansLeftPerMonth = this.maxLoansPerMonth-loansPerMonth < 0 ? 0 : this.maxLoansPerMonth-loansPerMonth;
+      this.loansLeftPerMonth =
+        this.maxLoansPerMonth - loansPerMonth < 0
+          ? 0
+          : this.maxLoansPerMonth - loansPerMonth;
     },
 
     retrieveCancelData(data) {

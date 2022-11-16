@@ -19,22 +19,6 @@
         </div>
         <div class="modal-body text-start" style="padding: 30px">
           <form>
-            <div class="col-md">
-              <div class="mb-3 has-validation">
-                <label for="passType" class="col-form-label"
-                  >Number of Passes</label
-                >
-                <select
-                  class="form-select"
-                  aria-label="Default select example"
-                  @change="selectNumPasses($event)"
-                  id="numPasses"
-                >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
-              </div>
-            </div>
             <div class="mb-3 has-validation">
               <label for="passType" class="col-form-label">Pass Type</label>
               <select
@@ -53,13 +37,28 @@
                 </option>
               </select>
             </div>
+            <div class="col-md" v-if="selectedPass">
+              <div class="mb-3 has-validation">
+                <label for="passType" class="col-form-label"
+                  >Number of Passes</label
+                >
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  @change="selectNumPasses($event)"
+                  id="numPasses"
+                >
+                  <option :value="index" v-for="index in selectedPassDict[this.selectedPass.poi]" :key="index">{{ index }}</option>
+                </select>
+              </div>
+            </div>
             <div class="p-4">
               <BookingCalendar
                 :key="componentKey"
                 @selectedData="selectedData"
                 :selectedPass="selectedPass"
                 :selectedLoan="selectedLoan"
-                :selectNumPasses="selectNumPasses"
+                :numPasses="numPasses"
                 class="mt-4"
               />
             </div>
@@ -230,6 +229,8 @@ export default {
       isChecked: false,
       selectedPassId: null,
       selectedPass: null,
+      passDict: {},
+      selectedPassDict: {},
       isLoading: false,
       isValidityLoading: true,
       isSecondaryPassConflict: true,
@@ -249,7 +250,7 @@ export default {
   methods: {
     // this method gets the selected event information from calendar
     async checkSecondaryPass() {
-      this.isSecondaryPassConflict =
+     this.isSecondaryPassConflict =
         await LoanService.checkValidityOfSecondaryPass(
           this.retrievedData.passID,
           this.selectedPass.poi,
@@ -262,7 +263,6 @@ export default {
       return await LoanService.checkSecondPass(primaryPassId, primaryPassPOI);
     },
     selectedData($event) {
-      console.log(this.secondPassId);
       this.retrievedData = {
         passID: $event.passId.toString(),
         userID: $event.userId.toString(),
@@ -270,14 +270,11 @@ export default {
         endDate: $event.endDate,
         secondaryPassID: this.numPasses > 1 ? this.secondPassId : null,
       };
-
-      console.log(this.retrievedData.secondaryPassID);
-      console.log(this.retrievedData.passID);
       if (this.numPasses == 2) {
+        console.log(this.numPasses);
         this.checkSecondaryPass();
       }
       this.isPassSelected = true;
-      console.log(this.retrievedData);
     },
     async selectPass(event) {
       this.selectedPassId = event.target.value;
@@ -285,16 +282,19 @@ export default {
         (pass) => pass.passId == this.selectedPassId
       );
 
+      let value = this.passDict[this.selectedPass.poi]
+      let key = this.selectedPass.poi
+      this.selectedPassDict = { [key]: value }
+
       let secondPass = await this.checkSecondPass(
         this.selectedPass.passId,
         this.selectedPass.poi
       );
 
-      this.secondPassId = secondPass[0].passId;
+      this.secondPassId = secondPass[0]?.passId;
     },
     selectNumPasses(event) {
       this.numPasses = event.target.value;
-      this.getPassesData();
     },
     forceRerender() {
       this.componentKey += 1;
@@ -305,7 +305,7 @@ export default {
         return;
       }
       if (this.isSecondaryPassConflict && this.numPasses == 2) {
-        alert("Secondary pass is not valid for this date");
+        alert("Booking of multiple passes is not available on this date");
         return;
       }
       if (!this.isChecked) {
@@ -313,6 +313,7 @@ export default {
         return;
       }
       this.isLoading = true;
+      console.log(this.retrievedData);
       const response = await LoanService.createLoan(this.retrievedData);
       console.log(response);
       if (response.status == 201) {
@@ -333,36 +334,44 @@ export default {
       }
     },
     async getPassesData() {
-
-        let response = await PassService.getAllPasses();
-        this.availablePasses = response.data;
-
-        if (this.numPasses == 2) {
-        const response = await PassService.getAllPasses();
-        let retrieveAllPassesPOI = response.data.map((data) => {
-          return data.poi;
-        });
-
-        var dupl = retrieveAllPassesPOI.reduce(function (
-          list,
-          item,
-          index,
-          array
-        ) {
-          if (
-            array.indexOf(item, index + 1) !== -1 &&
-            list.indexOf(item) === -1
-          ) {
-            list.push(item);
-          }
-          return list;
-        },
-        []);
-        console.log(retrieveAllPassesPOI);
-        this.availablePasses = this.availablePasses.filter((data)=>{
-          return dupl.includes(data.poi);
-        })
+      let response = await PassService.getAllPasses();
+      this.availablePasses = response.data.filter((data)=> data.defunct == false);
+      
+      for (let pass of this.availablePasses) {
+        if (this.passDict[pass.poi] == undefined) {
+          this.passDict[pass.poi] = 1;
+        }
+        else {
+          this.passDict[pass.poi] += 1;
+        }
       }
+
+      // if (this.numPasses == 2) {
+      //   const response = await PassService.getAllPasses();
+      //   let retrieveAllPassesPOI = response.data.map((data) => {
+      //     return data.poi;
+      //   });
+
+      //   var dupl = retrieveAllPassesPOI.reduce(function (
+      //     list,
+      //     item,
+      //     index,
+      //     array
+      //   ) {
+      //     if (
+      //       array.indexOf(item, index + 1) !== -1 &&
+      //       list.indexOf(item) === -1
+      //     ) {
+      //       list.push(item);
+      //     }
+      //     return list;
+      //   },
+      //   []);
+      //   console.log(retrieveAllPassesPOI);
+      //   this.availablePasses = this.availablePasses.filter((data) => {
+      //     return dupl.includes(data.poi);
+      //   });
+      // }
     },
   },
   mounted() {

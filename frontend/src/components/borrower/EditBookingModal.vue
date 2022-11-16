@@ -31,21 +31,29 @@
             </div>
             <div class="p-4">
               <div class="" v-if="selectedPass">
-              <BookingCalendar
-                :key="componentKey"
-                @selectedData="selectedData"
-                :selectedPass="selectedPass"
-                :selectedLoan="rowData"
-                :isEdit="true"
-                class="mt-4"
-              />
+                <BookingCalendar
+                  :key="componentKey"
+                  @selectedData="selectedData"
+                  :selectedPass="selectedPass"
+                  :selectedLoan="rowData"
+                  :isEdit="true"
+                  class="mt-4"
+                />
               </div>
-              <div class="d-flex text-center justify-content-center align-center mt-4" v-else>
+              <div
+                class="
+                  d-flex
+                  text-center
+                  justify-content-center
+                  align-center
+                  mt-4
+                "
+                v-else
+              >
                 <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+                  <span class="visually-hidden">Loading...</span>
+                </div>
               </div>
-              </div>
-
             </div>
 
             <div class="mt-4" v-if="selectedPass">
@@ -84,7 +92,7 @@
                   </div>
                 </div>
               </div>
-             
+
               <div class="form-group">
                 <div class="row">
                   <div class="col">
@@ -150,7 +158,7 @@
                 type="button"
                 class="btn btn-primary"
                 :disabled="!isChecked || retrievedData.start == ''"
-                @click.stop="submitBooking"
+                @click.stop="editBooking"
                 style="min-width: 100px"
               >
                 <div class="" v-show="!isLoading">Submit</div>
@@ -169,8 +177,9 @@
 
 <script>
 import BookingCalendar from "@/components/common/BookingCalendar.vue";
-import axios from "axios";
-import ENDPOINT from "../../constants"
+import LoanService from "@/api/services/LoanService";
+import PassService from "@/api/services/PassService";
+
 export default {
   name: "EditBookingModal",
   props: {
@@ -200,7 +209,7 @@ export default {
       componentKey: 0,
       availablePasses: [],
       retrievedData: {},
-      retrievedPassData: {}
+      retrievedPassData: {},
     };
   },
   methods: {
@@ -228,10 +237,9 @@ export default {
     forceRerender() {
       this.componentKey += 1;
     },
-    
-    processDate2(date){
-      
-      let split = date.split("-").reverse()
+
+    processDate2(date) {
+      let split = date.split("-").reverse();
       for (let i = 0; i < split.length; i++) {
         if (split[i].length == 1) {
           split[i] = "0" + split[i];
@@ -239,79 +247,47 @@ export default {
       }
       return split.join("/");
     },
-    async submitBooking() {
-
-  
+    async editBooking() {
       this.isLoading = true;
-      // this.retrievedLoanData.startDate = this.retrievedData.startDate
-      // this.retrievedLoanData.endDate = this.retrievedData.endDate
-      this.retrievedData.gopId = 1
-      this.retrievedData.loanId = this.retrievedLoanData.loanId
-      console.log(this.retrievedData);
-      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
-      const config = {
-        headers: {
-          Authorization: bearer_token,
-        },
-      };
-      axios
-        .put(`${ENDPOINT}/loan/update`, this.retrievedData, config)
-        .then((response) => {
-          console.log(response);
-          if (response.status != 500) {
-            this.isLoading = false;
-            document.getElementById("edit-close-btn").click();
-            this.$emit("bookingSubmitted", this.retrievedLoanData);
-            this.$emit("toastrMsg", {
-              status: "Success",
-              msg: "Edit is successful!",
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
+      this.retrievedData.loanId = this.rowData.id;
+      const response = await LoanService.editLoan(this.retrievedData);
+      if (response.status == 200) {
+        this.isLoading = false;
+        document.getElementById("edit-close-btn").click();
+        this.$emit("bookingSubmitted", this.retrievedData);
+        this.$emit("toastrMsg", {
+          status: "Success",
+          msg: "Edit is successful!",
         });
+      }
+      console.log(response);
     },
 
-    getData() {
-      const bearer_token = `Bearer ${localStorage.getItem("token")}`;
-      const config = {
-        headers: {
-          Authorization: bearer_token,
-        },
-      };
-      axios
-        .get(`${ENDPOINT}/loan/${this.rowData.id}`, config)
-        .then((response1) => {
-          this.retrievedLoanData = response1.data.data
-          console.log(response1);
-          axios
-            .get(`${ENDPOINT}/passes/${response1.data.data.pass.passId}`, config)
-            .then((response2) => {
-              console.log('response2', response2.data);
-              setTimeout(() => {
-              this.retrievedPassData = response2.data.data
-              
-              this.selectedPass = response2.data.data
-              console.log("specific pass data updated ------------------")
-            }, 1000);
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          
+    async getData() {
+      console.log(this.rowData);
+      const response1 = await LoanService.getLoanByLoanId(this.rowData.id);
+      console.log(response1);
+      const response2 = await PassService.getPassesById(
+        response1.data.data.pass.passId
+      );
+      console.log(response2);
 
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
+      if (response2.status == 200) {
+        setTimeout(() => {
+          this.retrievedPassData = response2.data.data;
+
+          this.selectedPass = response2.data.data;
+          console.log("specific pass data updated ------------------");
+        }, 1000);
+      }
     },
   },
 
   watch: {
     rowData: function (newVal, oldVal) {
       console.log(newVal);
-      console.log(oldVal)
+      console.log(oldVal);
       console.log("rowData updated ------------------");
       this.getData();
     },

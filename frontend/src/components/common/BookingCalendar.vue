@@ -2,24 +2,41 @@
   <div class="container-fluid">
     <div class="" v-if="selectedPass != null">
       <h1>{{ selectedPass.poi }}</h1>
-      <FullCalendar id="calendar" :options="calendarOptions" :key="componentKey" />
-      <br />
-      <div class="row">
-        <div class="col d-flex">
-          <div class="circle-legend-other" />
-          <span class="align-items-center d-flex ms-2">Existing Bookings</span>
+      <div v-if="isCalendarLoading" class="text-center my-4">
+        <div
+          class="spinner-border text-primary"
+          style="width: 3rem; height: 3rem"
+          role="status"
+        >
+          <span class="visually-hidden">Loading...</span>
         </div>
-        <div class="col d-flex">
-          <div class="circle-legend-past" />
-          <span class="align-items-center d-flex ms-2"
-            >Your Existing Bookings</span
-          >
-        </div>
-        <div class="col d-flex">
-          <div class="circle-legend-new" />
-          <span class="align-items-center d-flex ms-2"
-            >Your Selected Booking</span
-          >
+      </div>
+      <div class="" v-else>
+        <FullCalendar
+          id="calendar"
+          :options="calendarOptions"
+          :key="componentKey"
+        />
+        <br />
+        <div class="row">
+          <div class="col d-flex">
+            <div class="circle-legend-other" />
+            <span class="align-items-center d-flex ms-2"
+              >Existing Bookings</span
+            >
+          </div>
+          <div class="col d-flex">
+            <div class="circle-legend-past" />
+            <span class="align-items-center d-flex ms-2"
+              >Your Existing Bookings</span
+            >
+          </div>
+          <div class="col d-flex">
+            <div class="circle-legend-new" />
+            <span class="align-items-center d-flex ms-2"
+              >Your Selected Booking</span
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -34,7 +51,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 
 import LoanService from "@/api/services/LoanService";
 export default {
-  props: ["selectedPass", "selectedLoan", "isEdit","selectNumPasses"],
+  props: ["selectedPass", "selectedLoan", "isEdit", "numPasses"],
   components: {
     FullCalendar,
   },
@@ -43,6 +60,7 @@ export default {
       user: JSON.parse(localStorage.getItem("user")),
       componentKey: 0,
       isEditing: false,
+      isCalendarLoading: true,
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
         initialView: "dayGridMonth",
@@ -130,9 +148,8 @@ export default {
       console.log(eventId);
     },
     // retrieve data, process it, and set it as the events source
-    async getData(selectedPass) {
-      this.selectedPassLoans = await LoanService.getLoansByPassId(selectedPass);
-      console.log(this.selectedPassLoans);
+    async getSelectedPassEvents(selectedPass) {
+      this.selectedPassLoans = await LoanService.getLoansByPassId(selectedPass.passId);
       this.processData();
     },
     // process the data into the FullCalendar format FullCalendar (color, editability, etc)
@@ -170,6 +187,13 @@ export default {
 
       this.calendarOptions.events = tempList;
       console.log(tempList);
+      this.isCalendarLoading = false;
+    },
+
+    async getEditRowData() {
+      this.selectedPassLoans = await LoanService.getLoansByPassId(this.selectedLoan.passId);
+      this.processData();
+    
     },
   },
   beforeCreate() {
@@ -179,21 +203,25 @@ export default {
   watch: {
     selectedPass: function () {
       this.forceRerender();
+      this.isCalendarLoading = true;
       this.clickedEventId = "";
       this.selectedData.passId = this.selectedPass.passId;
       this.selectedData.userId = this.userId;
-      this.getData(this.selectedData);
+      this.getSelectedPassEvents(this.selectedData);
     },
 
-    // this is for editing of existing booking as selectedPass is based on rowData
-    mounted() {
-      if (this.isEdit) {
-        this.getData();
-        this.selectedData.passID = this.selectedPass.passId;
-        this.selectedData.userID = this.userId;
-
-      }
+    numPasses: function () {
+      this.forceRerender();
+      this.clickedEventId = "";
     },
+  },
+  // this is for editing of existing booking as selectedPass is based on rowData
+  mounted() {
+    if (this.isEdit) {
+      this.getEditRowData();
+      this.selectedData.passID = this.selectedPass.passId;
+      this.selectedData.userID = this.userId;
+    }
   },
 };
 </script>

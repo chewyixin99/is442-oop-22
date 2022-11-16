@@ -17,6 +17,23 @@ class PassService extends BaseApiService {
             return this.handleError(error);
         }
     }
+
+    async getPassesById(id) {
+        const bearer_token = `Bearer ${localStorage.getItem("token")}`;
+        const config = {
+            headers: {
+                Authorization: bearer_token,
+            },
+        };
+        try {
+            let response = await axiosClient.get("/passes/" + id, config);
+            return response
+
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+
 }
 
 export default new PassService();
