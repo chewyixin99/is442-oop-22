@@ -38,7 +38,7 @@ class LoanService extends BaseApiService {
         };
         try {
             let loans = await axiosClient.get("/loan", config);
-            return loans.data
+            return loans.data.data
 
         } catch (error) {
             return this.handleError(error);

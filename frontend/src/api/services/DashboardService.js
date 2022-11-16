@@ -2,20 +2,6 @@ import { axiosClient } from "../axiosClient";
 import BaseApiService from "../BaseApiService";
 
 class DashboardService extends BaseApiService {
-    async getAllLoans() {
-        const bearer_token = `Bearer ${localStorage.getItem("token")}`;
-        const config = {
-            headers: { Authorization: bearer_token },
-        };
-        try {
-            let loans = await axiosClient.get("/loan", config);
-            return loans.data.data
-
-        } catch (error) {
-            return this.handleError(error);
-        }
-    }
-
     async getPassBreakDown() {
         const bearer_token = `Bearer ${localStorage.getItem("token")}`;
         const config = {
