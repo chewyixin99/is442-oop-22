@@ -278,6 +278,7 @@
             },
             refreshTable(){
                 this.grid.updateConfig({
+                    resizable: true,
                     data: this.gridJsTableData,
                     columns: [
                     {
@@ -358,6 +359,10 @@
             position: absolute;
             top: 10px;
             z-index: 999;
+        }
+
+        .gridjs-table {
+            width: 100% !important;
         }
     }
 

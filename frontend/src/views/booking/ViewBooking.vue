@@ -258,7 +258,8 @@ export default {
         style: {
           table: {},
           th: {
-            "background-color": "rgba(0, 0, 0, 0.1)",
+            'background-color': 'var(--sss_orange)',
+            'color': '#273746',
             "text-align": "center",
           },
           td: {
@@ -361,7 +362,8 @@ export default {
         error: "An error happened while fetching the data",
         style: {
           th: {
-            "background-color": "rgba(0, 0, 0, 0.1)",
+            'background-color': 'var(--sss_orange)',
+            'color': '#273746',
             "text-align": "center",
           },
           td: {
@@ -452,8 +454,10 @@ export default {
   width: 70vw;
 }
 
-.gridjs-table {
-  width: 100% !important;
+@media only screen and (min-width: 992px){
+  .gridjs-table {
+    width: 100% !important;
+  }
 }
 
 .btnHover:hover {

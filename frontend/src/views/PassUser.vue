@@ -23,6 +23,7 @@
                   <img
                     v-bind:src="`data:image/*;base64,${EachPass.passImage}`"
                     class="
+                      img-fluid
                       mx-auto
                       mt-2
                       d-block
@@ -37,6 +38,7 @@
                   <img
                     src="../assets/PassAssets/noImageAvailable.jpg"
                     class="
+                      img-fluid
                       mx-auto
                       mt-2
                       d-block

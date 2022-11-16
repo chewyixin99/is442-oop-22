@@ -8,7 +8,7 @@
       <span>
         <button
           type="button"
-          class="btn btn-outline-success d-inline p-2"
+          class="btn btn-outline-success d-inline p-2 mb-4"
           data-bs-toggle="modal"
           data-bs-target="#addNewPass"
         >
@@ -17,11 +17,11 @@
       </span>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 my-2 justify-content-center">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 my-2 justify-content-center mt-3">
       <!-- Passes 'Card' -->
       <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId">
-        <div v-if="EachPass.defunct == '0'">
-          <div class="card text-center border h-100">
+        <div class="mb-5" v-if="EachPass.defunct == '0'">
+          <div class="card text-center border h-100 ">
             <!-- Show Image here -->
             <div
               class="card-header"
@@ -36,7 +36,7 @@
             <template v-if="EachPass.passImage">
               <img
                 v-bind:src="`data:image/*;base64,${EachPass.passImage}`"
-                class="mx-auto mt-2 d-block border border-2"
+                class="img-fluid mx-auto mt-2 d-block border border-2"
                 height="250"
               />
             </template>
@@ -44,7 +44,7 @@
             <template v-else>
               <img
                 src="../assets/PassAssets/noImageAvailable.jpg"
-                class="mx-auto mt-2 d-block border border-2"
+                class="img-fluid mx-auto mt-2 d-block border border-2"
                 height="250"
                 
               />
