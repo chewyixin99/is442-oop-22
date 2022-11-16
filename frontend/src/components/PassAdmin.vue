@@ -36,7 +36,7 @@
             <template v-if="EachPass.passImage">
               <img
                 v-bind:src="`data:image/*;base64,${EachPass.passImage}`"
-                class="mx-auto mt-2 d-block border border-2"
+                class="img-fluid mx-auto mt-2 d-block border border-2"
                 height="250"
               />
             </template>
@@ -44,7 +44,7 @@
             <template v-else>
               <img
                 src="../assets/PassAssets/noImageAvailable.jpg"
-                class="mx-auto mt-2 d-block border border-2"
+                class="img-fluid mx-auto mt-2 d-block border border-2"
                 height="250"
                 
               />
