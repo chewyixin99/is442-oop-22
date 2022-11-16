@@ -8,7 +8,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-2 mb-5">
           <template v-for="EachPass in userPasses" :key="EachPass.passId">
             <div v-if="EachPass.defunct == '0'">
-              <div class="card text-center border h-100" style="width: 25rem">
+              <div class="card text-center border h-100">
                 <div
                   class="card-header"
                   style="background-color: var(--sss_orange); color: #273746"
@@ -23,14 +23,14 @@
                   <img
                     v-bind:src="`data:image/*;base64,${EachPass.passImage}`"
                     class="
-                      img-fluid
+                      
                       mx-auto
                       mt-2
                       d-block
                       border border-2 border-secondary
                     "
-                    height="250"
-                    width="375"
+                    height="200"
+                    width="300"
                   />
                 </template>
 
@@ -44,8 +44,8 @@
                       d-block
                       border border-2 border-secondary
                     "
-                    height="250"
-                    width="375"
+                    height="200"
+                    width="300"
                   />
                 </template>
 
