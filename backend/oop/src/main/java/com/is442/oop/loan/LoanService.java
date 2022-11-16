@@ -13,8 +13,8 @@ import com.is442.oop.exception.*;
 public interface LoanService {
 
     List<Loan> getAllLoan();
-    Loan userCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException;
-    Loan adminCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException;
+    Loan userCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException, PassAttachmentNotFoundException;
+    Loan adminCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException, PassAttachmentNotFoundException;
     Loan getLoanByLoanID(int loanID) throws ResourceNotFoundException;
     List<Loan> getLoanByUserID(int userID);
     List<Loan> getLoanByPassID(int passID);

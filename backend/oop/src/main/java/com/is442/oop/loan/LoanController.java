@@ -24,6 +24,7 @@ import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.models.User;
 import com.is442.oop.data.payloads.dto.LoanWithPrevUserDTO;
 import com.is442.oop.data.payloads.response.DataResponse;
+import com.is442.oop.exception.PassAttachmentNotFoundException;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -112,13 +113,18 @@ public class LoanController {
     
     @Operation(summary = "Create loans for users", description = "User loan creation (w/ 2x loan/month, 2x booking/loan validations)", responses={
         @ApiResponse(responseCode = "201", description = "Created", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
-        @ApiResponse(responseCode = "400", description = "Bad Request", content=@Content)
+        @ApiResponse(responseCode = "400", description = "Bad Request", content=@Content),
+        @ApiResponse(responseCode = "404", description = "Not Found (Resource not found)", content=@Content),
+        @ApiResponse(responseCode = "406", description = "Illegal Argument (User max loans)", content=@Content),
+        @ApiResponse(responseCode = "428", description = "Precondition Required (No pass attachment)", content=@Content)
     })
     @PostMapping("/userCreateLoan")
     public ResponseEntity<DataResponse> userCreateLoan(@RequestBody LoanRequest createLoanRequest){
         Loan newLoan = null; 
         try {
             newLoan = loanService.userCreateLoan(createLoanRequest);           
+        } catch (PassAttachmentNotFoundException e) {
+            return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.PRECONDITION_REQUIRED);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
@@ -131,17 +137,19 @@ public class LoanController {
 
     @Operation(summary = "Create loans for admins", description = "Admin loan creation (w/o 2x loan/month, 2x booking/loan validations)", responses={
         @ApiResponse(responseCode = "201", description = "Created", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
-        @ApiResponse(responseCode = "400", description = "Bad Request", content=@Content)
+        @ApiResponse(responseCode = "400", description = "Bad Request", content=@Content),
+        @ApiResponse(responseCode = "404", description = "Not Found (Resource not found)", content=@Content),
+        @ApiResponse(responseCode = "428", description = "Precondition Required (No pass attachment)", content=@Content)
     })
     @PostMapping("/adminCreateLoan")
     public ResponseEntity<DataResponse> admingCreateLoan(@RequestBody LoanRequest createLoanRequest){
         Loan newLoan = null; 
         try {
             newLoan = loanService.adminCreateLoan(createLoanRequest);           
+        } catch (PassAttachmentNotFoundException e) {
+            return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.PRECONDITION_REQUIRED);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
             return new ResponseEntity<>(new DataResponse(newLoan, e), HttpStatus.INTERNAL_SERVER_ERROR);
         }

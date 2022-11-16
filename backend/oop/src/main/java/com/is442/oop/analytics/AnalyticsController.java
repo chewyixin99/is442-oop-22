@@ -42,7 +42,7 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(loans, "AnalyticsService"), HttpStatus.OK);
     }
 
-    @Operation(summary="Gets all loans placed by user ID", description="Gets all loans placed by user ID", reqsponses={
+    @Operation(summary="Gets all loans placed by user ID", description="Gets all loans placed by user ID", responses={
         @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
         @ApiResponse(responseCode = "404", description = "No loans found for the user" ,content = @Content),
     })

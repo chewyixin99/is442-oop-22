@@ -1,5 +1,6 @@
 package com.is442.oop.loan;
 import com.is442.oop.data.models.Loan;
+import com.is442.oop.data.models.Pass;
 import com.is442.oop.data.models.User;
 
 import java.time.LocalDate;
@@ -24,4 +25,5 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
 
     List<Loan> findAllByDefunctFalse();
     List<Loan> findAllByUserAndDefunctFalse(User user);
+    List<Loan> findAllByPass(Pass pass);
 }

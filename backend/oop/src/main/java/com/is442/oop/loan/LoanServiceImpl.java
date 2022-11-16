@@ -52,17 +52,15 @@ public class LoanServiceImpl implements LoanService{
         if (numLoansPerMonth.containsKey(loanDate)) {
             numLoans = numLoansPerMonth.get(loanDate);
         }
-
         if (numLoans >= 2) {
             return false;
         }
-
         return true;
     }
     
     @Transactional
     @Override
-    public Loan userCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException {
+    public Loan userCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException, PassAttachmentNotFoundException {
         // Pass cannot be loaned for the day. Inserting validation here. Might need to change in the future, as users will select via POI, not via ID.
         boolean loanable = this.checkUserLoanable(loanRequest.getUserID(), YearMonth.from(loanRequest.getStartDate()));
 
@@ -71,12 +69,14 @@ public class LoanServiceImpl implements LoanService{
         }
         
         Integer passID = loanRequest.getPassID();
-        Integer secondaryPassID = loanRequest.getSecondaryPassID();
         Pass pass = null;
         try {
             pass = passService.getPass(passID);
         } catch (Exception e) {
             throw new ResourceNotFoundException("Pass", "passId", passID);
+        }
+        if (pass.getPassAttachment() == null) {
+            throw new PassAttachmentNotFoundException(passID);
         }
 
         LocalDate startDate = loanRequest.getStartDate();
@@ -87,7 +87,18 @@ public class LoanServiceImpl implements LoanService{
             }
         }
 
+        Integer secondaryPassID = loanRequest.getSecondaryPassID();
+        Pass secondaryPass = null;
         if (secondaryPassID != null) {
+            try {
+                secondaryPass = passService.getPass(secondaryPassID);
+            } catch (Exception e) {
+                throw new ResourceNotFoundException("Pass", "secondaryPassID", secondaryPassID);
+            }
+            if (secondaryPass.getPassAttachment() == null) {
+                throw new PassAttachmentNotFoundException(secondaryPassID);
+            }
+
             List<Loan> secondaryLoans = this.getLoanByPassID(secondaryPassID);
             for (Loan l: secondaryLoans){
                 if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
@@ -113,15 +124,8 @@ public class LoanServiceImpl implements LoanService{
         newLoan.setGopId(1);
         loanRepository.save(newLoan);
 
-        Pass secondaryPass = null;
         Loan secondaryLoan = null;
-        if (secondaryPassID != null) {
-            try {
-                secondaryPass = passService.getPass(secondaryPassID);
-            } catch (Exception e) {
-                throw new ResourceNotFoundException("Pass", "secondaryPassID", secondaryPassID);
-            }
-
+        if (secondaryPass != null) {
             // Second loan to second pass
             secondaryLoan = new Loan();
             secondaryLoan.setUser(user);
@@ -153,14 +157,16 @@ public class LoanServiceImpl implements LoanService{
 
     @Transactional
     @Override
-    public Loan adminCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException {
+    public Loan adminCreateLoan(LoanRequest loanRequest) throws ActionNotExecutedException, ResourceNotFoundException, PassAttachmentNotFoundException {
         Integer passID = loanRequest.getPassID();
-        Integer secondaryPassID = loanRequest.getSecondaryPassID();
         Pass pass = null;
         try {
             pass = passService.getPass(passID);
         } catch (Exception e) {
             throw new ResourceNotFoundException("Pass", "passId", passID);
+        }
+        if (pass.getPassAttachment() == null) {
+            throw new PassAttachmentNotFoundException(passID);
         }
 
         LocalDate startDate = loanRequest.getStartDate();
@@ -171,7 +177,18 @@ public class LoanServiceImpl implements LoanService{
             }
         }
 
+        Integer secondaryPassID = loanRequest.getSecondaryPassID();
+        Pass secondaryPass = null;
         if (secondaryPassID != null) {
+            try {
+                secondaryPass = passService.getPass(secondaryPassID);
+            } catch (Exception e) {
+                throw new ResourceNotFoundException("Pass", "secondaryPassID", secondaryPassID);
+            }
+            if (secondaryPass.getPassAttachment() == null) {
+                throw new PassAttachmentNotFoundException(secondaryPassID);
+            }
+
             List<Loan> secondaryLoans = this.getLoanByPassID(secondaryPassID);
             for (Loan l: secondaryLoans){
                 if (l.getStartDate().equals(startDate) && !(l.isDefunct() || l.isCompleted())){
@@ -197,15 +214,8 @@ public class LoanServiceImpl implements LoanService{
         newLoan.setGopId(1);
         loanRepository.save(newLoan);
 
-        Pass secondaryPass = null;
         Loan secondaryLoan = null;
-        if (secondaryPassID != null) {
-            try {
-                secondaryPass = passService.getPass(secondaryPassID);
-            } catch (Exception e) {
-                throw new ResourceNotFoundException("Pass", "secondaryPassID", secondaryPassID);
-            }
-
+        if (secondaryPass != null) {
             // Second loan to second pass
             secondaryLoan = new Loan();
             secondaryLoan.setUser(user);
@@ -265,14 +275,23 @@ public class LoanServiceImpl implements LoanService{
     // Done
     @Override
     public List<Loan> getLoanByPassID(int passID) {
-        List<Loan> loans = this.getAllLoan();
-        List<Loan> toReturn = new ArrayList<>();
-        for (Loan l: loans){
-            if (l.getPass().getPassId() == passID){
-                toReturn.add(l);
-            }
+        // List<Loan> loans = this.getAllLoan();
+        // List<Loan> toReturn = new ArrayList<>();
+        // for (Loan l: loans){
+        //     if (l.getPass().getPassId() == passID){
+        //         toReturn.add(l);
+        //     }
+        // }
+        // return toReturn;
+        Pass queryPass = null;
+        try {
+            queryPass = passService.getPass(passID);
+        } catch (Exception e) {
+            throw e;
         }
-        return toReturn;
+
+        List<Loan> loans = loanRepository.findAllByPass(queryPass);
+        return loans;
     }
 
     // Done
