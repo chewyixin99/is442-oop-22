@@ -92,10 +92,22 @@ public class LoanController {
     @GetMapping("/byUserId/{userId}")
     public ResponseEntity<DataResponse> getLoanByUserID(@PathVariable("userId") Integer userId){
         List<Loan> loans = loanService.getLoanByUserID(userId);
-        if (loans.isEmpty()){
-            return new ResponseEntity<>(new DataResponse(loans, "Loan"), HttpStatus.NOT_FOUND);
+        List<LoanWithPrevUserDTO> result = new ArrayList<>();
+
+        try {
+            for (Loan loan: loans) {
+                User prevUser = null;
+                Optional<Loan> prevLoan = loanService.getLoanForPassByDateBefore(loan.getStartDate(), loan.getPass().getPassId());
+                if (prevLoan.isPresent()) {
+                    prevUser = prevLoan.get().getUser();
+                }  
+                result.add(LoanUtil.toPrevUserDTO(loan, prevUser));
+            } 
+        } catch (Exception e) {
+            return new ResponseEntity<>(new DataResponse(result, e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new DataResponse(loans, "Loan"), HttpStatus.OK);
+
+        return new ResponseEntity<>(new DataResponse(result, "Loan"), HttpStatus.OK);
     }
 
     @Operation(summary = "Get loan by pass id", description = "Get loan by pass id", responses={
