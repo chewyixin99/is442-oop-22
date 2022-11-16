@@ -314,9 +314,9 @@ export default {
       }
       this.isLoading = true;
       console.log(this.retrievedData);
-      const response = await LoanService.createLoan(this.retrievedData);
-      console.log(response);
-      if (response.status == 201) {
+      try {
+        const response = await LoanService.createLoan(this.retrievedData);
+        console.log(response);
         this.isLoading = false;
         document.getElementById("create-close-btn").click();
         this.$emit("bookingSubmitted", this.retrievedData);
@@ -324,13 +324,19 @@ export default {
           status: "Success",
           msg: "Booking is successful!",
         });
-      } else {
+      } catch (error) {
+        console.log('error: ', error)
+        let toastrMessage = "Booking is unsuccessful! Please try again."
+        if (error.response.code === 428) {
+          toastrMessage = "Booking is unsuccessful! No pass attachment for pass."
+        }
         this.isLoading = false;
-        document.getElementById("create-close-btn").click();
+        this.$emit("bookingSubmitted", this.retrievedData);
         this.$emit("toastrMsg", {
           status: "Failed",
-          msg: "Booking is unsuccessful! Please try again.",
+          msg: toastrMessage,
         });
+        document.getElementById("create-close-btn").click();
       }
     },
     async getPassesData() {
