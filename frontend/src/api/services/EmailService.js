@@ -11,7 +11,6 @@ class EmailService extends BaseApiService {
         };
         try {
             let emailTemplates = await axiosClient.get("/templates", config);
-            // console.log(emailTemplates.data);
             return emailTemplates.data
 
         } catch (error) {

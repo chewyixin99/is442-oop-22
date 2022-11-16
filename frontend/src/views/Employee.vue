@@ -14,16 +14,31 @@
                         <hr/>
                         <div id="buttonsHolder" class="d-flex">
                             <button type="button" class="btn btn-info funcBtn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                Options
+                                Actions &nbsp;
                                 <span class="visually-hidden">Toggle Dropdown</span>
                             </button>
                             <ul id="ddm" class="dropdown-menu">
-                                <li data-bs-toggle="modal" data-bs-target="#createModal"><a class="dropdown-item links" href="#">New</a></li>
-                                <li @click="deleteRecords()"><a class="dropdown-item links" href="#">Delete</a></li>
-
-                                <input id="fileId" type="file" accept=".txt,.xlsx,.csv" hidden/>
-                                <li @click="openDialog"><a class="dropdown-item links" href="#">Import</a></li>
-                                <li @click="exportRecords()"><a class="dropdown-item links" href="#">Export</a></li>
+                                <li data-bs-toggle="modal" data-bs-target="#createModal">
+                                    <a class="dropdown-item links" href="#">New
+                                        <i class="bi bi-plus-square icons"></i>
+                                    </a>
+                                </li>
+                                <li @click="deleteRecords()">
+                                    <a class="dropdown-item links" href="#">Delete
+                                        <i class="bi bi-trash icons"></i>
+                                    </a>
+                                </li>
+                                <input id="fileId" type="file" accept=".xlsx,.csv" hidden/>
+                                <li @click="openDialog">
+                                    <a class="dropdown-item links" href="#">Import
+                                        <i class="bi bi-file-earmark-plus icons"></i>
+                                    </a>
+                                </li>
+                                <li @click="exportRecords()">
+                                    <a class="dropdown-item links" href="#">Export
+                                        <i class="bi bi-cloud-download icons"></i>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                         <div id="wrapper"></div>
@@ -68,7 +83,7 @@
                     search: true,
                     sort: true,
                     pagination: {
-                        limit: 5
+                        limit: 10
                     },
                     language: {
                         'search': {
@@ -178,14 +193,14 @@
                     let reader = new FileReader();
                     let fileType = selected.name.split('.')[1];
                     this.toastrResponse = {status: "Success", msg: "Records from ." + fileType + " file have been imported successfully!"};
-                    if (fileType == "csv" || fileType == "txt"){
+                    if (fileType == "csv"){
                         this.csvImport(selected, reader);   
 
                     } else if (fileType == "xlsx") {
                         this.xlsxImport(selected, reader);
 
                     } else {
-                        this.toastrResponse = {status: "Error", msg: "Invalid file extension, please only use .csv, .txt, or .xlsx!"};  
+                        this.toastrResponse = {status: "Error", msg: "Invalid file extension, please only use .csv or .xlsx!"};  
                     }
                     this.showToast();
                     file.value = ''; //clear input field so that we can upload the same file again
@@ -303,7 +318,7 @@
     }
 
     #ddm {
-        min-width: 100px !important;
+        min-width: 120px !important;
     }   
 
     .funcBtn{
@@ -326,6 +341,11 @@
     .links{
         text-decoration: none !important;
         color: #000 !important;
+    }
+    
+    .icons{
+        position: absolute;
+        right:20px;
     }
 
     @media only screen and (min-width: 992px){

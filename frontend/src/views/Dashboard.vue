@@ -29,6 +29,7 @@
 import Chart from 'chart.js'
 import DashboardService from "@/api/services/DashboardService";
 import * as XLSX from 'xlsx/xlsx.mjs';
+import LoanService from '@/api/services/LoanService';
 
 export default {
     name: 'Dashboard',
@@ -87,7 +88,8 @@ export default {
                     yAxes: [{
                         ticks: {
                             //https://stackoverflow.com/questions/37922518/how-to-set-start-value-as-0-in-chartjs
-                            beginAtZero: true
+                            beginAtZero: true,
+                            stepSize: 1
                         }
                     }]
                 },
@@ -98,6 +100,7 @@ export default {
           polar: {
             type: 'polarArea',
             data: {
+              labels: ["Gardens By The Bay", "Singapore Zoo", "Sea Aquarium"],
               datasets: [{
                 data: [0, 0, 0],
                 backgroundColor: ['rgba(102, 51, 255, 0.5)', 'rgb(75, 192, 255)', 'rgb(255, 153, 51)'],
@@ -178,7 +181,7 @@ export default {
       },  
       async initCharts() {
         this.initChartLabels();
-        let loans = await DashboardService.getAllLoans();
+        let loans = await LoanService.getAllLoans();
         let poi = await DashboardService.getPoiBreakDown();
         let passBreakdown = await DashboardService.getPassBreakDown();
         this.allLoans = loans;
@@ -271,8 +274,8 @@ export default {
         for (let p of poi){ polarChartData[p.poi] = p.numLoans}
 
         let polarChartKeys = Object.keys(polarChartData);
-        this.polar.data.labels = polarChartKeys;
-        this.polar.data.datasets[0].data = polarChartKeys.map((key) => { return polarChartData[key]; });
+        let polarChartValues = polarChartKeys.map((key) => { return polarChartData[key]; });
+        this.polar.data.datasets[0].data = polarChartValues.length > 0 ? polarChartValues : this.polar.data.datasets[0].data;
       },
       lineChartCalculation(loans){
         for (let l of loans){
