@@ -413,7 +413,7 @@ export default {
     });
     
     const response = await LoanService.getAllLoans();
-    this.bookingData = response.data
+    this.bookingData = response
 
   },
   methods: {
@@ -439,6 +439,7 @@ export default {
       bsAlert.show();
     },
     filterSelected() {
+      console.log(this.bookingData);
       this.dataOfSelectedRow = this.bookingData.filter((row) => {
         return this.recordsToDelete.includes(row.loanId);
       });
