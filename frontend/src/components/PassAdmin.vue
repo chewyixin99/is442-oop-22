@@ -240,7 +240,7 @@
                         <div class="col-12">
                           <input
                             type="number"
-                            min="1"
+                            min="0"
                             class="form-control"
                             v-model="EachPass.passNumber"
                             required
@@ -307,7 +307,7 @@
                           type="number"
                           v-model="EachPass.numGuests"
                           class="form-control"
-                          min="0"
+                          required
                         />
                         <div class="invalid-feedback text-black-50">
                           Please enter more than 1 guest(s). e.g: 5
@@ -325,7 +325,9 @@
                             type="number"
                             v-model="EachPass.replacementFee"
                             class="form-control"
-                            min="0"
+                            step="0.01"
+                            min="0.00"
+                            required
                           />
                           <div class="invalid-feedback text-black-50">
                             Please enter replacement fee. e.g: 15.50
@@ -471,7 +473,7 @@
       </template>
       <!-- ====================================Loop ends============================= -->
     </div>
-    <!-- Add New Pass Form Modal-->
+    <!-- Add New Pass Form Modal/New Pass Modal-->
     <div
       class="modal fade"
       data-bs-backdrop="static"
@@ -518,7 +520,7 @@
                   <button
                     class="col-4 col-md-2 btn btn-outline-danger"
                     type="button"
-                    @click="removeImageSelect_newAndUpdatePass()"
+                    @click="removeImageSelect_newPass()"
                   >
                     X
                   </button>
@@ -530,7 +532,7 @@
                 <div class="col-12">
                   <input
                     type="number"
-                    min="1"
+                    min="0"
                     class="form-control col-12"
                     required
                     v-model="NEWpassNumber"
@@ -605,7 +607,9 @@
                     <div class="input-group-text">$</div>
                     <input
                       type="number"
+                      step="0.01"
                       class="form-control"
+                      min="0.00"
                       required
                       v-model="NEWreplacementFee"
                     />
@@ -921,6 +925,13 @@ export default {
       this.selectedFileName = null;
       this.$refs.newFileUpload.value = null;
     },
+    removeImageSelect_newPass() {
+      if (document.getElementById("newImageUploadInput").value !== null) {
+        document.getElementById("newImageUploadInput").value = null;
+      }
+      this.selectedImage = null;
+      this.localImageSrc = null;
+    },
     removeImageSelect_newAndUpdatePass(passId) {
       var temp = "updateImageUploadInput" + passId;
       if (document.getElementById("newImageUploadInput").value !== null) {
@@ -949,6 +960,7 @@ export default {
       this.selectedImage = null;
       this.localImageSrc = null;
       document.getElementById("newImageUploadInput").value = null;
+      this.removeImageSelect_newPass();
       this.$emit("getPassData");
     },
     initialStateEachPass(PassId) {
@@ -966,13 +978,23 @@ export default {
       passStatus,
       isPhysical
     ) {
+        var decimalsLength = 0
+        if(passReplacementFee% 1 !== 0){
+            decimalsLength = String(passReplacementFee).split(".")[1]?.length;
+        }
+
       return (
         passNum > 0 &&
+        passNum % 1 == 0 &&
+        passNum !== "" &&
         passDesc !== null &&
         passPoi !== null &&
         passUrl !== null &&
         passGuests > 0 &&
+        passGuests % 1 == 0 &&
+        passGuests !== null &&
         passReplacementFee > 0 &&
+        decimalsLength< 3 &&
         passStatus !== "" &&
         isPhysical !== ""
       );
