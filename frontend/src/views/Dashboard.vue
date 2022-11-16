@@ -12,6 +12,7 @@
             </select>
           </div>
           <input id="exportButton" type="button" class="btn btn-info" value='Export' @click="exportStatistics()"/>
+
         </div>
         <div class="row mt-5">
           <div class="col-lg-6">
@@ -155,7 +156,7 @@ export default {
     },
     methods: {
       myEventHandler() {
-        if (window.innerWidth - 7 > 390){ 
+        if (window.innerWidth - 7 >= 428){ 
           //https://www.chartjs.org/docs/2.9.4/general/responsive.html
           for (let c of this.charts){ this[c].options.maintainAspectRatio = true; }
           this.ratio = 1.5;
@@ -352,7 +353,7 @@ export default {
   }
 
   #selectHolder{
-    width: 100%;
+    width: 45%;
   }
 
   #exportButton{
@@ -374,5 +375,6 @@ export default {
       height: auto;
     }
   }
+
 
 </style>
