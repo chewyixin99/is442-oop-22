@@ -13,12 +13,18 @@
                     <div id="tableBox">
                         <hr/>
                         <div id="buttonsHolder" class="d-flex">
-                            <div>
+                            <button type="button" class="btn btn-info funcBtn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                Options
+                                <span class="visually-hidden">Toggle Dropdown</span>
+                            </button>
+                            <ul id="ddm" class="dropdown-menu">
+                                <li data-bs-toggle="modal" data-bs-target="#createModal"><a class="dropdown-item links" href="#">New</a></li>
+                                <li @click="deleteRecords()"><a class="dropdown-item links" href="#">Delete</a></li>
+
                                 <input id="fileId" type="file" accept=".txt,.xlsx,.csv" hidden/>
-                                <input id="buttonId" type="button" class="importBtn funcBtn btn btn-info" value='Import' @click="openDialog"/>
-                            </div>
-                            <div class="px-3"><button type="button" class="newBtn funcBtn btn btn-warning" data-bs-toggle="modal" data-bs-target="#createModal">New</button></div>
-                            <div><button type="button" class="delBtn funcBtn btn btn-danger" @click="deleteRecords()">Delete</button></div>
+                                <li @click="openDialog"><a class="dropdown-item links" href="#">Import</a></li>
+                                <li @click="exportRecords()"><a class="dropdown-item links" href="#">Export</a></li>
+                            </ul>
                         </div>
                         <div id="wrapper"></div>
                     </div>
@@ -237,6 +243,24 @@
                 }
                 this.showToast();
             },
+            exportRecords(){
+                let processedTableData = [];
+                for (let d of this.gridJsTableData) {
+                    processedTableData.push({
+                        "Name": d.name,
+                        "Email": d.email,
+                        "Contact Number": d.contactNumber,
+                        "Role": d.role
+                    })
+                }
+
+                let workBook = XLSX.utils.book_new();
+                const employeesDetails = XLSX.utils.json_to_sheet(processedTableData);
+                employeesDetails['!cols'] = [ {wch:15}, {wch:25}, {wch:15}, {wch:15} ];
+                XLSX.utils.book_append_sheet(workBook, employeesDetails, `Employees Details`);
+                let exportFileName = `Employees Records.xlsx`;
+                XLSX.writeFile(workBook, exportFileName);
+            },
             refreshTable(){
                 this.grid.updateConfig({
                     data: this.gridJsTableData,
@@ -271,12 +295,16 @@
 </script>
 <style>
     #tableBox{
-        padding: 0 7.5%;
+        padding: 0 2.5%;
     }
 
     #buttonsHolder{
         position: relative;
     }
+
+    #ddm {
+        min-width: 100px !important;
+    }   
 
     .funcBtn{
         position: relative;
@@ -295,6 +323,11 @@
         font-size:22px;
     }
 
+    .links{
+        text-decoration: none !important;
+        color: #000 !important;
+    }
+
     @media only screen and (min-width: 992px){
         #buttonsHolder{
             display: flex;
@@ -305,18 +338,6 @@
             position: absolute;
             top: 10px;
             z-index: 999;
-        }
-        
-        .importBtn{
-            right: 160px;
-        }
-        
-        .newBtn{
-            right: 90px;
-        }
-
-        .delBtn{
-            right: 5px;
         }
     }
 
@@ -329,7 +350,7 @@
         filter: alpha(opacity=50);
     }
 
-    .spinner-border-custom{
+    .spinner-border-custom {
         position: absolute;
         top: 50%;
         left: 45%;

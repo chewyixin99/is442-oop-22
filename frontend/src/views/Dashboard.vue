@@ -333,7 +333,7 @@ export default {
         passBreakdown['!cols'] = this.fitToColumn(passData);
         XLSX.utils.book_append_sheet(workBook, passBreakdown, `Pass Breakdown`);
 
-        let exportFileName = `dashboard_analytics.xlsx`;
+        let exportFileName = `Dashboard Analytics.xlsx`;
         XLSX.writeFile(workBook, exportFileName);
       },
       fitToColumn(arrayOfArray) {

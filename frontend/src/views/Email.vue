@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="flex-column d-flex align-items-center justify-content-center">
-      <h1 class="pt-4 mb-4">Email</h1>
+      <h2 class="pt-4 mb-4">Email</h2>
       <div class="tableBox position-relative">
         <hr />
         <div class="d-flex mb-5 aligns-items-center justify-content-center">
@@ -12,8 +12,7 @@
               data-bs-toggle="modal"
               data-bs-target="#addNewEmailTemplate"
             >
-              Add New Email Template
-              <i class="bi bi-plus-square"></i>
+              New Email Template
             </button>
           </span>
         </div>
@@ -31,29 +30,29 @@
                     style="background-color: var(--sss_orange); color: #273746"
                   >
                     <div>
-                      <h1>
+                      <h2>
                         <strong>Template ID - {{ template.templateId }}</strong>
-                      </h1>
+                      </h2>
                     </div>
                   </div>
                   <ul class="list-group list-group-flush">
                     <div class="container">
                       <div class="row">
-                        <div class="col-4 border">
-                          <h2 class="text-center"><b>Template Name</b></h2>
+                        <div class="col-4 border pt-2">
+                          <h4 class="text-center"><b>Template Name</b></h4>
                         </div>
-                        <div class="col-8 border">
-                          <h2 class="text-center">
+                        <div class="col-8 border pt-2">
+                          <h4 class="text-center">
                             {{ template.templateName }}
-                          </h2>
+                          </h4>
                         </div>
-                        <div class="col-4 border">
-                          <h2 class="text-center"><b>Template Subject</b></h2>
+                        <div class="col-4 border pt-2">
+                          <h4 class="text-center"><b>Template Subject</b></h4>
                         </div>
-                        <div class="col-8 border">
-                          <h2 class="text-center">
+                        <div class="col-8 border pt-2">
+                          <h4 class="text-center">
                             {{ template.templateSubject }}
-                          </h2>
+                          </h4>
                         </div>
                       </div>
                     </div>
@@ -64,7 +63,6 @@
                   </div>
                   <div
                     class="card-footer border-secondary btn-group-vertical"
-                    style="background-color: var(--sss_orange); color: #273746"
                   >
                     <button
                       type="button"
@@ -79,7 +77,6 @@
                 <!-- Update modal -->
                 <div
                   class="modal fade"
-                  data-bs-backdrop="static"
                   :id="`emailModal` + template.templateId"
                   tabindex="-1"
                   aria-hidden="true"
@@ -153,17 +150,11 @@
                       <div class="modal-footer">
                         <button
                           type="button"
-                          class="btn btn-info"
+                          class="btn btn-secondary"
                           data-bs-dismiss="modal"
-                          @click="updateTemplateMethod(template.templateId)"
-                          :disabled="
-                            !templateCreationUpdateDisable(
-                              template.templateName,
-                              template.templateSubject
-                            )
-                          "
+                          @click="cancelUpdate()"
                         >
-                          Update Now
+                          Close
                         </button>
                         <button
                           type="btn"
@@ -175,11 +166,17 @@
                         </button>
                         <button
                           type="button"
-                          class="btn btn-secondary"
+                          class="btn btn-primary"
                           data-bs-dismiss="modal"
-                          @click="cancelUpdate()"
+                          @click="updateTemplateMethod(template.templateId)"
+                          :disabled="
+                            !templateCreationUpdateDisable(
+                              template.templateName,
+                              template.templateSubject
+                            )
+                          "
                         >
-                          Close
+                          Save
                         </button>
                       </div>
                     </div>
@@ -196,7 +193,6 @@
     <div
       class="modal fade"
       id="addNewEmailTemplate"
-      data-bs-backdrop="static"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -266,7 +262,15 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-info"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              @click="newTemplateInitialState"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
               @click="createTemplateMethod()"
               data-bs-dismiss="modal"
               :disabled="
@@ -276,15 +280,7 @@
                 )
               "
             >
-              Create Template
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              @click="newTemplateInitialState"
-            >
-              Cancel
+              Create
             </button>
           </div>
         </div>

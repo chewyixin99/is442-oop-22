@@ -12,12 +12,11 @@
           data-bs-toggle="modal"
           data-bs-target="#addNewPass"
         >
-          Add New Pass
-          <i class="bi bi-plus-square"></i>
+          New Pass
         </button>
       </span>
     </div>
-    <div class="row row-cols-auto g-5 my-2">
+    <div class="row row-cols-auto g-5 my-2 justify-content-center">
       <!-- Passes 'Card' -->
       <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId">
         <div v-if="EachPass.defunct == '0'">
@@ -56,14 +55,14 @@
             </div>
 
             <ul class="px-3 py-2 list-group list-group-flush">
-              <span><b>Point of Interests </b></span>
+              <span><b>Point of Interest </b></span>
               <div class="text-wrap w-90 justify-content-center">
                 <span>{{ EachPass.poi }}</span>
               </div>
             </ul>
 
             <ul class="px-3 py-2 list-group list-group-flush">
-              <span><b>Point of Interests URL</b></span>
+              <span><b>Website Link</b></span>
               <div class="text-wrap w-90 justify-content-center">
                 <span>{{ EachPass.poiUrl }}</span>
               </div>
@@ -72,20 +71,20 @@
             <ul class="list-group list-group-flush">
               <div class="container">
                 <div class="p-1 row">
-                  <div class="col-5 border"><b>Pass Number</b></div>
-                  <div class="col-7 border">{{ EachPass.passNumber }}</div>
-                  <div class="col-5 border"><b>Guests Numbers</b></div>
-                  <div class="col-7 border">{{ EachPass.numGuests }}</div>
-                  <div class="col-5 border"><b>Replacement Fee</b></div>
-                  <div class="col-7 border">${{ EachPass.replacementFee }}</div>
-                  <div class="col-5 border"><b>Status</b></div>
-                  <div class="col-7 border">{{ EachPass.passStatus }}</div>
-                  <div class="col-5 border"><b>Physical / EPass</b></div>
+                  <div class="col-7 border"><b>Pass No.</b></div>
+                  <div class="col-5 border">{{ EachPass.passNumber }}</div>
+                  <div class="col-7 border"><b>No. of Guests</b></div>
+                  <div class="col-5 border">{{ EachPass.numGuests }}</div>
+                  <div class="col-7 border"><b>Replacement Fee</b></div>
+                  <div class="col-5 border">${{ EachPass.replacementFee }}</div>
+                  <div class="col-7 border"><b>Status</b></div>
+                  <div class="col-5 border">{{ EachPass.passStatus }}</div>
+                  <div class="col-7 border"><b>Physical / EPass</b></div>
                   <template v-if="EachPass.isPhysical == true">
-                    <div class="col-7 border">Physical Pass</div>
+                    <div class="col-5 border">Physical Pass</div>
                   </template>
                   <template v-else>
-                    <div class="col-7 border">EPass</div>
+                    <div class="col-5 border">EPass</div>
                   </template>
                 </div>
                 <div class="px-1 py-2 col-12 d-flex justify-content-center">
@@ -104,9 +103,7 @@
 
                 <template v-else>
                   <div class="col-12 py-2 d-flex justify-content-center">
-                    <button class="btn btn-success mb-1" disabled>
                       No File Attached
-                    </button>
                   </div>
                 </template>
               </div>
@@ -114,7 +111,6 @@
 
             <div
               class="card-footer btn-group-vertical"
-              style="background-color: var(--sss_orange); color: #273746"
             >
               <!-- View button prompt Passes update modal -->
               <button
@@ -203,14 +199,14 @@
                                 d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
                               ></path>
                             </svg>
-                            Remove Image from Database
+                            Remove Image
                           </button>
                         </div>
 
-                        <div class="input-group mb w-75">
+                        <div class="input-group mb w-50">
                           <label class="col-12 col-form-label text-center"
                             ><b
-                              >Insert new image here to replace current image</b
+                              >Replace current image</b
                             ></label
                           >
                           <input
@@ -239,7 +235,7 @@
                       ><br />
                       <div class="input-group mb-1 was-validated">
                         <label class="col-form-label col-12"
-                          ><b>Pass Number</b></label
+                          ><b>Pass No.</b></label
                         >
                         <div class="col-12">
                           <input
@@ -256,7 +252,7 @@
                       </div>
                       <div class="input-group mb-1 was-validated">
                         <label class="col-form-label col-12"
-                          ><b>Pass Number</b></label
+                          ><b>Pass Description</b></label
                         >
                         <div class="col-12">
                           <input
@@ -271,7 +267,7 @@
                       </div>
                       <div class="input-group mb-1 was-validated">
                         <label class="col-form-label col-12"
-                          ><b>Point of Interests</b></label
+                          ><b>Point of Interest</b></label
                         >
                         <div class="col-12">
                           <input
@@ -287,7 +283,7 @@
                       </div>
                       <div class="input-group mb-3 was-validated">
                         <label class="col-form-label col-12"
-                          ><b>Point of Interests Website</b></label
+                          ><b>Website Link</b></label
                         >
                         <div class="col-12">
                           <input
@@ -304,7 +300,7 @@
                     </div>
                     <div class="input-group mb-3 was-validated">
                       <label class="col-5 col-form-label"
-                        ><b>Guests Numbers</b></label
+                        ><b>No. of Guests</b></label
                       >
                       <div class="col-7">
                         <input
@@ -433,7 +429,23 @@
                 <div class="modal-footer">
                   <button
                     type="button"
-                    class="btn btn-info"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                    @click="initialStateEachPass(EachPass.passId)"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    @click="deletePassMethod(EachPass.passId)"
+                    data-bs-dismiss="modal"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
                     @click="updatePassMethod(EachPass.passId)"
                     data-bs-dismiss="modal"
                     :disabled="
@@ -449,23 +461,7 @@
                       )
                     "
                   >
-                    Update Now
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-danger"
-                    @click="deletePassMethod(EachPass.passId)"
-                    data-bs-dismiss="modal"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                    @click="initialStateEachPass(EachPass.passId)"
-                  >
-                    Cancel
+                    Save
                   </button>
                 </div>
               </div>
@@ -530,7 +526,7 @@
               </div>
               <hr />
               <div class="input-group mb-1 was-validated">
-                <label class="col-form-label col-12"><b>Pass Number</b></label>
+                <label class="col-form-label col-12"><b>Pass No.</b></label>
                 <div class="col-12">
                   <input
                     type="number"
@@ -559,7 +555,7 @@
               </div>
               <div class="input-group mb-1 was-validated">
                 <label class="col-form-label col-12"
-                  ><b>Point of Interests</b></label
+                  ><b>Point of Interest</b></label
                 >
                 <div class="col-12">
                   <input
@@ -574,7 +570,7 @@
               </div>
               <div class="input-group mb-3 was-validated">
                 <label class="col-form-label col-12"
-                  ><b>Point of Interests Website</b></label
+                  ><b>Website Link</b></label
                 >
                 <div class="col-12">
                   <input class="form-control" required v-model="NEWpoiUrl" />
@@ -586,7 +582,7 @@
               </div>
               <div class="input-group mb-3 was-validated">
                 <label class="col-5 col-form-label"
-                  ><b>Guests Numbers</b></label
+                  ><b>No. of Guests</b></label
                 >
                 <div class="col-7">
                   <input
@@ -678,7 +674,15 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-info"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              @click="initialState()"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
               @click="onUpload()"
               data-bs-dismiss="modal"
               :disabled="
@@ -695,14 +699,6 @@
               "
             >
               Create Pass
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-              @click="initialState()"
-            >
-              Close
             </button>
           </div>
         </div>
