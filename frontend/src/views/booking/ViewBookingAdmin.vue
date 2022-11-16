@@ -256,14 +256,14 @@ export default {
         noRecordsFound: "No matching records found",
         error: "An error happened while fetching the data",
         style: {
-          table: {},
           th: {
-            'background-color': 'var(--sss_orange)',
-            'color': '#273746',
+            "background-color": "var(--sss_orange)",
+            color: "#273746",
             "text-align": "center",
           },
           td: {
             "text-align": "center",
+            "font-size": "0.9rem",
           },
         },
       }),
@@ -362,12 +362,13 @@ export default {
         error: "An error happened while fetching the data",
         style: {
           th: {
-            'background-color': 'var(--sss_orange)',
-            'color': '#273746',
+            "background-color": "var(--sss_orange)",
+            color: "#273746",
             "text-align": "center",
           },
           td: {
             "text-align": "center",
+            "font-size": "0.9rem",
           },
         },
       }),
