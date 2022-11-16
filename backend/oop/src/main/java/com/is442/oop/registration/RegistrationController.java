@@ -22,11 +22,12 @@ import com.is442.oop.data.payloads.response.DataResponse;
 import com.is442.oop.email.EmailService;
 import com.is442.oop.exception.ActionNotExecutedException;
 import com.is442.oop.password.PasswordRequest;
-import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserRegisterRequest;
 import com.is442.oop.user.UserRegisterWhitelistRequest;
+import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -61,6 +62,7 @@ public class RegistrationController {
     // }
 
     @PostMapping("/registerOverride")
+    @Operation(summary = "Register a user with without a whitelist" , description="Register a user with without a whitelist. This function is used for testing purposes")
     @Transactional
     public ResponseEntity<DataResponse> registerOverride(@RequestBody UserRequest userRequest, final HttpServletRequest request) {
         System.out.println("RegistrationController: registerOverride");
@@ -95,6 +97,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register user", description = "Registers a user and sends them an email with a confirmation link")
     @Transactional
     public ResponseEntity<DataResponse> registerUser(@RequestBody UserRegisterRequest userRequest, final HttpServletRequest request) {
         System.out.println("RegistrationController: registerUser");
@@ -128,6 +131,7 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(user, "User registration success"), HttpStatus.OK);
     }
 
+    @Operation(summary="whitelists a user", description="whitelists a user so that they can register to use the application. If the user is not whitelisted, they cannot register for the application")
     @PostMapping("/whitelist")
     public ResponseEntity<DataResponse> whitelistUser(@RequestBody UserRegisterWhitelistRequest userRequest) {
         User user = null;            
@@ -142,6 +146,7 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(user, "User successfully whitelisted"), HttpStatus.OK);
     }
 
+    @Operation(summary="Verifies the user registration", description="Verifies the user registration")
     @GetMapping("/verifyRegistration")
     public ResponseEntity<DataResponse> verifyRegistration(@RequestParam("token") String token) {
         String result = userService.validateVerificationToken(token);
@@ -151,6 +156,7 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(result, "User verification failed, bad user, token is " + result), HttpStatus.UNAUTHORIZED);
     }
 
+    @Operation(summary="Resends the user registration email", description="Resends the user registration email")
     @GetMapping("/resendVerificationToken")
     public ResponseEntity<DataResponse> resentVerificationToken(
         @RequestParam("token") String oldToken,
@@ -169,6 +175,7 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(user, "Resend verification token"), HttpStatus.OK);
     }
 
+    @Operation(summary="changes a user password", description="change a user password")
     @PostMapping("/resetPassword")
     public ResponseEntity<DataResponse> resetPassword(@RequestBody PasswordRequest passwordRequest, HttpServletRequest request) {
         User user = userService.findUserByEmail(passwordRequest.getEmail());
@@ -183,6 +190,7 @@ public class RegistrationController {
         return new ResponseEntity<>(new DataResponse(passwordRequest.getEmail(), "Password reset failed, email is invalid: " + passwordRequest.getEmail()), HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary="changes a user password", description="changes a user password")
     @PostMapping("/savePassword")
     public ResponseEntity<DataResponse> savePassword(
         @RequestParam("token") String token,
@@ -201,6 +209,7 @@ public class RegistrationController {
         }
     }
 
+    @Operation(summary="changes a user password", description="changes a user password")
     @PostMapping("/changePassword")
     public ResponseEntity<DataResponse> changePassword(@RequestBody PasswordRequest passwordRequest) {
         User user = userService.findUserByEmail(passwordRequest.getEmail()); // handle exception: null pointer exception if user does not exist
@@ -249,7 +258,7 @@ public class RegistrationController {
 
         log.info("Click the link to verify your account {}", url); // to reimplement with email instead of logging jsut to console
     }
-
+    
     private String applicationUrl(HttpServletRequest request) {
         return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }

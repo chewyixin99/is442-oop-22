@@ -1,17 +1,27 @@
 package com.is442.oop.pass;
 
-import java.util.*;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.is442.oop.data.models.Pass;
 import com.is442.oop.data.models.PassStatus;
 import com.is442.oop.data.payloads.response.DataResponse;
+
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 @RequestMapping("/passes")
@@ -19,12 +29,14 @@ public class PassController {
     @Autowired
     PassService passService;
 
+    @Operation(summary="Gets all passes", description="Gets all passes")
     @GetMapping("")
     public ResponseEntity<DataResponse> getAllPasses() {
         List<Pass> passes = passService.getAllPasses();
         return new ResponseEntity<>(new DataResponse(passes, "Pass"), HttpStatus.OK);
     }
 
+    @Operation(summary="Get pass by id", description="Get pass by id")
     @GetMapping("/{passId}")
     public ResponseEntity<DataResponse> getPass(@PathVariable("passId") Integer passId) {
         Pass pass = null;
@@ -36,6 +48,7 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(pass, "Pass"), HttpStatus.OK);
     }
 
+    @Operation(summary="Create pass", description="Creates a new pass")
     @PostMapping(value = "", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<DataResponse> createPass(
             @RequestParam(value = "passDesc", required = true) String passDesc,
@@ -61,9 +74,7 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(newPass, "Pass"), HttpStatus.CREATED);
     }
 
-    /**
-     * Updates all pass data - If files not included, will not remove fileds.
-     */
+    @Operation(summary="Update pass", description="Updates a pass")
     @PutMapping(value = "/{passId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<DataResponse> updatePass(
             @PathVariable("passId") Integer passId,
@@ -89,6 +100,7 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
+    @Operation(summary="Delete pass", description="Deletes a pass")
     @PutMapping("updatePassStatus/{passId}")
     public ResponseEntity<DataResponse> updatePassStatus(@PathVariable("passId") Integer passId, @RequestBody PassStatus passStatus) {
         Pass updatePass = null;
@@ -100,6 +112,7 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
+    @Operation(summary="Delete pass", description="Deletes a pass")
     @PutMapping(value = "/deletePassAttachment/{passId}")
     public ResponseEntity<DataResponse> deletePassAttachment(@PathVariable("passId") Integer passId) {
         Pass updatePass = null;
@@ -111,6 +124,7 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
+    @Operation(summary="Delete pass", description="Deletes a pass")
     @PutMapping(value = "/deletePassImage/{passId}")
     public ResponseEntity<DataResponse> deletePassImage(@PathVariable("passId") Integer passId) {
         Pass updatePass = null;
@@ -122,6 +136,7 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
+    @Operation(summary="Delete pass", description="Deletes a pass")
     @DeleteMapping("/{passId}")
     public ResponseEntity<DataResponse> deletePass(@PathVariable("passId") Integer passId) {
         Pass pass = null;

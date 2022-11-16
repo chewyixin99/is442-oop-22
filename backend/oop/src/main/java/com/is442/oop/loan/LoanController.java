@@ -3,7 +3,10 @@ package com.is442.oop.loan;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +26,15 @@ import com.is442.oop.data.payloads.dto.LoanWithPrevUserDTO;
 import com.is442.oop.data.payloads.response.DataResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/loan")
 public class LoanController {
     @Autowired
     LoanService loanService;
 
+    @Operation(summary = "Gets all loans", description = "Gets all loans")
     @GetMapping("")
     public ResponseEntity<DataResponse> getAllLoans(){
         List<Loan> loans = loanService.getAllLoan();
@@ -50,6 +56,7 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(result, "Loan"), HttpStatus.OK);
     }
     // can be improved to give a more verbose error
+    @Operation(summary = "Get loan by id", description = "Get loan by id")
     @GetMapping("/{loanId}")
     public ResponseEntity<DataResponse> getLoanByLoanID(@PathVariable("loanId") Integer loanId) {
         Loan loan = null;
@@ -69,7 +76,7 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(result, "Loan"), HttpStatus.OK);
     }
 
-    // Done
+    @Operation(summary = "Get loan by user id", description = "Get loan by user id")
     @GetMapping("/byUserId/{userId}")
     public ResponseEntity<DataResponse> getLoanByUserID(@PathVariable("userId") Integer userId){
         List<Loan> loans = loanService.getLoanByUserID(userId);
@@ -79,6 +86,7 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(loans, "Loan"), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get loan by pass id", description = "Get loan by pass id")
     @GetMapping("/byPassId/{passId}")
     public ResponseEntity<DataResponse> getLoanByPassID(@PathVariable("passId") Integer passId){
         List<Loan> loans = loanService.getLoanByPassID(passId);
@@ -87,7 +95,8 @@ public class LoanController {
         }
         return new ResponseEntity<>(new DataResponse(loans, "Loan"), HttpStatus.OK);
     }
-    // Done
+    
+    @Operation(summary = "Get loan by pass id and date", description = "Get loan by pass id and date")
     @PostMapping("")
     public ResponseEntity<DataResponse> createLoan(@RequestBody LoanRequest createLoanRequest){
         Loan newLoan = null; 
@@ -103,6 +112,7 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(newLoan, "Loan"), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Update loan", description = "Update loan to completed. This means the user has returned the pass to the office")
     @PutMapping("/updateCompleted")
     public ResponseEntity<DataResponse> updateLoanToCompleted(@RequestBody UpdateLoantoCompletedRequest updateLoanRequest){
         Loan updatedLoan = null;
@@ -114,6 +124,7 @@ public class LoanController {
         }
     }
 
+    @Operation(summary = "Update loan", description = "Updates a loan based on the specified parameters")
     @PutMapping("/update")
     public ResponseEntity<DataResponse> updateLoan(@RequestBody UpdateLoanRequest updateLoanRequest){
         Loan updatedLoan = null;
@@ -125,6 +136,7 @@ public class LoanController {
         }
     }
 
+    @Operation(summary = "Delete loan", description = "Delete loan by id")
     @DeleteMapping("/{loanId}")
     public ResponseEntity<DataResponse> deleteLoan(@PathVariable("loanId")Integer loanId){
         Loan deletedLoan = null;
@@ -136,6 +148,7 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(deletedLoan, "Loan"), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get loan by pass and date", description = "Get all loans for a pass that were made before the specified date")
     @GetMapping("/forPassByDateBefore/{queryDate}/{passId}")
     public ResponseEntity<DataResponse> getLoanForPassByDateBefore(
         @PathVariable("queryDate") String queryDate,
@@ -150,6 +163,7 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(loan.get(), "Loan"), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get loans by month", description = "Gets all loans made in the specified month")
     @GetMapping("/getAllLoansGroupedByMonth")
     public ResponseEntity<DataResponse> getAllLoansGroupedByMonth() {
         Map<YearMonth, List<Loan>> results = null;
@@ -165,6 +179,7 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(results, "Loan"), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get number of loans grouped by month", description = "Gets number of loans made in the specified month")
     @GetMapping("/getNumLoansGroupedByMonth")
     public ResponseEntity<DataResponse> getNumLoansGroupedByMonth() {
         Map<YearMonth, Integer> results = null;
@@ -180,6 +195,7 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(results, "Loan"), HttpStatus.OK);
     }
 
+    @Operation(summary = "Get number of loans grouped by Month and UserID", description = "Gets number of loans made by the specified user in the specified month")
     @GetMapping("/getNumLoansGroupedeByMonthByUserId/{userId}")
     public ResponseEntity<DataResponse> getNumLoansGroupedeByMonthByUserId(@PathVariable("userId") Integer userId) {
         Map<YearMonth, Integer> results = null;
