@@ -77,6 +77,7 @@
                 <!-- Update modal -->
                 <div
                   class="modal fade"
+                  data-bs-backdrop="static"
                   :id="`emailModal` + template.templateId"
                   tabindex="-1"
                   aria-hidden="true"
@@ -192,6 +193,7 @@
     <!-- Add Email Modal Below -->
     <div
       class="modal fade"
+      data-bs-backdrop="static"
       id="addNewEmailTemplate"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
