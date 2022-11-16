@@ -1,11 +1,11 @@
 <template>
   <div class="container">
     <div class="flex-column d-flex align-items-center justify-content-center">
-      <h1 class="pt-4 mb-4">Passes (User)</h1>
+      <h1 class="pt-4 mb-4">Passes</h1>
       <div class="tableBox position-relative">
         <hr />
 
-        <div class="row row-cols-auto g-4 mt-2 mb-5">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-2 mb-5">
           <template v-for="EachPass in userPasses" :key="EachPass.passId">
             <div v-if="EachPass.defunct == '0'">
               <div class="card text-center border h-100" style="width: 25rem">

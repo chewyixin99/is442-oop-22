@@ -16,11 +16,12 @@
         </button>
       </span>
     </div>
-    <div class="row row-cols-auto g-5 my-2 justify-content-center">
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 my-2 justify-content-center">
       <!-- Passes 'Card' -->
       <template v-for="EachPass in PassAdminPasses" :key="EachPass.passId">
         <div v-if="EachPass.defunct == '0'">
-          <div class="card text-center border h-100" style="width: 25rem">
+          <div class="card text-center border h-100">
             <!-- Show Image here -->
             <div
               class="card-header"
@@ -37,7 +38,6 @@
                 v-bind:src="`data:image/*;base64,${EachPass.passImage}`"
                 class="mx-auto mt-2 d-block border border-2"
                 height="250"
-                width="375"
               />
             </template>
 
@@ -46,7 +46,7 @@
                 src="../assets/PassAssets/noImageAvailable.jpg"
                 class="mx-auto mt-2 d-block border border-2"
                 height="250"
-                width="375"
+                
               />
             </template>
 
