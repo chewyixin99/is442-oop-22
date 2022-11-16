@@ -17,14 +17,14 @@
           </span>
         </div>
 
-        <div class="container-fluid mt-3">
+        <div class="container-fluid mb-5">
           <div class="row row-cols-1 g-5">
             <template
               v-for="template in emailTemplates"
               :key="template.templateId"
             >
               <div v-if="!template.defunct">
-                <div class="card text-center mb-3">
+                <div class="card text-center">
                   <div
                     class="card-header"
                     style="background-color: var(--sss_orange); color: #273746"
