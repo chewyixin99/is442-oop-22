@@ -27,6 +27,9 @@ import com.is442.oop.data.payloads.response.DataResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping("/loan")
@@ -34,7 +37,9 @@ public class LoanController {
     @Autowired
     LoanService loanService;
 
-    @Operation(summary = "Gets all loans", description = "Gets all loans")
+    @Operation(summary = "Gets all loans", description = "Gets all loans", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class)))
+    })
     @GetMapping("")
     public ResponseEntity<DataResponse> getAllLoans(){
         List<Loan> loans = loanService.getAllLoan();
@@ -56,7 +61,10 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(result, "Loan"), HttpStatus.OK);
     }
     // can be improved to give a more verbose error
-    @Operation(summary = "Get loan by id", description = "Get loan by id")
+    @Operation(summary = "Get loan by id", description = "Get loan by id", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found", content=@Content)
+    })
     @GetMapping("/{loanId}")
     public ResponseEntity<DataResponse> getLoanByLoanID(@PathVariable("loanId") Integer loanId) {
         Loan loan = null;
@@ -76,7 +84,10 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(result, "Loan"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get loan by user id", description = "Get loan by user id")
+    @Operation(summary = "Get loan by user id", description = "Get loan by user id", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found", content=@Content)
+    })
     @GetMapping("/byUserId/{userId}")
     public ResponseEntity<DataResponse> getLoanByUserID(@PathVariable("userId") Integer userId){
         List<Loan> loans = loanService.getLoanByUserID(userId);
@@ -86,7 +97,10 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(loans, "Loan"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get loan by pass id", description = "Get loan by pass id")
+    @Operation(summary = "Get loan by pass id", description = "Get loan by pass id", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found", content=@Content)
+    })
     @GetMapping("/byPassId/{passId}")
     public ResponseEntity<DataResponse> getLoanByPassID(@PathVariable("passId") Integer passId){
         List<Loan> loans = loanService.getLoanByPassID(passId);
@@ -96,7 +110,10 @@ public class LoanController {
         return new ResponseEntity<>(new DataResponse(loans, "Loan"), HttpStatus.OK);
     }
     
-    @Operation(summary = "Create loans for users", description = "User loan creation (w/ 2x loan/month, 2x booking/loan validations)")
+    @Operation(summary = "Create loans for users", description = "User loan creation (w/ 2x loan/month, 2x booking/loan validations)", responses={
+        @ApiResponse(responseCode = "201", description = "Created", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Loan.class))),
+        @ApiResponse(responseCode = "400", description = "Bad Request", content=@Content)
+    })
     @PostMapping("/userCreateLoan")
     public ResponseEntity<DataResponse> userCreateLoan(@RequestBody LoanRequest createLoanRequest){
         Loan newLoan = null; 

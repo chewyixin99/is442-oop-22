@@ -22,6 +22,9 @@ import com.is442.oop.data.models.PassStatus;
 import com.is442.oop.data.payloads.response.DataResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @RestController
 @RequestMapping("/passes")
@@ -29,14 +32,21 @@ public class PassController {
     @Autowired
     PassService passService;
 
-    @Operation(summary="Gets all passes", description="Gets all passes")
+
+    @Operation(summary="Gets all passes", description="Gets all passes", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content=@Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class)))
+    })
     @GetMapping("")
     public ResponseEntity<DataResponse> getAllPasses() {
         List<Pass> passes = passService.getAllPasses();
         return new ResponseEntity<>(new DataResponse(passes, "Pass"), HttpStatus.OK);
     }
 
-    @Operation(summary="Get pass by id", description="Get pass by id")
+    
+    @Operation(summary="Get pass by id", description="Get pass by id", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class))),
+        @ApiResponse(responseCode = "404", description = "Pass not found" ,content = @Content)
+    })
     @GetMapping("/{passId}")
     public ResponseEntity<DataResponse> getPass(@PathVariable("passId") Integer passId) {
         Pass pass = null;
@@ -48,7 +58,11 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(pass, "Pass"), HttpStatus.OK);
     }
 
-    @Operation(summary="Create pass", description="Creates a new pass")
+
+    @Operation(summary="Create pass", description="Creates a new pass", responses={
+        @ApiResponse(responseCode = "201", description = "Created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)
+    })
     @PostMapping(value = "", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<DataResponse> createPass(
             @RequestParam(value = "passDesc", required = true) String passDesc,
@@ -74,7 +88,11 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(newPass, "Pass"), HttpStatus.CREATED);
     }
 
-    @Operation(summary="Update pass", description="Updates a pass")
+    @Operation(summary="Update pass", description="Updates a pass", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Pass not found", content=@Content),
+    })
     @PutMapping(value = "/{passId}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<DataResponse> updatePass(
             @PathVariable("passId") Integer passId,
@@ -100,7 +118,10 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
-    @Operation(summary="Delete pass", description="Deletes a pass")
+    @Operation(summary="Delete pass", description="Deletes a pass", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class))),
+        @ApiResponse(responseCode = "404", description = "Pass not found", content=@Content)
+    })
     @PutMapping("updatePassStatus/{passId}")
     public ResponseEntity<DataResponse> updatePassStatus(@PathVariable("passId") Integer passId, @RequestBody PassStatus passStatus) {
         Pass updatePass = null;
@@ -112,7 +133,10 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
-    @Operation(summary="Delete pass", description="Deletes a pass")
+    @Operation(summary="Delete pass", description="Deletes a pass", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class))),
+        @ApiResponse(responseCode = "404", description = "Pass not found", content=@Content)
+    })
     @PutMapping(value = "/deletePassAttachment/{passId}")
     public ResponseEntity<DataResponse> deletePassAttachment(@PathVariable("passId") Integer passId) {
         Pass updatePass = null;
@@ -124,7 +148,10 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
-    @Operation(summary="Delete pass", description="Deletes a pass")
+    @Operation(summary="Delete pass image", description="Deletes a pass assigned image", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class))),
+        @ApiResponse(responseCode = "404", description = "Pass not found / Pass does not have an existing image", content=@Content), 
+    })
     @PutMapping(value = "/deletePassImage/{passId}")
     public ResponseEntity<DataResponse> deletePassImage(@PathVariable("passId") Integer passId) {
         Pass updatePass = null;
@@ -136,7 +163,10 @@ public class PassController {
         return new ResponseEntity<>(new DataResponse(updatePass, "Pass"), HttpStatus.OK);
     }
 
-    @Operation(summary="Delete pass", description="Deletes a pass")
+    @Operation(summary="Delete pass", description="Deletes a pass", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pass.class))),
+        @ApiResponse(responseCode = "404", description = "Pass not found", content=@Content)
+    })
     @DeleteMapping("/{passId}")
     public ResponseEntity<DataResponse> deletePass(@PathVariable("passId") Integer passId) {
         Pass pass = null;

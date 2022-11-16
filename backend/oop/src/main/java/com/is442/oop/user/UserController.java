@@ -17,6 +17,9 @@ import com.is442.oop.data.models.User;
 import com.is442.oop.data.payloads.response.DataResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 
 @RestController
@@ -24,7 +27,8 @@ import io.swagger.v3.oas.annotations.Operation;
 public class UserController {
     @Autowired
     UserService userService;
-
+    
+    @ApiResponse(responseCode = "200", description = "OK")
     @Operation(summary = "Gets all users", description = "Gets all users")
     @GetMapping("")
     public ResponseEntity<DataResponse> getAllUsers() {
@@ -32,7 +36,11 @@ public class UserController {
         return new ResponseEntity<>(new DataResponse(users, "User"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Get user by id", description = "Get user by id")
+    
+    @Operation(summary = "Get user by id", description = "Get user by id", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "404", description = "User not found" ,content = @Content)
+    })
     @GetMapping("/{userId}")
     public ResponseEntity<DataResponse> getUser(@PathVariable("userId") Integer userId) {
         User user = null;
@@ -53,7 +61,10 @@ public class UserController {
     // }
 
     // To change password, use registrationController /changePassword instead
-    @Operation(summary = "Update user", description = "Updates the user's details")
+    @Operation(summary = "Update user", description = "Updates the user's details", responses = {
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     @PutMapping("/{userId}")
     public ResponseEntity<DataResponse> updateUser(@PathVariable("userId") Integer userId, @RequestBody UserRequest userRequest) {
         User updateUser = null;
@@ -65,7 +76,10 @@ public class UserController {
         return new ResponseEntity<>(new DataResponse(updateUser, "User"), HttpStatus.OK);
     }
 
-    @Operation(summary = "Soft deletes a user", description = "Soft deletes a user by setting \"defunct\" attribute to true")
+    @Operation(summary = "Soft deletes a user", description = "Soft deletes a user by setting \"defunct\" attribute to true", responses={
+        @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     @DeleteMapping("/{userId}")
     public ResponseEntity<DataResponse> deleteUser(@PathVariable("userId") Integer userId) {
         User user = null;
