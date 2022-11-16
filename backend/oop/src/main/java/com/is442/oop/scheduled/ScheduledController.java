@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.is442.oop.data.models.Pass;
 import com.is442.oop.data.payloads.response.DataResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 
 @RestController
 @RequestMapping("/scheduled")
@@ -20,6 +22,7 @@ public class ScheduledController {
     @Autowired
     ScheduledService scheduledService;
 
+    @Operation(summary="Updates passes to unreturned", description="At the end of the day, if the passes have not been returned to the office, the function will run and update the status of the pass to unreturned. Used for testing purposes.")
     @GetMapping("/updatePassesToUnreturned")
     public ResponseEntity<DataResponse> updatePassesToUnreturned() {
         List<Pass> unreturnedPasses = null;

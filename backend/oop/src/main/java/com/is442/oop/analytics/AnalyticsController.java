@@ -16,12 +16,15 @@ import com.is442.oop.data.payloads.dto.AnalyticsPoiBreakdownDTO;
 import com.is442.oop.data.payloads.response.DataResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/analytics")
 public class AnalyticsController {
     @Autowired
     AnalyticsService analyticsService;
 
+    @Operation(summary="Gets all loans placed for the month", description="Gets all loans placed by month")
     @GetMapping("/getLoansForMonth/{month}")
     public ResponseEntity<DataResponse> getLoansForMonth(@PathVariable("month") Integer month ){
         List<Loan> loans = null;
@@ -33,6 +36,7 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(loans, "AnalyticsService"), HttpStatus.OK);
     }
 
+    @Operation(summary="Gets all loans placed by user ID", description="Gets all loans placed by user ID")
     @GetMapping("/getLoansPerUserId/{userId}")
     public ResponseEntity<DataResponse> getLoanByUserID(@PathVariable("userId") Integer userId) {
         List<Loan> loans = null;
@@ -44,6 +48,7 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(loans, "AnalyticsService"), HttpStatus.OK);
     }
 
+    @Operation(summary="Gets all loans placed by place of interest by month", description="Gets all loans placed by place of interest by month")
     @GetMapping("/getLoansPerUserPerMonth/{userId}/{month}")
     public ResponseEntity<DataResponse> getLoansPerUserPerMonth(@PathVariable Integer userId, @PathVariable Integer month) {
         List<Loan> loans = null;
@@ -55,6 +60,7 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(loans, "AnalyticsService"), HttpStatus.OK);
     }
 
+    @Operation(summary="Gets all pass breakdown", description="Obtains the loan breakdown by status. e.g. Available Onloan Unreturned")
     @GetMapping("/getPassBreakdown")
     public ResponseEntity<DataResponse> getPassBreakdown() {
         AnalyticsPassBreakdownDTO passBreakdown = null;
@@ -66,6 +72,7 @@ public class AnalyticsController {
         return new ResponseEntity<>(new DataResponse(passBreakdown, "AnalyticsService"), HttpStatus.OK);
     }
 
+    @Operation(summary="Gets all place of interest breakdown", description="Obtains the breakdown of number of loans placed by place of interest")
     @GetMapping("/getPoiBreakdown")
     public ResponseEntity<DataResponse> getPoiBreakdown() {
         List<AnalyticsPoiBreakdownDTO> poiBreakdown = null;

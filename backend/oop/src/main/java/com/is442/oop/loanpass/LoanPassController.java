@@ -14,12 +14,15 @@ import com.is442.oop.data.models.Loan;
 import com.is442.oop.data.payloads.response.DataResponse;
 import com.is442.oop.exception.ResourceNotFoundException;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/loanpass")
 public class LoanPassController {
     @Autowired
     LoanPassService loanPassService;
 
+    @Operation(summary = "Get loan by place of interest", description = "Gets all loans by place of interest")
     @GetMapping("/getLoanByPOI/{poi}")
     public ResponseEntity<DataResponse> getLoanByPOI(@PathVariable("poi") String poi){
         List<Loan> loansWithPOI = null;

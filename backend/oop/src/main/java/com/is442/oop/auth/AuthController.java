@@ -17,6 +17,8 @@ import com.is442.oop.exception.ResourceNotFoundException;
 import com.is442.oop.user.UserRequest;
 import com.is442.oop.user.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 public class AuthController {
 
@@ -26,6 +28,7 @@ public class AuthController {
     @Autowired
     AuthService authService;
 
+    @Operation(summary="Login", description="Login")
     @PostMapping("/login")
     public ResponseEntity<DataResponse> loginEmail(@RequestBody UserRequest userRequest) {
         User user = userService.findUserByEmail(userRequest.getEmail());
