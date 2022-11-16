@@ -1,0 +1,13 @@
+spring:
+    # mail config
+    mail:
+        port: 587
+        host: smtp.gmail.com
+        username: sport.singapore.helpdesk@gmail.com
+        password: khqaaptsvypwkggl
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
